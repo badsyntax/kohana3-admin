@@ -9,9 +9,6 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	// Controller name must match this value
 	public $crud_model = FALSE;
 
-	// Crud model plural, leave blank
-	private $crud_model_plural;
-	
 	// Items per page when listing items in model table
 	public $pagination_items_per_page = 10;
 
@@ -20,8 +17,8 @@ abstract class Controller_Admin_Base extends Controller_Base {
 
 	public function before()
 	{
-		// Set the crud model plural
-		$this->crud_model_plural = strtolower(Inflector::plural($this->crud_model));
+		// If the crud model isn't set then use the controller name (default)
+		$this->crud_model === FALSE AND $this->crud_model = $this->request->controller;
 
 		parent::before();
 	}
@@ -32,16 +29,16 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		// Crud model needs to be set
 		$this->crud_model === FALSE AND $this->request->redirect('admin');
 
-                $this->template->title = __('Edit '.ucfirst($this->crud_model_plural));
+                $this->template->title = __('Edit '.ucfirst($this->crud_model));
 
 		// Bind useful data objects to the view
-                $this->template->content = View::factory('admin/page/'.$this->crud_model_plural)
-                        ->bind($this->crud_model_plural, $items)
+                $this->template->content = View::factory('admin/page/'.$this->crud_model)
+                        ->bind($this->crud_model, $items)
                         ->bind('total', $total)
                         ->bind('page_links', $page_links);
 
 		// Get the total amount of items in the table
-                $total = ORM::factory( $this->crud_model )->count_all();
+                $total = ORM::factory( inflector::singular($this->crud_model) )->count_all();
 
 		// Generate the pagination values
                 $pagination = Pagination::factory(array(
@@ -50,7 +47,7 @@ abstract class Controller_Admin_Base extends Controller_Base {
                 ));
 
 		// Get the items
-                $items = ORM::factory($this->crud_model)
+                $items = ORM::factory( inflector::singular($this->crud_model) )
                         ->limit($pagination->items_per_page)
                         ->offset($pagination->offset)
                         ->find_all();
