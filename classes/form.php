@@ -8,8 +8,7 @@ class Form extends Base_Form {
 		! isset($attributes['id']) AND $attributes['id'] = $name;
 
 		// set the error classname
-		$errors !== NULL AND isset($errors[$name]) AND
-			$attributes['class'] = trim( (string) @$attributes['class'].' error-field');
+		isset($errors[$name]) AND $attributes['class'] = trim( (string) @$attributes['class'].' error-field');
 	}
 
 	public static function input($name, $value = NULL, array $attributes = NULL, array $errors = NULL)
@@ -25,5 +24,20 @@ class Form extends Base_Form {
 
 		return parent::select($name, $options, $selected, $attributes);
 	}
+	
+	public static function password($name, $value = NULL, array $attributes = NULL, array $errors = NULL)
+	{
+		static::admin_attributes($name, $attributes, $errors);
+
+		return parent::password($name, $value, $attributes);
+	}
+	
+	public static function label($input, $text = NULL, array $attributes = NULL, array $errors = NULL)
+	{
+		isset($errors[$input]) AND $text .= View::factory('admin/messages/label_error')->bind('error', $errors[$input]);
+		
+		return parent::label($input, $text, $attributes);
+	}
+
 
 } // End Form 
