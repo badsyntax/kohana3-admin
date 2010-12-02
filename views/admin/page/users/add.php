@@ -3,30 +3,16 @@
 <?php echo Form::open()?>
 	<fieldset>
 		
-		<?php if ($errors) {?>
-			<p>Errors:</p>
-			<ul class="errors">
-			<?php foreach($errors as $field => $error){?>
-				<li><?php echo $error ?></li>
-			<?php }?>
-			</ul>
-		<?php }?>
-
-
 		<div class="field">
 			<?php echo 
-				Form::label('username', __('Username')),
-				Form::input('username', 
-					$_POST['username'] ? $_POST['username'] : $user->username, 
-					array('id' => 'username'))
+				Form::label('username', __('Username'), NULL, $errors),
+				Form::input('username',	$_POST['username'], NULL, $errors)
 			?>
 		</div>
 		<div class="field">
 			<?php echo 
-				Form::label('email', __('Email')),
-				Form::input('email', 
-					$_POST['email'] ? $_POST['email'] : $user->email, 
-					array('type' => 'email', 'id' => 'email'))
+				Form::label('email', __('Email'), NULL, $errors),
+				Form::input('email', $_POST['email'], array('type' => 'email'), $errors)
 			?>
 		</div>
 		<div class="field">
@@ -44,14 +30,14 @@
 		</div>
 		<div class="field">
 			<?php echo 
-				Form::label('password', __('New password')),
-				Form::password('password', NULL, array('id' => 'password'))
+				Form::label('password', __('New password'), NULL, $errors),
+				Form::password('password', NULL, NULL, $errors)
 			?>
 		</div>
 		<div class="field">
 			<?php echo 
-				Form::label('password_confirm', __('Confirm password')),
-				Form::password('password_confirm', NULL, array('id' => 'password_confirm'))
+				Form::label('password_confirm', __('Confirm password'), NULL, $errors),
+				Form::password('password_confirm', NULL, NULL, $errors)
 			?>
 		</div>
 
