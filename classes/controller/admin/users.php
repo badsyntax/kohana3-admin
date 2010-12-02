@@ -2,8 +2,26 @@
 
 class Controller_Admin_Users extends Controller_Admin_Base {
 
-	// Set the controller crud model
-	public $crud_model = 'user';
+	// Example: Set the controller crud model. Must match database table name.
+	// public $crud_model = 'users';
+
+	public function action_add()
+	{
+		$this->template->title = __('Add user');
+
+		$this->template->content = View::factory('admin/page/users/add')
+			->bind('roles', $roles)
+			->bind('errors', $errors);
+
+		ORM::factory('user')->add_admin($_POST) AND $this->request->redirect('admin/users');
+		
+		$roles = ORM::factory('role')->find_all();
+
+		$errors = $_POST->errors('auth');
+
+		$_POST = $_POST->as_array();
+	}
+
 
 	public function action_edit($id = 0)
 	{
@@ -12,6 +30,9 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		! $user->loaded() AND $this->request->redirect('admin');
 
 		$this->template->title = __('Edit user').' '.$user->username;
+
+		// If POST is empty then set the default form data
+		!$_POST AND $default_data = $user->as_array();
 
 		// Bind user data to template
 		$this->template->content = View::factory('admin/page/users/edit')
@@ -36,24 +57,8 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 
 		$errors = $_POST->errors('profile');
 
-		$_POST = $_POST->as_array();
-	}
-
-	public function action_add()
-	{
-		$this->template->title = __('Add user');
-
-		$this->template->content = View::factory('admin/page/users/add')
-			->bind('roles', $roles)
-			->bind('errors', $errors);
-
-		ORM::factory('user')->add_admin($_POST) AND $this->request->redirect('admin/users');
-		
-		$roles = ORM::factory('role')->find_all();
-
-		$errors = $_POST->errors('auth');
-
-		$_POST = $_POST->as_array();
+		// If POST is empty, then add the default data to POST
+                isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);
 	}
 
 	public function action_delete($id = 0)
@@ -64,7 +69,7 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		$id === 1 AND $this->request->redirect('403');
 
 		// Try load the user
-		$user = ORM::factory($this->crud_model, (int) $id);
+		$user = ORM::factory( inflector::singular($this->crud_model), (int) $id);
 
 		!$user->loaded() AND $this->request->redirect('admin');
 
@@ -76,6 +81,9 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 
 		// Delete the user
 		$user->delete();
+
+		// Set the message
+		Message::set(Message::SUCCESS, __('User successfully deleted.'));
 
 		$this->request->redirect('admin/users');
 	}
