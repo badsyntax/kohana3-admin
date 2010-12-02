@@ -2,9 +2,6 @@
 
 class Controller_Admin_Roles extends Controller_Admin_Base {
 
-	// Set the controller crud model
-	public $crud_model = 'role';
-
 	public function action_add()
 	{
 		$this->template->title = __('Add role');
@@ -12,7 +9,12 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/roles/add')
 			->bind('errors', $errors);
 
-		ORM::factory('role')->create($_POST) AND $this->request->redirect('admin/roles');
+		if (ORM::factory('role')->create($_POST)) {
+
+			Message::set(Message::SUCCESS, __('Role successfully saved.'));
+			
+			$this->request->redirect('admin/roles');
+		}
 
 		$errors = $_POST->errors('admin/user');
 
@@ -38,7 +40,12 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 			->bind('errors', $errors);
 
 		// Try update the role, if successful then reload the page
-		$role->update($_POST) AND $this->request->redirect($this->request->uri);
+		if ($role->update($_POST)) {
+		
+			Message::set(Message::SUCCESS, __('Role successfully updated.'));
+			 
+			$this->request->redirect($this->request->uri);
+		}
 
 		// Get validation errors
 		$errors = $_POST->errors('admin/user');
