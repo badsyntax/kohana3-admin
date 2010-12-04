@@ -9,10 +9,13 @@
 	<h1>Users</h1>
 </div>
 
-<table>
+<table class="crud-list">
 	<thead>
 		<tr>
-			<th>ID</th>
+			<th>
+				<input type="checkbox" class="checkbox" />
+				<!-- ID -->
+			</th>
 			<th>Username</th>
 			<th>Email</th>
 			<th>Role</th>
@@ -21,7 +24,10 @@
 	<tbody>
 		<?php foreach($users as $user){?>
 		<tr>
-			<td><?php echo $user->id;?></td>
+			<td>
+				<input type="checkbox" class="checkbox" />
+				<!-- <?php echo $user->id;?> -->
+			</td>
 			<td>
 				<?php echo HTML::anchor('admin/users/edit/'.$user->id, $user->username)?>
 			</td>
@@ -36,10 +42,19 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="4">
+			<td colspan="5">
 				<div style="float:right"><?php echo $page_links?></div>
 				Showing <?php echo $users->count()?> of <?php echo $total?> users
 			</td>
 		</tr>
 	</tfoot>
 </table>
+<script>
+(function($){
+
+	$('table.crud-list thead input[type=checkbox]').click(function(){
+
+		$('table.crud-list tbody input[type=checkbox]').attr('checked', this.checked);
+	});
+})(this.jQuery);
+</script>

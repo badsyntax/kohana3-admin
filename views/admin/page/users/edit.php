@@ -16,6 +16,9 @@
 
 <?php echo Form::open()?>
 	<fieldset>
+		<p>
+			ID: <?php echo $user->id?>
+		</p>
 		
 		<div class="field">
 			<?php echo 
