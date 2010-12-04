@@ -9,7 +9,7 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/roles/add')
 			->bind('errors', $errors);
 
-		if (ORM::factory('role')->create($_POST)) {
+		if (ORM::factory('role')->admin_create($_POST)) {
 
 			Message::set(Message::SUCCESS, __('Role successfully saved.'));
 			
@@ -40,7 +40,7 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 			->bind('errors', $errors);
 
 		// Try update the role, if successful then reload the page
-		if ($role->update($_POST)) {
+		if ($role->admin_update($_POST)) {
 		
 			Message::set(Message::SUCCESS, __('Role successfully updated.'));
 			 

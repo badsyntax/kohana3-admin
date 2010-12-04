@@ -60,10 +60,9 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	{
 		// The user may be logged in but not have the correct permissions to view this controller and/or action, so 
 		// instead of redirecting to signin page we redirect to 403 Forbidden
-		if (Auth::instance()->logged_in() AND Auth::instance()->logged_in($this->auth_required) === FALSE) {
-
-			$this->request->redirect('403');
-		}
+		Auth::instance()->logged_in() 
+		AND Auth::instance()->logged_in($this->auth_required) === FALSE
+		AND $this->request->redirect('403');
 
 		parent::authenticate();
 	}
@@ -71,13 +70,15 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	// A generic delete action to deletes a model item by ID
 	public function action_delete($id = 0)
 	{
-		$item = ORM::factory($this->crud_model, (int) $id);
+		$item = ORM::factory(inflector::singular($this->crud_model), (int) $id);
 
 		! $item->loaded() AND $this->request->redirect('admin');
 
 		$item->delete();
 
-		$this->request->redirect('admin/'.$this->crud_model_plural);
+		Message::set(Message::SUCCESS, ucfirst(inflector::singular($this->crud_model)).' '.__('successfully deleted.'));
+
+		$this->request->redirect('admin/'.$this->crud_model);
 	}
 
 } // End Controller_Admin_Base
