@@ -9,13 +9,16 @@ class Controller_Admin_Home extends Controller_Admin_Base {
 			->bind('db_config', $db_config)
 			->bind('modules', $modules)
 			->bind('db_size', $db_size)
-			->bind('logs', $log_messages);
+			->bind('logs', $log_entries);
 
+		// Get the database configuration
 		$db_config = Kohana::config('database');
 		$db_config = $db_config['default'];
 
-		$modules  = Kohana::modules();
+		// Get an array of enabled modules
+		$modules = Kohana::modules();
 
+		// Get the total database size in MB
 		$db_size = DB::query(
 			Database::SELECT, 
 			'SELECT 
@@ -26,18 +29,25 @@ class Controller_Admin_Home extends Controller_Admin_Base {
 			)->execute()->as_array();
 		$db_size = $db_size['0']['size'];
 
+		// Recursively get a list of log files
 		$logs = Kohana::list_files('logs');
+
+		// Find the month directory name
 		$log_year = array_pop( $logs );
 		$log_month = array_pop( $log_year );
-		$log_messages = array();
 
+		// Build an array of log entries
+		$log_entries = array();
 		foreach($log_month as $day => $path){
 
+			// Get log file contents and strip PHP tags
 			$log_contents = trim(preg_replace('/<\?.*?\?>/', '', file_get_contents($path)));
 		
-			$log_messages = array_merge($log_messages, explode("\n", $log_contents));
+			// Create array of log entries and append to messages array
+			$log_entries = array_merge($log_entries, explode("\n", $log_contents));
 		}
 
-		$log_messages = array_reverse($log_messages);
+		$log_entries = array_reverse($log_entries);
 	}
-}
+
+} // End Controller_Admin_Home
