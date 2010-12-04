@@ -1,3 +1,5 @@
+<h1>Admin dashboard</h1>
+
 <h2>Database</h2>
 
 <div><strong>Type:</strong> <?php echo $db_config['type']?></div>
@@ -18,7 +20,7 @@
 
 <?php echo HTML::anchor('admin/logs', 'View all logs', array('style' => 'float:right'))?>
 
-<h2>Logs</h2>
+<h2>Latest Logs</h2>
 
 <div style="white-space:nowrap;overflow:auto;">
 	<?php foreach($logs as $c => $log){?>
