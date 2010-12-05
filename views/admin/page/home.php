@@ -1,30 +1,38 @@
 <h1>Admin dashboard</h1>
 
-<h2>Database</h2>
+<fieldset class="dashboard-database">
+	<legend>Database</legend>
 
-<div><strong>Type:</strong> <?php echo $db_config['type']?></div>
-<div><strong>Name:</strong> <?php echo $db_config['connection']['database']?></div>
-<div><strong>Size:</strong> <?php echo $db_size?></div>
+	<div><strong>Type:</strong> <?php echo $db_config['type']?></div>
+	<div><strong>Name:</strong> <?php echo $db_config['connection']['database']?></div>
+	<div><strong>Size:</strong> <?php echo $db_size?></div>
+</fieldset>
 
-<hr />
+<br />
 
-<h2>Enabled Modules</h2>
+<fieldset class="dashboard-modules">
+	<legend>Enabled Modules</legend>
 
-<ul>
-<?php foreach($modules as $name => $path){?>
-	<li><?php echo $name?></li>
-<?php }?>
-</ul>
+	<ul>
+	<?php foreach($modules as $name => $path){?>
+		<li><?php echo $name?></li>
+	<?php }?>
+	</ul>
+</fieldset>
 
-<hr />
+<br />
 
-<?php echo HTML::anchor('admin/logs', 'View all logs', array('style' => 'float:right'))?>
+<fieldset class="dashboard-logs">
 
-<h2>Latest Logs</h2>
+	<legend><?php echo HTML::anchor('admin/logs', 'Latest logs')?></legend>
 
-<div style="white-space:nowrap;overflow:auto;">
+	<ul>
 	<?php foreach($logs as $c => $log){?>
-		<?php echo $log?><br />
+		<li>
+			<?php echo HTML::anchor('admin/logs/'.$log['path'].'#'.$log['timestamp'], $log['date'].' : '.Text::limit_chars($log['log']))?>
+		</li>
 		<?php if ($c == 10) break; ?>
 	<?php }?>
-</div>
+	</ul>
+
+</fieldset>
