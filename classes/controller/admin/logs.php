@@ -11,72 +11,36 @@ class Controller_Admin_Logs extends Controller_Admin_Base {
 			->bind('total_files', $total_files);
 
 		$cur_month = $cur_year = NULL;
+
 		$total_files = 0;
 
-		$entries = $this->get_entries($file, $cur_year, $cur_month);
+		$entries = Admin_Log::get_entries($file, $cur_year, $cur_month);
 
-		$logs = Kohana::list_files('logs');
-
-		$directories = $this->get_directories_html($logs, $cur_year, $cur_month, $total_files);
-	}
-
-	private function get_entries(& $file = NULL, & $cur_year = NULL, & $cur_month = NULL, & $cur_day = NULL)
-	{
-		$entries = NULL;
-
-		if ($file !== NULL)
-		{
-			// Strip extension from file name
-			$file = preg_replace('/\..*?$/', '', $file);
-
-			// Find the full path to the file
-			$path = Kohana::find_file('logs', $file);
-
-			if ($path !== FALSE)
-			{
-				// Get file contents
-				$contents = trim(strip_tags(file_get_contents($path)));
-
-				$entries = explode("\n", $contents);
-			}
-
-			list($cur_year, $cur_month, $cur_day) = explode(DIRECTORY_SEPARATOR, $file);
+		if ($entries !== NULL) {
+		
+			$entries = Admin_Log::format_entries($entries);
 		}
 
-		return $entries;
+		$directories = Admin_Log::get_directories_html($cur_year, $cur_month, $total_files);
 	}
 
-	private function get_directories_html($logs, $cur_year = NULL, $cur_month = NULL, & $total_files = 0)
+	public function action_download($format = 'tar')
 	{
-		$html = '<ol>';
-		foreach($logs as $year => $months){
-			
-			$year_trim = str_replace('logs/', '', $year); 
-			$attributes = ($year_trim == $cur_year) ? array('class' => 'selected open') : NULL; 
+		if ($format === 'tar')
+		{
+			$dir = APPPATH . 'logs';
 
-			$html .= '<li>' .HTML::anchor('#year', $year_trim, $attributes) . '<ol'.HTML::attributes($attributes).'>';
+			$time = time();
 
-			foreach($months as $month => $day){
+			// Build the filename
+			$file = '/tmp/'.$time.'/site-logs.tar.gz';
 
-				$month_trim = str_replace("logs/{$year_trim}/", '', $month);
-				$month_name = date('F', mktime(0, 0, 0, $month_trim, 1, date('Y')));
-				$attributes = ($month_trim == $cur_month) ? array('class' => 'selected open') : NULL;
+			// Generate an archive of the logs directory
+			`mkdir -p /tmp/{$time} && cp -r {$dir} /tmp/{$time} && cd /tmp/{$time} && tar cfvz {$file} logs`;
 
-				$html .= '<li>' . HTML::anchor('#month', $month_name, $attributes) . '<ol'.HTML::attributes($attributes).'>';
-
-				foreach($day as $log){
-					$total_files += 1;
-					$html .= '<li>';
-					$html .= HTML::anchor('admin/'.$month.'/'.basename($log), preg_replace('/.*?(\d+)'.EXT.'$/', '$1', $log));
-					$html .= '</li>';
-				}
-				$html .= '</ol></li>';
-			}
-			$html .= '</ol></li>';
-		} 
-		$html .= '</ol>';
-
-		return $html;
+			// Send the file for download and delete from filesystem
+			$this->request->send_file($file, NULL, array('delete' => TRUE));
+		}
 	}
 
 } // End Controller_Admin_Logs
