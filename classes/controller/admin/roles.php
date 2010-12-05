@@ -9,14 +9,17 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/roles/add')
 			->bind('errors', $errors);
 
-		if (ORM::factory('role')->admin_create($_POST)) {
-
+		if (ORM::factory('role')->admin_create($_POST))
+		{
 			Message::set(Message::SUCCESS, __('Role successfully saved.'));
 			
 			$this->request->redirect('admin/roles');
 		}
 
-		$errors = $_POST->errors('admin/user');
+		if ( $errors = $_POST->errors('admin/user'))
+		{
+			 Message::set(Message::ERROR, __('Please correct the errors.'));
+		}
 
 		$_POST = $_POST->as_array();
 	}
@@ -40,15 +43,18 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 			->bind('errors', $errors);
 
 		// Try update the role, if successful then reload the page
-		if ($role->admin_update($_POST)) {
-		
+		if ($role->admin_update($_POST))
+		{
 			Message::set(Message::SUCCESS, __('Role successfully updated.'));
 			 
 			$this->request->redirect($this->request->uri);
 		}
 
 		// Get validation errors
-		$errors = $_POST->errors('admin/user');
+		if ($errors = $_POST->errors('admin/user'))
+		{
+			Message::set(Message::ERROR, __('Please correct the errors.'));
+		}
 
 		// If POST is empty, then add the default data to POST
 		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);

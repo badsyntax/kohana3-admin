@@ -16,8 +16,11 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		ORM::factory('user')->add_admin($_POST) AND $this->request->redirect('admin/users');
 		
 		$roles = ORM::factory('role')->find_all();
-
-		$errors = $_POST->errors('auth');
+	
+		if ($errors = $_POST->errors('auth'))
+		{
+			 Message::set(Message::ERROR, __('Please correct the errors.'));
+		}
 
 		$_POST = $_POST->as_array();
 	}
@@ -47,7 +50,8 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		// Create array of user role ids
 		$user_roles = array();
 
-		foreach($user->roles->find_all() as $role){
+		foreach($user->roles->find_all() as $role)
+		{
 
 			$user_roles[] = $role->id;
 		}
@@ -55,7 +59,10 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		// Try update the user, if succesful then reload the page
 		$user->update_admin($_POST) AND $this->request->redirect($this->request->uri);
 
-		$errors = $_POST->errors('profile');
+		if ($errors = $_POST->errors('profile'))
+		{
+ 			Message::set(Message::ERROR, __('Please correct the errors.'));
+		}
 
 		// If POST is empty, then add the default data to POST
                 isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);
