@@ -13,7 +13,13 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 			->bind('roles', $roles)
 			->bind('errors', $errors);
 
-		ORM::factory('user')->add_admin($_POST) AND $this->request->redirect('admin/users');
+		if (ORM::factory('user')->add_admin($_POST))
+		{
+			Activity::set(Activity::SUCCESS, __('User successfully saved: :user', array(':user' => $_POST['username'])));
+			Message::set(Message::SUCCESS, __('User successfully saved.'));
+			
+			$this->request->redirect('admin/users');
+		}
 		
 		$roles = ORM::factory('role')->find_all();
 	
@@ -24,7 +30,6 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 
 		$_POST = $_POST->as_array();
 	}
-
 
 	public function action_edit($id = 0)
 	{
@@ -57,15 +62,20 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		}
 
 		// Try update the user, if succesful then reload the page
-		$user->update_admin($_POST) AND $this->request->redirect($this->request->uri);
-
+		if ($user->update_admin($_POST))
+		{
+			Activity::set(Activity::SUCCESS, __('User successfully updated: :user', array(':user' => $_POST['username'])));	
+			Message::set(Message::SUCCESS, __('User successfully updated.'));
+			$this->request->redirect($this->request->uri);
+		}
+		
 		if ($errors = $_POST->errors('profile'))
 		{
  			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
 
 		// If POST is empty, then add the default data to POST
-                isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);
+		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);
 	}
 
 	public function action_delete($id = 0)
@@ -89,7 +99,7 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		// Delete the user
 		$user->delete();
 
-		// Set the message
+		Activity::set(Activity::SUCCESS, __('User successfully deleted: :user', array(':user' => $user->username)));
 		Message::set(Message::SUCCESS, __('User successfully deleted.'));
 
 		$this->request->redirect('admin/users');
