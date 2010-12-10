@@ -11,6 +11,7 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 
 		if (ORM::factory('role')->admin_create($_POST))
 		{
+			Activity::set(Activity::SUCCESS, __('Role successfully saved: :role', array(':role' => $_POST['name'])));
 			Message::set(Message::SUCCESS, __('Role successfully saved.'));
 			
 			$this->request->redirect('admin/roles');
@@ -45,6 +46,7 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 		// Try update the role, if successful then reload the page
 		if ($role->admin_update($_POST))
 		{
+			Activity::set(Activity::SUCCESS, __('Role successfully updated: :role', array(':role' => $_POST['name'])));
 			Message::set(Message::SUCCESS, __('Role successfully updated.'));
 			 
 			$this->request->redirect($this->request->uri);
