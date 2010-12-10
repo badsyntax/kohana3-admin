@@ -8,8 +8,8 @@
 		<div>
 		<?php if ($item->field_type == 'text'){
 			echo 
-				Form::label("{$group}_{$item->name}", $item->label, NULL, $errors) .
-				Form::input("{$group}_{$item->name}", $_POST[$group.'_'.$item->name], NULL, $errors);
+				Form::label("{$group}_{$item->config_key}", $item->label, NULL, $errors) .
+				Form::input("{$group}_{$item->config_key}", $_POST[$group.'_'.$item->config_key], NULL, $errors);
 		}?>
 		</div>
 	<?php }?>
