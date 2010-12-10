@@ -30,10 +30,8 @@ class Model_User extends Model_Base_User {
 		foreach($roles as $role)
 		{
 			$this->add('roles', new Model_Role(array('id' => $role)));
-		}
+		}	
 		
-		Message::set(Message::SUCCESS, __('User successfully saved.'));
-
 		return $data;
 	}
 
@@ -59,9 +57,7 @@ class Model_User extends Model_Base_User {
 		$this->values($data);
 		$this->save();
 		$this->update_roles($roles);
-		
-		Message::set(Message::SUCCESS, __('User successfully updated.'));
-		
+				
 		return $data;
 	}
 	
