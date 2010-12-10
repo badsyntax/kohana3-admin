@@ -14,22 +14,25 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 		!$_POST AND $default_data = array();
 
 		$config = array();
+		
 		foreach($db_config as $item){
 			
-			!isset($config[$item->group]) AND $config[$item->group] = array();
+			!isset($config[$item->group_name]) AND $config[$item->group_name] = array();
 
-			$config[$item->group][] = $item;
+			$config[$item->group_name][] = $item;
 
 			// If POST is empty then set the default form data
-			!$_POST AND $default_data["{$item->group}_{$item->name}"] = $item->value;
+			!$_POST AND $default_data["{$item->group_name}_{$item->config_key}"] = unserialize($item->config_value);
 		}
 
 		// Try save the config
 		if (ORM::factory('config')->update_all($_POST)) {
 
+			Activity::set(Activity::SUCCESS, __('Config saved'));	
 			Message::set(Message::SUCCESS, __('Config successfully saved.'));
 
-			// TODO: clear cache
+			// Delete the configuration data from cache
+			Cache::instance()->delete(Config_Database::$_cache_key);
 
 			// Redirect to prevent POST refresh
 			$this->request->redirect($this->request->uri);
@@ -41,42 +44,43 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
 
-                // If POST is empty then add the default form data to POST
-                if (isset($default_data)) {
+		// If POST is empty then add the default form data to POST
+		if (isset($default_data)) {
 		
 			$_POST = array_merge($_POST->as_array(), $default_data);
 		}
 	}
 
-	// This method is used to add default config data
-	private function create_config()
+	// This method is used to add default the config data
+	// TODO: add to migrations
+	public function action_create()
 	{
 		// Site title
 		$config = ORM::factory('config');
-		$config->group = 'site';
-		$config->name = 'title';
+		$config->group_name = 'site';
+		$config->config_key = 'title';
 		$config->label = 'Site title';
-		$config->value = 'Default title';
+		$config->config_value = serialize('Default title');
 		$config->default = 'Default title';
 		$config->rules = serialize(array
-        	(
-                      'not_empty'   => NULL,
-                      'max_length'  => array(32),
-                 ));
+			(
+				'not_empty'	  => NULL,
+				'max_length'  => array(32),
+			));
 		$config->save();
 
 		// Site description
 		$config = ORM::factory('config');
-		$config->group = 'site';
-		$config->name = 'description';
+		$config->group_name = 'site';
+		$config->config_key = 'description';
 		$config->label = 'Site description';
-		$config->value = 'Default description';
+		$config->config_value = serialize('Default description');
 		$config->default = 'Default description';
 		$config->rules = serialize(array
-        	(
-                      'not_empty'   => NULL,
-                      'max_length'  => array(255),
-                 ));
+			(
+				'not_empty'	  => NULL,
+				'max_length'	=> array(255),
+			));
 		$config->save();
 	}
 
