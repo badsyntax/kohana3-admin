@@ -2,12 +2,13 @@
 
 return array(
 	'links' => array(
-		'admin'			=> 'Dashboard',
-		'admin/users' 		=> 'Users',
-		'admin/roles' 		=> 'Roles',
-		'admin/logs' 		=> 'Logs',
-		'admin/config' 		=> 'Config',
-		'admin/cache' 		=> 'Cache',
-		'admin/activity' 	=> 'Activity'
+		'admin'				=> __('Dashboard'),
+		'admin/pages' 		=> __('Pages'),
+		'admin/users' 		=> __('Users'),
+		'admin/roles' 		=> __('Roles'),
+		'admin/logs' 		=> __('Logs'),
+		'admin/config' 		=> __('Config'),
+		'admin/cache' 		=> __('Cache'),
+		'admin/activity' 	=> __('Activity')
 	)
 );
