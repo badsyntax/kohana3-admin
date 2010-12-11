@@ -3,12 +3,12 @@
  * Admin routes 
  */
 
-// Admin home
-Route::set('admin-home', 'admin')
+// Admin media
+Route::set('admin/media', 'admin/media(/<file>)', array('file' => '.+'))
 	->defaults(array(
-		'directory' => 'admin',
-		'controller' => 'home',
-		'action' => 'index'
+		'controller' => 'media',
+		'directory'	=> 'admin',
+		'file'       => NULL,
 	));
 // Admin Actions
 Route::set('admin', 'admin/<controller>(/<action>)(/<id>)')
@@ -20,6 +20,13 @@ Route::set('admin', 'admin/<controller>(/<action>)(/<id>)')
 Route::set('admin-logs', 'admin/logs(/<file>)', array('file' => '.+'))
 	->defaults(array(
 		'controller' => 'admin_logs',
-		'action'     => 'index',
+		'action'     => 'index',	
 		'file'	     => NULL
+	));
+// Admin home
+Route::set('admin-home', 'admin')
+	->defaults(array(
+		'directory' => 'admin',
+		'controller' => 'home',
+		'action' => 'index'
 	));
