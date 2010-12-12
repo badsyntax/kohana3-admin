@@ -1,0 +1,21 @@
+/*
+ * admin.css
+ */
+
+/* ADMIN */
+.admin table.crud-list input.checkbox { float: left; }
+.logs-directories { float: left; width: 100px; }
+.logs-entries { float: left; width: 620px; }
+.logs-directories ol { list-style: none; margin: 0; padding: 0;}
+.logs-directories li { list-style: none; }
+.js .logs-directories ol ol { display: none; }
+.js .logs-directories ol.open { display: block; }
+.logs-directories a.selected { font-weight: bold; }
+
+.dashboard-logs {}
+.dashboard-logs ul { margin: 0; }
+.dashboard-logs li { list-style: none;  }
+.dashboard-logs li a { text-decoration: none; color: #444; display: block; font-size: .9em;}
+.dashboard-logs li a:hover { background: #F4F4F4; }
+
+form { margin: 0;}

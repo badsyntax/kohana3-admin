@@ -1,0 +1,52 @@
+/* jQuery UI admin theme
+----------------------------------*/
+
+.ui-widget {
+	font-size: 1em;
+	font-family: Tahoma,Verdana,Arial,Helvetica;
+    font-size: 11px;
+}
+.ui-state-default, 
+.ui-widget-content .ui-state-default, 
+.ui-widget-header .ui-state-default {
+	color: #000;
+	background-image: url(../img/ui-theme/bg_glass.png);
+	background-position: left top;
+    background-repeat: repeat-x;
+	background-color: #D5D5D5;
+    border-color: #B2B2B2;
+}
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus{
+	border: 1px solid #777;
+}
+
+/* Selectmenu
+----------------------------------*/
+.ui-selectmenu-status {
+	 line-height: 1.3em;
+}
+.ui-selectmenu-menu li a, .ui-selectmenu-status {
+	padding: 0.3em 0.6em;
+}
+.ui-selectmenu-menu-dropdown {
+	text-align: left;
+}
+
+/* Tabs
+----------------------------------*/
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, 
+.ui-tabs .ui-tabs-nav li.ui-state-disabled a, 
+.ui-tabs .ui-tabs-nav li.ui-state-processing a {
+	cursor: pointer;
+}
+
+/* Menu
+----------------------------------*/
+.ui-menu {
+	position: absolute; 
+}
