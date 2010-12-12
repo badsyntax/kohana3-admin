@@ -1,7 +1,7 @@
 # Taken from HTML5 Boilerplate https://github.com/paulirish/html5-boilerplate
 
 # Numerous always-ignore extensions
-*._*
+._*
 *.diff
 *.err
 *.orig
