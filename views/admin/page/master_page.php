@@ -13,15 +13,20 @@
 	<!--[if IE 8 ]>    <body class="ie8"> <![endif]-->
 	<!--[if IE 9 ]>    <body class="ie9"> <![endif]-->
 	<!--[if (gt IE 9)|!(IE)]><!--> <body> <!--<![endif]-->
+
 	<?php echo View::factory('admin/page/fragments/header') ?>
 
 	<div id="content">	
-
+	<div id="admin-nav" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+		<?php echo View::factory('admin/page/fragments/nav') ?>
+		<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		
 		<?php echo Message::render() ?>
 
 		<?php echo $content ?>
+		</div>
 	</div>
-
+	</div>
 	<?php echo View::factory('admin/page/fragments/footer') ?>
 
 	<?php if (Kohana::$environment === Kohana::DEVELOPMENT){?>

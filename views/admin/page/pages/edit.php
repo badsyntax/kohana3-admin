@@ -1,10 +1,11 @@
 <div class="action-bar clear">
-	<a href="<?php echo URL::site('admin/pages/add/'.$page->id)?>" id="add-child-page" class="button add small helper-right">
-		<span>Add child page</span>
-	</a>
-	<a href="<?php echo URL::site('admin/pages/delete/'.$page->id)?>" id="delete-page" class="button add small helper-right">
-		<span>Delete page</span>
-	</a>
+	<div class="action-menu helper-right">
+		<button>Actions</button>
+		<ul>
+			<li><?php echo HTML::anchor('admin/pages/add/'.$page->id, __('Add child page'))?></li>
+			<li><?php echo HTML::anchor('admin/pages/delete/'.$page->id, __('Delete page'))?></li>
+		</ul>
+	</div>
 	<script type="text/javascript">
 	(function($){
 		$('#delete-page').click(function(){
@@ -15,6 +16,9 @@
 	</script>
 	<h1>Edit page</h1>
 </div>
+
+<?php echo View::factory('admin/page/fragments/wysiwyg')?>
+
 <?php echo Form::open()?>
 	<fieldset>
 		
@@ -49,6 +53,7 @@
 			?>
 		</div>
 
-		<?php echo Form::submit('save', 'Save', array('class' => 'button'))?>
+		<?php echo Form::button('save', 'Save', array('type' => 'submit', 'class' => 'ui-button save'))?>
+		
 	</fieldset>
 <?php echo Form::close()?>

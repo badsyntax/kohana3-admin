@@ -1,3 +1,5 @@
+<?php echo View::factory('admin/page/fragments/wysiwyg')?>
+
 <?php echo Form::open()?>
 	<fieldset>
 		
@@ -31,7 +33,8 @@
 				Form::textarea('body', $_POST['body'], NULL, TRUE, $errors)
 			?>
 		</div>
-
-		<?php echo Form::submit('save', 'Save', array('class' => 'button'))?>
+		
+		<?php echo Form::button('save', 'Save', array('type' => 'submit', 'class' => 'ui-button save'))?>
+	
 	</fieldset>
 <?php echo Form::close()?>
