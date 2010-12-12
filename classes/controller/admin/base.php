@@ -21,8 +21,25 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		$this->crud_model === FALSE AND $this->crud_model = $this->request->controller;
 		
 		$this->crud_model_singular = Inflector::singular($this->crud_model);
-
+		
 		parent::before();
+	}
+	
+	public function after()
+	{
+		
+		$this->template->styles = array_merge($this->template->styles, array(
+			'modules/admin/media/js/jquery-ui/build/dist/jquery-ui-1.9pre/themes/base/minified/jquery-ui.min.css',
+			'modules/admin/media/css/jquery.ui.theme.admin.css',
+			'modules/admin/media/css/admin.css'
+		));
+		
+		$this->template->scripts = array_merge($this->template->scripts, array(
+			'modules/admin/media/js/global.js',
+			'modules/admin/media/js/jquery-ui/build/dist/jquery-ui-1.9pre/ui/minified/jquery-ui.min.js'	
+		));
+		
+		parent::after();
 	}
 
 	// A generic index action to show lists of model items

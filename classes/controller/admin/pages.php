@@ -14,12 +14,16 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 	public function action_add($parent_id = 0)
 	{
 		$this->template->title = __('Add page');
-
+		
+	
 		$this->template->content = View::factory('admin/page/pages/add')
 			->bind('pages', $pages)
 			->set('parent_id', Arr::get($_POST, 'parent_id', $parent_id))
 			->bind('errors', $errors);
 
+		// Add tinymce script path
+		array_push($this->template->scripts, 'modules/admin/media/js/tinymce/jscripts/tiny_mce/tiny_mce.js');
+		
 		$pages = ORM::factory('page')->tree_select();
 		
 		array_unshift($pages, __('None'));
@@ -55,6 +59,9 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 			->bind('page', $page)
 			->bind('pages', $pages)
 			->bind('errors', $errors);
+			
+		// Add tinymce script path
+		array_push($this->template->scripts, 'modules/admin/media/js/tinymce/jscripts/tiny_mce/tiny_mce.js');
 		
 		$pages = ORM::factory('page')->tree_select();
 	

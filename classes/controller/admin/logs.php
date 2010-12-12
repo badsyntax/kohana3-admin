@@ -33,7 +33,7 @@ class Controller_Admin_Logs extends Controller_Admin_Base {
 			$time = time();
 
 			// Build the filename
-			$file = '/tmp/'.$time.'/site-logs.tar.gz';
+			$file = "/tmp/{$time}/site-logs.{$time}.tar.gz";
 
 			// Generate an archive of the logs directory
 			`mkdir -p /tmp/{$time} && cp -r {$dir} /tmp/{$time} && cd /tmp/{$time} && tar cfvz {$file} logs`;
