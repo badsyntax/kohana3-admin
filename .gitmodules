@@ -1,3 +1,6 @@
 [submodule "media/js/jquery-ui"]
 	path = media/js/jquery-ui
 	url = https://github.com/jquery/jquery-ui.git
+[submodule "media/js/tinymce"]
+	path = media/js/tinymce
+	url = git@github.com:badsyntax/tinymce.git
