@@ -1,7 +1,6 @@
 # Taken from HTML5 Boilerplate https://github.com/paulirish/html5-boilerplate
 
 # Numerous always-ignore extensions
-._*
 *.diff
 *.err
 *.orig
@@ -13,6 +12,7 @@
 *~
 
 # OS or Editor folders
+._*
 .DS_Store
 .cache
 .project
