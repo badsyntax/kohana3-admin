@@ -1,7 +1,7 @@
-/* jQuery UI admin theme
+/* jQuery UI admin theme - requires the ui base theme!
 ----------------------------------*/
 
-.ui-widget {
+.ui-widget, .ui-widget .ui-widget {
 	font-size: 1em;
 	font-family: Tahoma,Verdana,Arial,Helvetica;
     font-size: 11px;
@@ -23,6 +23,18 @@
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus{
 	border: 1px solid #777;
+	background-position: 0 -2px;
+	border-color: #777;
+}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active{
+	border: 1px solid #aaa;
+	background: #F2F2F2;
+	font-weight: normal;
+	color: #212121;
+}
+/* Tabs */
+.ui-tabs-selected, .ui-widget-content .ui-tabs-selected {
+	background: #FFF;
 }
 
 /* Selectmenu
@@ -35,6 +47,7 @@
 }
 .ui-selectmenu-menu-dropdown {
 	text-align: left;
+	border-top: 0;
 }
 
 /* Tabs
@@ -49,4 +62,23 @@
 ----------------------------------*/
 .ui-menu {
 	position: absolute; 
+}
+
+/* Dialog */
+.ui-dialog .ui-dialog-titlebar {
+	padding: 0.2em 1em 0.3em;	
+}
+
+/* Overlay */
+.ui-widget-overlay {
+	background: #FFF;
+	opacity: 0.5;
+}
+
+.admin .ui-dialog.ui-dialog-tinymce {
+
+}
+.admin .ui-dialog.ui-dialog-tinymce .ui-dialog-content {
+	padding: 0;
+		overflow: hidden;
 }
