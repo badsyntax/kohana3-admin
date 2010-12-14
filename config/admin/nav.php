@@ -9,6 +9,7 @@ return array(
 		'admin/logs' 		=> __('Logs'),
 		'admin/config' 		=> __('Config'),
 		'admin/cache' 		=> __('Cache'),
-		'admin/activity' 	=> __('Activity')
+		'admin/activity' 	=> __('Activity'),
+		'admin/wysiwyg'		=> __('Wysiwyg')
 	)
 );
