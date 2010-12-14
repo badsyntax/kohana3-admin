@@ -1,5 +1,3 @@
-<?php echo View::factory('admin/page/fragments/wysiwyg')?>
-
 <?php echo Form::open()?>
 	<fieldset>
 		

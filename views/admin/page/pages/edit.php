@@ -17,8 +17,6 @@
 	<h1>Edit page</h1>
 </div>
 
-<?php echo View::factory('admin/page/fragments/wysiwyg')?>
-
 <?php echo Form::open()?>
 	<fieldset>
 		
