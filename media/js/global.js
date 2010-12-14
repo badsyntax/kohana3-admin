@@ -12,6 +12,8 @@
 			}
 		});
 		
+		$('button.default').button();
+		
 		$('.tabs').tabs();
 		
 		$('.action-menu button')
@@ -37,6 +39,13 @@
 		})
 		.click(function(event) {
 			
+			var btn = this;
+			
+			$(this).trigger('mousedown.button').bind('mouseleave.admin.button', function(){
+				
+				$(this).addClass('ui-state-active');
+			});
+			
 			var menu = $(this).next();
 			
 			if (menu.is(":visible")) {
@@ -58,6 +67,7 @@
 				
 			$(document).one("click", function() {
 				menu.hide();
+				$(btn).removeClass('ui-state-active').unbind('mouseleave.admin.button');
 			});
 			
 			return false;
