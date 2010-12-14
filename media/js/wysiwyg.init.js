@@ -6,9 +6,9 @@
 		mode : "textareas",
 		theme : "advanced",
 		skin : "cirkuit",
-		plugins : "spellchecker,safari,pagebreak,advimage,advlist,iespell,inlinepopups,media,contextmenu,paste,nonbreaking,xhtmlxtras",
+		plugins : "safari,pagebreak,advimage,advlist,iespell,media,contextmenu,paste,nonbreaking,xhtmlxtras,jqueryinlinepopups",
 		// Theme options
-		theme_advanced_buttons1 : "formatselect,|,bold,italic,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,spellchecker,|,image", 
+		theme_advanced_buttons1 : "formatselect,|,bold,italic,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,image,media,|,code", 
 		theme_advanced_buttons2 : "",
 		theme_advanced_buttons3 : "",
 		theme_advanced_buttons4 : "",
