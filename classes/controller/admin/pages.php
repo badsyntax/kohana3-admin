@@ -21,8 +21,9 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 			->set('parent_id', Arr::get($_POST, 'parent_id', $parent_id))
 			->bind('errors', $errors);
 
-		// Add tinymce script path
+		// Add wysiwyg script paths
 		array_push($this->template->scripts, 'modules/admin/media/js/tinymce/jscripts/tiny_mce/tiny_mce.js');
+		array_push($this->template->scripts, 'modules/admin/media/js/wysiwyg.init.js');
 		
 		$pages = ORM::factory('page')->tree_select();
 		
@@ -60,8 +61,9 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 			->bind('pages', $pages)
 			->bind('errors', $errors);
 			
-		// Add tinymce script path
+		// Add wysiwyg script paths
 		array_push($this->template->scripts, 'modules/admin/media/js/tinymce/jscripts/tiny_mce/tiny_mce.js');
+		array_push($this->template->scripts, 'modules/admin/media/js/wysiwyg.init.js');
 		
 		$pages = ORM::factory('page')->tree_select();
 	
