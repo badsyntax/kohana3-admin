@@ -1,8 +1,65 @@
+/* Example site styles */
+body { text-align: center; }
+h1 { font-size: 1.5em; margin-bottom: .6em; }
+h2, h2, h4 { margin-bottom: 1em; }
+ul, ol { margin: 0 2em 1em 2em; }
+p, form { margin: 0 0 1em 0; }
+form { }
+label { padding: .2em 0; display: inline-block; }
+input, select, textarea { margin: 0; display: block; }
+.form-error, .errors { color: #BB0000; }
+.form-success { color: #458B00; }
+form .field { margin-bottom: .8em; }
+form .field.checkbox input { float: left; margin-right: .5em}
+fieldset, #messages { -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding: .8em 1.2em; border: 1px solid #dfdfdf;	background: #fff; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#fdfdfd'); background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#fdfdfd)); background: -moz-linear-gradient(top,  #fff,  #fdfdfd); }
+legend { color: #888; }
+select, input[type=text], input[type=email], input[type=url], input[type=password] { width: 15em; }
+select, input[type=text], input[type=email], input[type=url], input[type=password], textarea { padding:.45em .4em .3em .3em; border: 1px solid #aaa; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;	-moz-box-shadow: inset 2px 2px 1px #ddd; -webkit-box-shadow: inset 2px 2px 1px #ddd; box-shadow: inset 2px 2px 1px #ddd; }
+input[type=text]:focus, input[type=password]:focus, textarea:focus { border-color: #222; }
+input.error-field, textarea.error-field { border-color: #BB0000;}
+.label-error { color: #BB0000; }
+.checkbox input { float: left; margin-right: .5em;}
+.oauth-signin p.last { margin: 0; }
+header, #content, footer { width: 720px; margin: auto; text-align: left; }
+header { margin: 2em auto 1.2em auto; }
+#content {  }
+nav { border-bottom: 1px solid #CCC; padding-bottom: 1em;}
+nav.second-level { border: 0; padding-bottom: 0;}
+nav a { padding: 0 1em 0 0; }
+nav a.helper-right { float: right; padding: 0;}
+nav a.selected { font-weight: bold; }
+#profiler-container { display: none; margin-top: 1em; padding: 1em 0; font-size: .9em; color: #AAA; border-top: 1px solid #CCC; }
+table { border-collapse:collapse; width: 100%; }
+table,th, td { border: 1px solid #dfdfdf; }
+table thead tr, table tfoot tr { color: #333; -moz-text-shadow: 1px 1px 0 #FFFFFF; -webkit-text-shadow: 1px 1px 0 #FFFFFF; text-shadow: 1px 1px 0 #FFFFFF; background: #ffffff; background: -moz-linear-gradient(top, #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%); /* firefox */ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(50%,#f1f1f1), color-stop(51%,#e1e1e1), color-stop(100%,#f6f6f6)); /* webkit */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0 ); /* ie */	}
+table tbody tr:hover { background: #F6F6F6;}
+table tfoot p { padding: 0; margin: 0; }
+table tfoot td { font-size: .9em; color: #666; }
+td, th { padding: .5em; }
+.action-bar { margin-bottom: .6em; border: 1px solid transparent; }
+.action-bar h1 { margin: 0; line-height: 1.5em;}
+#messages { padding: .5em; margin-bottom: .8em; display: none; }
+#messages ul, #messages p { margin: 0; padding: 0; }
+#messages li { list-style: none; padding-left: 22px; }
+#messages .success { background: url(/media/img/tick-circle-frame.png) no-repeat 0 0; }
+#messages .error { background: url(/media/img/exclamation-red-frame.png) no-repeat 0 0; }
+
+.grid-50 .unit { float: right; width: 48%; }
+.grid-50 .first { float: left; } 
+.helper-center { text-align: center; }
+.helper-right { float: right; }
+.helper-hidden { display: none; }
+
+/* DEVELOPMENT */
+.development .benchmark { margin: 1em auto; padding-top: 1em; border-top: 1px solid #eee; font-size: .9em; color: #888; text-align: left; width: 720px;}
+
+
+
+
 /*
  * admin.css
  */
 
-/* ADMIN */
 .admin table.crud-list input.checkbox { float: left; }
 .logs-directories { float: left; width: 100px; }
 .logs-entries { float: left; width: 620px; }
@@ -18,4 +75,55 @@
 .dashboard-logs li a { text-decoration: none; color: #444; display: block; font-size: .9em;}
 .dashboard-logs li a:hover { background: #F4F4F4; }
 
-form { margin: 0;}
+form { 
+		margin: 0;
+	}
+	/* WYSIWYG */
+
+textarea.wysiwyg { 
+	width: 100%;
+	height: 10em;
+}
+
+/* OVERRIDES */
+.admin .cirkuitSkin td.mceToolbar {
+	background-color: #F6F6F6;
+}
+.admin .cirkuitSkin .mceButtonEnabled span {
+	cursor: pointer;
+}
+.admin .cirkuitSkin .mceListBox a.mceText, 
+.admin .cirkuitSkin .mceSplitButton a.mceAction {
+	cursor: pointer;
+}
+.admin .cirkuitSkin .mceListBox .mceOpen span {
+	cursor: pointer;
+}
+.admin .cirkuitSkin .mceSplitButton span.mceAction {
+	cursor: pointer;
+}
+.admin .cirkuitSkin span.mce_numlist  {
+	cursor: pointer;
+}
+.admin .cirkuitSkin .mceSplitButton a, 
+.admin .cirkuitSkin .mceListBox a {
+	cursor: pointer;
+}
+/* NB: background-image: none; is set in cirkuit/ui.css */
+.admin .cirkuitSkin table.mceListBoxEnabled:hover .mceText, 
+.admin .cirkuitSkin .mceListBoxHover .mceText, 
+.admin .cirkuitSkin .mceListBoxSelected .mceText, 
+.admin .cirkuitSkin table.mceListBoxEnabled:hover .mceOpen, 
+.admin .cirkuitSkin .mceListBoxHover .mceOpen, 
+.admin .cirkuitSkin .mceListBoxSelected .mceOpen {
+	/*
+	background-position: 0 -2px;
+	*/
+	border-color: #777;
+}
+.admin .cirkuitSkin .mceSeparator {
+	margin: 0 1px;
+}
+.admin .cirkuitSkin td.mceToolbar {
+	padding: 1px 0;
+} 
