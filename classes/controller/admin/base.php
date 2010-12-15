@@ -97,15 +97,23 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		$item = ORM::factory( $this->crud_model_singular, (int) $id);
 
 		! $item->loaded() AND $this->request->redirect('admin');
-
-		$item->delete();
-
-		$message = ucfirst($this->crud_model_singular).' '.__('successfully deleted.');
 		
-		Activity::set(Activity::SUCCESS, $message);
-		Message::set(Message::SUCCESS, $message);
+		$data = array('id' => $id);
 
-		$this->request->redirect('admin/'.$this->crud_model);
+		if ( $item->delete_admin(NULL, $data)) {
+			
+			$message = ucfirst($this->crud_model_singular).' '.__('successfully deleted.');
+		
+			Activity::set(Activity::SUCCESS, $message);
+			Message::set(Message::SUCCESS, $message);
+			
+			$this->request->redirect('admin/'.$this->crud_model);
+		}
+		
+		if ($errors = $data->errors('admin/pages'))
+		{
+			throw new Exception(implode("\n", $errors));
+		}		
 	}
 
 } // End Controller_Admin_Base
