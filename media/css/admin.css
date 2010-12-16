@@ -22,7 +22,7 @@ input.error-field, textarea.error-field { border-color: #BB0000;}
 .oauth-signin p.last { margin: 0; }
 header, #content, footer { width: 720px; margin: auto; text-align: left; }
 header { margin: 2em auto 1.2em auto; }
-#content {  }
+#content { margin-top: 2em; }
 nav { border-bottom: 1px solid #CCC; padding-bottom: 1em;}
 nav.second-level { border: 0; padding-bottom: 0;}
 nav a { padding: 0 1em 0 0; }
@@ -36,7 +36,7 @@ table tbody tr:hover { background: #F6F6F6;}
 table tfoot p { padding: 0; margin: 0; }
 table tfoot td { font-size: .9em; color: #666; }
 td, th { padding: .5em; }
-.action-bar { margin-bottom: .6em; border: 1px solid transparent; }
+.action-bar { margin-bottom: .6em; }
 .action-bar h1 { margin: 0; line-height: 1.5em;}
 #messages { padding: .5em; margin-bottom: .8em; display: none; }
 #messages ul, #messages p { margin: 0; padding: 0; }
@@ -127,3 +127,10 @@ textarea.wysiwyg {
 .admin .cirkuitSkin td.mceToolbar {
 	padding: 1px 0;
 } 
+
+.ui-tabs .ui-tabs-nav li.ui-helper-right {
+	float: right;
+}
+.ui-tabs .ui-tabs-panel {
+	padding: 1em;
+}
