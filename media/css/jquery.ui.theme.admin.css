@@ -58,6 +58,10 @@
 	cursor: pointer;
 }
 
+.ui-tabs .ui-tabs-nav li a {
+	padding: .4em 1em;
+}
+
 /* Menu
 ----------------------------------*/
 .ui-menu {
@@ -75,10 +79,34 @@
 	opacity: 0.5;
 }
 
-.admin .ui-dialog.ui-dialog-tinymce {
-
+.ui-dialog.ui-dialog-tinymce {
+	background: #F1F1F1;
 }
-.admin .ui-dialog.ui-dialog-tinymce .ui-dialog-content {
+.ui-dialog.ui-dialog-tinymce .ui-dialog-content {
 	padding: 0;
-		overflow: hidden;
+	overflow: hidden;
+	background: #FFF;	
+}
+
+/* TinyMCE Buttons */
+.ui-dialog .ui-dialog-buttonpane {
+	text-align: center;
+	border: 0;
+	margin: 0;
+}
+.ui-dialog.ui-dialog-tinymce .ui-dialog-buttonpane .ui-dialog-buttonset {
+	float: none;
+}
+
+.ui-dialog-tinymce .ui-dialog-buttonset button {
+	width: 94px;
+	height: 24px;
+	font-weight: bold;
+}
+.ui-dialog-tinymce .ui-button-text-only .ui-button-text {
+	padding: 0;
+}
+.ui-dialog-tinymce-content {
+	padding: 1em 2em;
+	font-size: 1.1em;
 }
