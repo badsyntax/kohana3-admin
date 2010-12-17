@@ -1,6 +1,8 @@
-(function($, window){
-	
-	tinyMCE.init({
+(function wysiwyg($, window){
+
+	if (!window.tinyMCE) return;
+
+	var config = {
 
 		// General options
 		mode : "textareas",
@@ -18,8 +20,32 @@
 		theme_advanced_toolbar_align : "left",
 		theme_advanced_statusbar_location : "bottom",
 		theme_advanced_resizing : true,
-		file_browser_callback : '<?php echo URL::site(TRUE, TRUE)?>'
-		
-	});
+		file_browser_callback : 'koassets',
+		file_browser_url : '<?php echo URL::site('admin/assets?tinymce=1', TRUE)?>'
+	};
+	
+	window.koassets = function(field_name, url, type, win) {
+
+		tinyMCE
+			.activeEditor
+			.windowManager
+			.open({
+			  file : config.file_browser_url, 
+			  width : 720,	
+			  height : 500,
+			  resizable : "yes",
+			  inline : "yes", 
+			  maximizable : "yes", 
+			  close_previous : "no"
+			}, 
+			{
+				window : win, 
+				input : field_name
+			});
+
+		return false;
+	};
+
+	tinyMCE.init(config);
 
 })(this.jQuery, this);
