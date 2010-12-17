@@ -24,25 +24,30 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		
 		parent::before();
 		
-		$this->template->scripts = array();
-		$this->template->styles = array();
+		if ($this->auto_render)
+		{
+			$this->template->scripts = array();
+			$this->template->styles = array();
+		}
 	}
 	
 	public function after()
 	{
+		if ($this->auto_render)
+		{
+			$this->template->styles = array_merge($this->template->styles, array(
+				'media/css/base.css',
+				'modules/admin/media/js/jquery-ui/build/dist/jquery-ui-1.9pre/themes/base/jquery-ui.css',
+				'modules/admin/media/css/jquery.ui.theme.admin.css',
+				'modules/admin/media/css/admin.css'
+			));
 		
-		$this->template->styles = array_merge($this->template->styles, array(
-			'media/css/base.css',
-			'modules/admin/media/js/jquery-ui/build/dist/jquery-ui-1.9pre/themes/base/jquery-ui.css',
-			'modules/admin/media/css/jquery.ui.theme.admin.css',
-			'modules/admin/media/css/admin.css'
-		));
-		
-		$this->template->scripts = array_merge($this->template->scripts, array(
-			'media/js/jquery-1.4.4.min.js',
-			'modules/admin/media/js/global.js',
-			'modules/admin/media/js/jquery-ui/build/dist/jquery-ui-1.9pre/ui/jquery-ui.js'	
-		));
+			$this->template->scripts = array_merge($this->template->scripts, array(
+				'media/js/jquery-1.4.4.min.js',
+				'modules/admin/media/js/global.js',
+				'modules/admin/media/js/jquery-ui/build/dist/jquery-ui-1.9pre/ui/jquery-ui.js'	
+			));
+		}
 		
 		parent::after();
 	}
