@@ -15,8 +15,8 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 
 		$config = array();
 		
-		foreach($db_config as $item){
-			
+		foreach($db_config as $item)
+		{
 			!isset($config[$item->group_name]) AND $config[$item->group_name] = array();
 
 			$config[$item->group_name][] = $item;
@@ -26,8 +26,8 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 		}
 
 		// Try save the config
-		if (ORM::factory('config')->update_all($_POST)) {
-
+		if (ORM::factory('config')->update_all($_POST))
+		{
 			Activity::set(Activity::SUCCESS, __('Config saved'));	
 			Message::set(Message::SUCCESS, __('Config successfully saved.'));
 
@@ -39,14 +39,14 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 		}
 
 		// Get the validation errors
-		if ( $errors = $_POST->errors('config')){
-	
+		if ( $errors = $_POST->errors('config'))
+		{
 			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
 
 		// If POST is empty then add the default form data to POST
-		if (isset($default_data)) {
-		
+		if (isset($default_data))
+		{
 			$_POST = array_merge($_POST->as_array(), $default_data);
 		}
 	}
@@ -61,7 +61,7 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 		$config->config_key = 'title';
 		$config->label = 'Site title';
 		$config->config_value = serialize('Default title');
-		$config->default = 'Default title';
+		$config->default = serialize('Default title');
 		$config->rules = serialize(array
 			(
 				'not_empty'	  => NULL,
@@ -75,13 +75,43 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 		$config->config_key = 'description';
 		$config->label = 'Site description';
 		$config->config_value = serialize('Default description');
-		$config->default = 'Default description';
+		$config->default = serialize('Default description');
 		$config->rules = serialize(array
 			(
 				'not_empty'	  => NULL,
 				'max_length'	=> array(255),
 			));
 		$config->save();
+		
+		// TinyMCE Plugins
+		$config = ORM::factory('config');
+		$config->group_name = 'tinymce';
+		$config->config_key = 'plugins';
+		$config->label = 'TinyMCE Plugins';
+		$config->config_value = serialize('safari,pagebreak,advimage,advlist,iespell,media,contextmenu,paste,nonbreaking,xhtmlxtras,jqueryinlinepopups,koassets');
+		$config->default = serialize('safari,pagebreak,advimage,advlist,iespell,media,contextmenu,paste,nonbreaking,xhtmlxtras,jqueryinlinepopups,koassets');
+		$config->rules = serialize(array
+			(
+				'not_empty'	  => NULL,
+				'max_length'	=> array(255),
+			));
+		$config->save();
+		
+		// TinyMCE Toolbar1
+		$config = ORM::factory('config');
+		$config->group_name = 'tinymce';
+		$config->config_key = 'toolbar1';
+		$config->label = 'TinyMCE Toolbar 1';
+		$config->config_value = serialize('formatselect,|,bold,italic,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,image,koassets,media,|,removeformat,cleanup,code');
+		$config->default = serialize('formatselect,|,bold,italic,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,image,koassets,media,|,removeformat,cleanup,code');
+		$config->rules = serialize(array
+			(
+				'not_empty'	  => NULL,
+				'max_length'	=> array(255),
+			));
+		$config->save();
+		
+		
 	}
 
 } // End Controller_Admin_Config
