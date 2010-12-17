@@ -9,16 +9,12 @@ class Controller_Admin_Media extends Controller_Admin_Base {
 		// Get the file path from the request
 		$file = $this->request->param('file');
 
-		// Find the file extension
-		$path = pathinfo($file);
-		
-		// Array ( [dirname] => css [basename] => reset.css [extension] => css [filename] => reset )
-		$file = Kohana::find_file('media', $path['dirname'] . DIRECTORY_SEPARATOR . $path['filename'], $path['extension']);
+		$ext = preg_replace('/^.*\.(.*?)$/', '$1', $file);
 
 		if ($file)
 		{
 			// Send the file content as the response
-			$this->request->response = file_get_contents($file);
+			$this->request->response = View::factory('admin/media/'.$file);
 		}
 		else
 		{
@@ -27,7 +23,7 @@ class Controller_Admin_Media extends Controller_Admin_Base {
 		}
 
 		// Set the content type for this extension
-		$this->request->headers['Content-Type'] = File::mime_by_ext($path['extension']);
+		$this->request->headers['Content-Type'] = File::mime_by_ext($ext);
 	}
 	
 } // End Controller_Admin_Notifications
