@@ -23,7 +23,7 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 
 		// Add wysiwyg script paths
 		array_push($this->template->scripts, 'modules/admin/media/js/tinymce/jscripts/tiny_mce/tiny_mce.js');
-		array_push($this->template->scripts, 'modules/admin/media/js/wysiwyg.init.js');
+		array_push($this->template->scripts, 'admin/media/js/wysiwyg.init.js');
 		
 		$pages = ORM::factory('page')->tree_select();
 		
