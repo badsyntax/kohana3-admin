@@ -1,0 +1,12 @@
+.assetmanager.popup body {
+	margin: 1em;
+}
+.assetmanager.popup header, 
+.assetmanager.popup #content, 
+.assetmanager.popup footer,
+.assetmanager.popup.development .benchmark
+{
+	margin: 0;
+	width: auto;
+} 
+
