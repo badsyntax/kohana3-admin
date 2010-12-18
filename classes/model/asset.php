@@ -2,17 +2,17 @@
 
 class Model_Asset extends Model_Base_Asset {
 	
-	protected $upload_path = 'media/assets';
-
-	public function upload_admin($name, & $post, & $files)
+	public function upload_admin($name, $upload_path, & $post, & $files)
 	{
 		$post = Validate::factory($post);
 		
 		$files = Validate::factory($files)
 			->rules($name, $this->_rules['upload']);
-			
+						
 		if (!$files->check())
 			return FALSE;
+		
+		$assets = array();
 		
 		foreach($files as $file)
 		{
@@ -22,7 +22,7 @@ class Model_Asset extends Model_Base_Asset {
 		
 			try {
 				
-				Upload::save($file, $filename, DOCROOT . $this->upload_path);
+				$filename = Upload::save($file, $filename, DOCROOT.$upload_path);
 			}
 			catch(Exception $e)
 			{
@@ -30,13 +30,16 @@ class Model_Asset extends Model_Base_Asset {
 			}
 			
 			$asset = ORM::factory('asset');
-			$asset->filename = $filename;
+			$asset->filename = basename($filename);
 			$asset->extension = $fileext;
+			$asset->mimetype = File::mime_by_ext(trim($fileext, '.'));
 			$asset->filesize = (int) $file['size'];
 			$asset->save();
+			
+			$assets[] = $asset->id;
 		}
 		
-		return TRUE;
+		return $assets;
 	}
 	
 	public function update_admin(& $data)
