@@ -9,10 +9,14 @@ class Model_Page extends Model_Base_Page {
 			->rules('title', $this->_rules['title'])
 			->rules('description', $this->_rules['description'])
 			->rules('uri', $this->_rules['uri'])
-			->rules('body', $this->_rules['body']);
+			->rules('body', $this->_rules['body'])
+			->filter('title', 'trim')
+			->filter('description', 'trim')
+			->filter('uri', 'trim')
+			->filter('body', 'trim');
 	
 		if (!$data->check()) return FALSE;
-		
+
 		$this->values($data);
 		$this->user_id = Auth::instance()->get_user()->id;
 		$this->save();
@@ -28,6 +32,10 @@ class Model_Page extends Model_Base_Page {
 			->rules('description', $this->_rules['description'])
 			->rules('uri', $this->_rules['uri'])
 			->rules('body', $this->_rules['body'])
+			->filter('title', 'trim')
+			->filter('description', 'trim')
+			->filter('uri', 'trim')
+			->filter('body', 'trim')
 			->callback('parent_id', array($this, 'check_parent_id'));
 		
 		if ( !$data->check()) return FALSE;
@@ -62,8 +70,7 @@ class Model_Page extends Model_Base_Page {
 			$data = Validate::factory($data)
 				->callback('id', array($this, 'check_id'));
 				
-			if ( !$data->check()) return FALSE;
-			
+			if ( !$data->check()) return FALSE;			
 		}
 		
 		return parent::delete($id);		
