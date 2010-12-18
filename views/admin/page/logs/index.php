@@ -1,5 +1,10 @@
 <div class="action-bar clear">
-	<?php echo HTML::anchor('admin/logs/download/tar', 'Download logs', array('class' => 'button small helper-right'))?>
+	<div class="action-menu helper-right">
+		<button>Actions</button>
+		<ul>
+			<li><?php echo HTML::anchor('admin/logs/download/tar', 'Download logs')?></li>
+		</ul>
+	</div>
 	<h1>Logs</h1>
 </div>
 

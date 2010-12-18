@@ -1,15 +1,29 @@
 <div class="action-bar clear">
-        <?php echo HTML::anchor('admin/cache/purge', 'Purge cache', array('id' => 'purge-cache', 'class' => 'button small helper-right'))?>
-        <script type="text/javascript">
-        (function($){
-                $('#purge-cache').click(function(){
+	<div class="action-menu helper-right">
+		<button>Actions</button>
+		<ul>
+			<li> <?php echo HTML::anchor('admin/cache/purge', 'Purge cache', array('id' => 'purge-cache'))?></li>
+		</ul>
+	</div>
+	
+	<script type="text/javascript">
+	(function($){
+	        $('#purge-cache').click(function(e){
 
-                        return confirm('<?php echo __('Are you sure you want to purge the cache? All cache entries will be deleted!')?>');
-                });
-        })(this.jQuery);
-        </script>
+				e.preventDefault();
+				
+				function confirmed(){
+					window.location = e.target.href;
+				}
+			
+				VEX.dialog.confirm('<?php echo __('Are you sure you want to purge the cache? All cache entries will be deleted!')?>', confirmed);
+				
+				return false;
+			});
+	})(this.jQuery);
+	</script>
 
-        <h1>Cache</h1>
+	<h1>Cache</h1>
 </div>
 
 <h2>Application cache</h2>

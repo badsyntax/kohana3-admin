@@ -1,4 +1,4 @@
-<?php echo Form::open()?>
+<?php echo Form::open(NULL, array('class' => 'ajax-validate'))?>
 	<fieldset>
 		
 		<div class="field">

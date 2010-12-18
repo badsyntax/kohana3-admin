@@ -8,4 +8,7 @@
 	<h1>Pages</h1>
 </div>
 
-<?php echo $page_tree?>
+<fieldset>
+<div id="page-tree" class="ui-tree">
+</div>
+</fieldset>

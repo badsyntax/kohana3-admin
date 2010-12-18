@@ -12,6 +12,9 @@
 				echo '<li class="ui-state-default ui-corner-top'.$classes.'">'.HTML::anchor($url, $text).'</li>';
 			}
 		?>
+		<li class="ui-state-default ui-corner-top ui-helper-right">
+			<?php echo HTML::anchor('admin/signout', 'Sign out')?>
+		</li>
 		</ul>
 
 </nav>

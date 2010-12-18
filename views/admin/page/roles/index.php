@@ -1,9 +1,10 @@
 <div class="action-bar clear">
-
-	<a href="<?php echo URL::site('admin/roles/add')?>" class="button add small helper-right">
-		<span>Add role</span>
-	</a>
-
+	<div class="action-menu helper-right">
+		<button>Actions</button>
+		<ul>
+			<li><?php echo HTML::anchor('admin/roles/add', __('Add role'))?></li>
+		</ul>
+	</div>
 	<h1>Roles</h1>
 </div>
 
