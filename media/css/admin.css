@@ -23,15 +23,10 @@ input.error-field, textarea.error-field { border-color: #BB0000;}
 header, #content, footer { width: 720px; margin: auto; text-align: left; }
 header { margin: 2em auto 1.2em auto; }
 #content { margin-top: 2em; }
-nav { border-bottom: 1px solid #CCC; padding-bottom: 1em;}
-nav.second-level { border: 0; padding-bottom: 0;}
-nav a { padding: 0 1em 0 0; }
-nav a.helper-right { float: right; padding: 0;}
-nav a.selected { font-weight: bold; }
 #profiler-container { display: none; margin-top: 1em; padding: 1em 0; font-size: .9em; color: #AAA; border-top: 1px solid #CCC; }
 table { border-collapse:collapse; width: 100%; }
 table,th, td { border: 1px solid #dfdfdf; }
-table thead tr, table tfoot tr { color: #333; -moz-text-shadow: 1px 1px 0 #FFFFFF; -webkit-text-shadow: 1px 1px 0 #FFFFFF; text-shadow: 1px 1px 0 #FFFFFF; background: #ffffff; background: -moz-linear-gradient(top, #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%); /* firefox */ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(50%,#f1f1f1), color-stop(51%,#e1e1e1), color-stop(100%,#f6f6f6)); /* webkit */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0 ); /* ie */	}
+table thead tr, table tfoot tr { color: #333; -moz-text-shadow: 1px 1px 0 #FFFFFF; -webkit-text-shadow: 1px 1px 0 #FFFFFF; text-shadow: 1px 1px 0 #FFFFFF; background: #ffffff; background: url(http://kohana3-examples/modules/admin/media/img/ui-theme/bg_glass.png)	}
 table tbody tr:hover { background: #F6F6F6;}
 table tfoot p { padding: 0; margin: 0; }
 table tfoot td { font-size: .9em; color: #666; }
@@ -40,7 +35,7 @@ td, th { padding: .5em; }
 .action-bar h1 { margin: 0; line-height: 1.5em;}
 #messages { padding: .5em; margin-bottom: .8em; display: none; }
 #messages ul, #messages p { margin: 0; padding: 0; }
-#messages li { list-style: none; padding-left: 22px; }
+#messages li { list-style: none; padding-left: 22px;min-height: 16px;}
 #messages .success { background: url(/media/img/tick-circle-frame.png) no-repeat 0 0; }
 #messages .error { background: url(/media/img/exclamation-red-frame.png) no-repeat 0 0; }
 
@@ -89,22 +84,13 @@ textarea.wysiwyg {
 .admin .cirkuitSkin td.mceToolbar {
 	background-color: #F6F6F6;
 }
-.admin .cirkuitSkin .mceButtonEnabled span {
-	cursor: pointer;
-}
+.admin .cirkuitSkin .mceButtonEnabled span,
+.admin .cirkuitSkin .mceButtonEnabled img,
 .admin .cirkuitSkin .mceListBox a.mceText, 
-.admin .cirkuitSkin .mceSplitButton a.mceAction {
-	cursor: pointer;
-}
-.admin .cirkuitSkin .mceListBox .mceOpen span {
-	cursor: pointer;
-}
-.admin .cirkuitSkin .mceSplitButton span.mceAction {
-	cursor: pointer;
-}
-.admin .cirkuitSkin span.mce_numlist  {
-	cursor: pointer;
-}
+.admin .cirkuitSkin .mceSplitButton a.mceAction,
+.admin .cirkuitSkin .mceListBox .mceOpen span,
+.admin .cirkuitSkin .mceSplitButton span.mceAction,
+.admin .cirkuitSkin span.mce_numlist,
 .admin .cirkuitSkin .mceSplitButton a, 
 .admin .cirkuitSkin .mceListBox a {
 	cursor: pointer;
@@ -128,9 +114,9 @@ textarea.wysiwyg {
 	padding: 1px 0;
 } 
 
-.ui-tabs .ui-tabs-nav li.ui-helper-right {
-	float: right;
-}
-.ui-tabs .ui-tabs-panel {
-	padding: 1em;
+/* CONFIG
+================================*/
+
+.config fieldset input {
+	width: 36em;
 }

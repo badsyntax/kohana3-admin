@@ -61,6 +61,13 @@
 .ui-tabs .ui-tabs-nav li a {
 	padding: .4em 1em;
 }
+.ui-tabs .ui-tabs-nav li.ui-helper-right {
+	float: right;
+}
+.ui-tabs .ui-tabs-panel {
+	padding: 1em;
+}
+
 
 /* Menu
 ----------------------------------*/
@@ -109,4 +116,60 @@
 .ui-dialog-tinymce-content {
 	padding: 1em 2em;
 	font-size: 1.1em;
+}
+
+
+/* TREE 
+==============================*/
+#files { 
+	margin:2em 0 5em; 
+	width:400px; 
+}
+.tree { 
+	font-size:1.3em; 
+}
+.tree,.tree ul,
+.tree li { 
+	list-style:none; 
+	margin:0; 
+	padding:0; 
+	zoom: 1; 
+}
+.tree ul { 
+	margin-left:8px; 
+}
+.tree li a { 
+	color:#555; 
+	padding:.1em 7px .1em 27px; 
+	display:block; 
+	text-decoration:none; 
+	border:1px dashed #fff; 
+	background:url(../img/ui-theme/icon_file.gif) 5px 50% no-repeat; 
+}
+.tree li a.tree-parent { 
+	background:url(../img/ui-theme/icon_folder_open.gif) 5px 50% no-repeat; 
+}
+.tree li a.tree-parent-collapsed { 
+	background:url(../img/ui-theme/icon_folder.gif) 5px 50% no-repeat; 
+}
+.tree li a:hover,
+.tree li a.tree-parent:hover,
+.tree li a:focus,
+.tree li a.tree-parent:focus,
+.tree li a.tree-item-active { 
+	color:#000; 
+	border:1px solid#eee; 
+	background-color:#fafafa; 
+	-moz-border-radius:4px; 
+	-webkit-border-radius:4px; 
+	border-radius:4px; 
+}
+.tree li a:focus,
+.tree li a.tree-parent:focus,
+.tree li a.tree-item-active { 
+	border:1px solid #e2f3fb; 
+	background-color:#FAFAFA; 
+}
+.tree ul.tree-group-collapsed { 
+	display:none; 
 }
