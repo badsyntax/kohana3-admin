@@ -14,7 +14,7 @@ abstract class Controller_Admin_Base extends Controller_Base {
 
 	// Only users with role 'admin' can view this controller
 	protected $auth_required = 'admin';
-
+	
 	public function before()
 	{
 		// If the crud model isn't set then use the controller name (default)
@@ -23,9 +23,10 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		$this->crud_model_singular = Inflector::singular($this->crud_model);
 		
 		parent::before();
-		
+
 		if ($this->auto_render)
 		{
+			$this->template->paths = array();
 			$this->template->scripts = array();
 			$this->template->styles = array();
 		}
@@ -35,18 +36,9 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	{
 		if ($this->auto_render)
 		{
-			$this->template->styles = array_merge($this->template->styles, array(
-				'media/css/base.css',
-				'modules/admin/media/js/jquery-ui/build/dist/jquery-ui-1.9pre/themes/base/jquery-ui.css',
-				'modules/admin/media/css/jquery.ui.theme.admin.css',
-				'modules/admin/media/css/admin.css'
-			));
-		
-			$this->template->scripts = array_merge($this->template->scripts, array(
-				'media/js/jquery-1.4.4.min.js',
-				'modules/admin/media/js/global.js',
-				'modules/admin/media/js/jquery-ui/build/dist/jquery-ui-1.9pre/ui/jquery-ui.js'	
-			));
+			$this->template->styles = array_merge($this->template->styles, Kohana::config('admin/media.styles'));
+			$this->template->scripts = array_merge($this->template->scripts, Kohana::config('admin/media.scripts'));
+			$this->template->paths = json_encode(array_map('URL::site', array_merge($this->template->paths, Kohana::config('admin/media.paths'))));
 		}
 		
 		parent::after();
@@ -61,7 +53,7 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		$this->template->title = __('Edit '.ucfirst($this->crud_model));
 
 		// Bind useful data objects to the view
-		$this->template->content = View::factory('admin/page/'.$this->crud_model)
+		$this->template->content = View::factory('admin/page/'.$this->crud_model.'/index')
 			->bind($this->crud_model, $items)
 			->bind('total', $total)
 			->bind('page_links', $page_links);
@@ -71,15 +63,15 @@ abstract class Controller_Admin_Base extends Controller_Base {
 
 		// Generate the pagination values
 		$pagination = Pagination::factory(array(
-				'total_items' => $total,
-				'items_per_page' => $this->pagination_items_per_page
+			'total_items' => $total,
+			'items_per_page' => $this->pagination_items_per_page
 		));
 
 		// Get the items
 		$items = ORM::factory( $this->crud_model_singular )
-				->limit($pagination->items_per_page)
-				->offset($pagination->offset)
-				->find_all();
+			->limit($pagination->items_per_page)
+			->offset($pagination->offset)
+			->find_all();
 
 		// Generate the pagination links
 		$page_links = $pagination->render();
@@ -105,12 +97,10 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		
 		$data = array('id' => $id);
 
-		if ( $item->delete_admin(NULL, $data)) {
-			
+		if ( $item->delete_admin(NULL, $data))
+		{
 			$message = ucfirst($this->crud_model_singular).' '.__('successfully deleted.');
-		
 			Message::set(Message::SUCCESS, $message);
-			
 			$this->request->redirect('admin/'.$this->crud_model);
 		}
 		
