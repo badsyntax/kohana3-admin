@@ -11,9 +11,7 @@ class Controller_Admin_Cache extends Controller_Admin_Base {
 			->bind('total_files', $total_files);
 
 		$cache_dir = Kohana::$cache_dir;
-
 		$total_size = Text::bytes( (int) `du -sb {$cache_dir} | sed 's/\s.*$//g'`);
-
 		$total_files = `find {$cache_dir} -type f | wc -l`;
 	}
 
@@ -21,7 +19,6 @@ class Controller_Admin_Cache extends Controller_Admin_Base {
 	{
 		Cache::instance()->delete_all();
 
-		Activity::set(Activity::SUCCESS, __('Cache deleted.'));
 		Message::set(Message::SUCCESS, __('Cache successfully deleted.'));
 
 		$this->request->redirect('admin/cache');

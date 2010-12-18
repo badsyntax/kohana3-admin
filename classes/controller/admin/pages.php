@@ -5,34 +5,25 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 	public function action_index()
 	{
 		$this->template->title = __('Pages');
-		$this->template->content = View::factory('admin/page/pages')
-			->bind('page_tree', $page_tree);
-		
-		$page_tree = ORM::factory('page')->tree_list_html('admin/page/pages/tree');
+		$this->template->content = View::factory('admin/page/pages/index');
 	}
 
 	public function action_add($parent_id = 0)
 	{
 		$this->template->title = __('Add page');
 		
-	
 		$this->template->content = View::factory('admin/page/pages/add')
 			->bind('pages', $pages)
 			->set('parent_id', Arr::get($_POST, 'parent_id', $parent_id))
 			->bind('errors', $errors);
 
-		// Add wysiwyg script paths
-		array_push($this->template->scripts, 'modules/admin/media/js/tinymce/jscripts/tiny_mce/tiny_mce.js');
-		array_push($this->template->scripts, 'admin/media/js/wysiwyg.init.js');
+		$pages = ORM::factory('page')->tree_select(4, 0, array(__('None')));
+
+		array_push($this->template->styles, Kohana::config('admin/media.paths.tinymce_skin'));
 		
-		$pages = ORM::factory('page')->tree_select();
-		
-		array_unshift($pages, __('None'));
-	
 		if ($page = ORM::factory('page')->add_admin($_POST))
 		{
 			Message::set(Message::SUCCESS, __('Page saved.'));
-			
 			$this->request->redirect('admin/pages');
 		}
 		
@@ -40,12 +31,26 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 		{
 			 Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
-
+		
 		$_POST = $_POST->as_array();
+		
+		if ( Request::$is_ajax ) {
+
+			$this->template->content = json_encode($errors);
+
+			$this->request->headers['Content-Type'] = 'application/json';
+		}
+	}
+	
+	public function action_tree()
+	{
+		$this->template->content = ORM::factory('page')->tree_list_html('admin/page/pages/tree');
 	}
 	
 	public function action_edit($id = 0)
 	{
+		$is_ajax = (bool) Request::$is_ajax;
+				
 		$page = ORM::factory('page', (int) $id);
 
 		!$page->loaded() AND $this->request->redirect('admin');
@@ -61,14 +66,10 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 			->bind('pages', $pages)
 			->bind('errors', $errors);
 			
-		// Add wysiwyg script paths
-		array_push($this->template->scripts, 'modules/admin/media/js/tinymce/jscripts/tiny_mce/tiny_mce.js');
-		array_push($this->template->scripts, 'modules/admin/media/js/wysiwyg.init.js');
+		$pages = ORM::factory('page')->tree_select(4, 0, array(__('None')));
 		
-		$pages = ORM::factory('page')->tree_select();
-	
-		array_unshift($pages, __('None'));
-			
+		array_push($this->template->styles, Kohana::config('admin/media.paths.tinymce_skin'));
+		
 		if ($page->update_admin($_POST))
 		{
 			Activity::set(Activity::SUCCESS, __('Page updated: :title', array(':title' => $_POST['title'])));	
@@ -84,6 +85,13 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 
 		// Add the default data to POST
 		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);
+
+		if ( $is_ajax ) {
+
+			$this->template->content = json_encode($errors);
+
+			$this->request->headers['Content-Type'] = 'application/json';
+		}
 	}
 
 } // End Controller_Admin_Pages

@@ -5,7 +5,7 @@ class Controller_Admin_Logs extends Controller_Admin_Base {
 	public function action_index($file = NULL)
 	{
 		$this->template->title = __('Admin - Logs');
-		$this->template->content = View::factory('admin/page/logs')
+		$this->template->content = View::factory('admin/page/logs/index')
 			->bind('directories', $directories)
 			->bind('entries', $entries)
 			->bind('total_files', $total_files);

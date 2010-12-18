@@ -5,7 +5,7 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 	public function action_index()
 	{
 		$this->template->title = __('Admin - Config');
-		$this->template->content = View::factory('admin/page/config')
+		$this->template->content = View::factory('admin/page/config/index')
 			->bind('config', $config)
 			->bind('errors', $errors);
 		
