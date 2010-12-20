@@ -1,11 +1,10 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 class Model_Config extends Model_Base_Config {
 
 	public function update_all(& $data)
 	{
 		$data = Validate::factory($data);
-		$rules = array();
 
 		foreach($this->find_all() as $config){
 

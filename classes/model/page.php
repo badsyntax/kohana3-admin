@@ -1,8 +1,8 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 class Model_Page extends Model_Base_Page {
 
-	public function add_admin(& $data)
+	public function admin_add(& $data)
 	{
 		$data = Validate::factory($data)
 			->rules('parent_id', $this->_rules['parent_id'])
@@ -24,7 +24,7 @@ class Model_Page extends Model_Base_Page {
 		return $data;
 	}
 	
-	public function update_admin(& $data)
+	public function admin_update(& $data)
 	{
 		$data = Validate::factory($data)
 			->rules('parent_id', $this->_rules['parent_id'])
@@ -36,7 +36,7 @@ class Model_Page extends Model_Base_Page {
 			->filter('description', 'trim')
 			->filter('uri', 'trim')
 			->filter('body', 'trim')
-			->callback('parent_id', array($this, 'check_parent_id'));
+			->callback('parent_id', array($this, 'admin_check_parent_id'));
 		
 		if ( !$data->check()) return FALSE;
 		
@@ -46,7 +46,7 @@ class Model_Page extends Model_Base_Page {
 		return $data;
 	}
 	
-	public function check_parent_id(Validate $array, $field)
+	public function admin_check_parent_id(Validate $array, $field)
 	{
 		if ( ! (bool) $this->parent_id )
 		{
@@ -55,7 +55,7 @@ class Model_Page extends Model_Base_Page {
 	}
 	
 	// Don't delete id 1
-	public function check_id(Validate $array, $field)
+	public function admin_check_id(Validate $array, $field)
 	{
 		if ( (int) $this->id === 1)
 		{
@@ -63,12 +63,12 @@ class Model_Page extends Model_Base_Page {
 		}
 	}
 	
-	public function delete_admin($id = NULL, & $data)
+	public function admin_delete($id = NULL, & $data)
 	{
 		if ($id === NULL)
 		{
 			$data = Validate::factory($data)
-				->callback('id', array($this, 'check_id'));
+				->callback('id', array($this, 'admin_check_id'));
 				
 			if ( !$data->check()) return FALSE;			
 		}

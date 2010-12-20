@@ -1,8 +1,8 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 class Model_Asset extends Model_Base_Asset {
 	
-	public function upload_admin($name, $upload_path, & $post, & $files)
+	public function admin_upload($name, $upload_path, & $post, & $files)
 	{
 		$post = Validate::factory($post);
 		
@@ -42,7 +42,7 @@ class Model_Asset extends Model_Base_Asset {
 		return $assets;
 	}
 	
-	public function update_admin(& $data)
+	public function admin_update(& $data)
 	{
 		$data = Validate::factory($data)
 			->rules('filename', $this->_rules['update']['filename']);
