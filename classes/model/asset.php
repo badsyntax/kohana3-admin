@@ -52,4 +52,5 @@ class Model_Asset extends Model_Base_Asset {
 		
 		return TRUE;
 	}
-} // End Model_User
+	
+} // End Model_Asset

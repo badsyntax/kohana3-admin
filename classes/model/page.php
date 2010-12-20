@@ -75,4 +75,4 @@ class Model_Page extends Model_Base_Page {
 		
 		return parent::delete($id);		
 	}
-} // End Model_User
+} // End Model_Page

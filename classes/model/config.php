@@ -30,4 +30,4 @@ class Model_Config extends Model_Base_Config {
 		return TRUE;
 	}
 
-} // End Model_Role
+} // End Model_Config
