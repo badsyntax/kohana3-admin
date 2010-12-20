@@ -5,7 +5,7 @@ class Controller_Admin_Cache extends Controller_Admin_Base {
 	public function action_index()
 	{
 		$this->template->title = __('Admin - Cache');
-		$this->template->content = View::factory('admin/page/cache')
+		$this->template->content = View::factory('admin/page/cache/index')
 			->bind('cache_dir', $cache_dir)
 			->bind('total_size', $total_size)
 			->bind('total_files', $total_files);

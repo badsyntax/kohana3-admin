@@ -5,7 +5,7 @@ class Controller_Admin_Activity extends Controller_Admin_Base {
 	public function action_index()
 	{
 		$this->template->title = __('Admin - Activity');
-		$this->template->content = View::factory('admin/page/activity')
+		$this->template->content = View::factory('admin/page/activity/index')
 			->bind('activities', $activities);
 
 		$activities = ORM::factory('activity')

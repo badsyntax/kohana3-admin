@@ -11,17 +11,17 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 
 		$this->template->content = View::factory('admin/page/users/add')
 			->bind('roles', $roles)
+			->bind('groups', $groups)
 			->bind('errors', $errors);
 
-		if (ORM::factory('user')->add_admin($_POST))
+		if (ORM::factory('user')->admin_add($_POST))
 		{
-			Activity::set(Activity::SUCCESS, __('User successfully saved: :user', array(':user' => $_POST['username'])));
 			Message::set(Message::SUCCESS, __('User successfully saved.'));
-			
 			$this->request->redirect('admin/users');
 		}
 		
 		$roles = ORM::factory('role')->find_all();
+		$groups = ORM::factory('group')->find_all();
 	
 		if ($errors = $_POST->errors('auth'))
 		{
@@ -45,26 +45,37 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		// Bind user data to template
 		$this->template->content = View::factory('admin/page/users/edit')
 			->bind('roles', $roles)
+			->bind('groups', $groups)
 			->bind('user', $user)
 			->bind('user_roles', $user_roles)
+			->bind('user_groups', $user_groups)
 			->bind('errors', $errors);
 
 		// Find all roles
 		$roles = ORM::factory('role')->find_all();
-		
+				
 		// Create array of user role ids
 		$user_roles = array();
 
 		foreach($user->roles->find_all() as $role)
 		{
-
 			$user_roles[] = $role->id;
 		}
 
+		// Find all roles
+		$groups = ORM::factory('group')->find_all();
+				
+		// Create array of user role ids
+		$user_groups = array();
+
+		foreach($user->groups->find_all() as $group)
+		{
+			$user_groups[] = $group->id;
+		}
+		
 		// Try update the user, if succesful then reload the page
 		if ($user->update_admin($_POST))
 		{
-			Activity::set(Activity::SUCCESS, __('User successfully updated: :user', array(':user' => $_POST['username'])));	
 			Message::set(Message::SUCCESS, __('User successfully updated.'));
 			$this->request->redirect($this->request->uri);
 		}
@@ -99,10 +110,14 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		// Delete the user
 		$user->delete();
 
-		Activity::set(Activity::SUCCESS, __('User successfully deleted: :user', array(':user' => $user->username)));
 		Message::set(Message::SUCCESS, __('User successfully deleted.'));
 
 		$this->request->redirect('admin/users');
+	}
+	
+	public function action_tree()
+	{
+		$this->template->content = ORM::factory('group')->tree_list_html('admin/page/users/tree');
 	}
 
 } // End Controller_Admin_users

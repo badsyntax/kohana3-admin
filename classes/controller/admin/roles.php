@@ -4,6 +4,8 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 
 	public function action_add()
 	{
+		$is_ajax = (bool) Request::$is_ajax;
+
 		$this->template->title = __('Add role');
 
 		$this->template->content = View::factory('admin/page/roles/add')
@@ -11,7 +13,6 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 
 		if (ORM::factory('role')->admin_create($_POST))
 		{
-			Activity::set(Activity::SUCCESS, __('Role successfully saved: :role', array(':role' => $_POST['name'])));
 			Message::set(Message::SUCCESS, __('Role successfully saved.'));
 			
 			$this->request->redirect('admin/roles');
@@ -23,6 +24,13 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 		}
 
 		$_POST = $_POST->as_array();
+		
+		if ( $is_ajax ) {
+
+			$this->template->content = json_encode($errors);
+
+			$this->request->headers['Content-Type'] = 'application/json';
+		}
 	}
 
 	public function action_edit($id = 0)

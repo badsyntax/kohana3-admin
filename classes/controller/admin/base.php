@@ -97,7 +97,7 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		
 		$data = array('id' => $id);
 
-		if ( $item->delete_admin(NULL, $data))
+		if ( $item->admin_delete(NULL, $data))
 		{
 			$message = ucfirst($this->crud_model_singular).' '.__('successfully deleted.');
 			Message::set(Message::SUCCESS, $message);

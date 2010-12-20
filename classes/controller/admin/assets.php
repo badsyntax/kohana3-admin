@@ -28,7 +28,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			
 		$upload_path = Kohana::config('admin/asset.upload_path');
 			
-		if ($assets = ORM::factory('asset')->upload_admin('asset', $upload_path, $_POST, $_FILES))
+		if ($assets = ORM::factory('asset')->admin_upload('asset', $upload_path, $_POST, $_FILES))
 		{
 			Message::set(Message::SUCCESS, __('Asset'.(count($assets)?'s':'').' successfully saved.'));
 			$this->request->redirect('admin/assets/edit/'.implode(',', $assets));
@@ -52,28 +52,54 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		
 		if (!$asset->loaded()) exit;
 		
-		$file = DOCROOT . Kohana::config('admin/asset.upload_path') .'/'. $asset->filename;
+		$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
 		
 		$this->request->headers['Content-Type'] = $asset->mimetype;
 		
 		$pathinfo = pathinfo($asset->filename);
-		$resized_filename = $pathinfo['filename'];		
-		$resized_path = Kohana::config('admin/asset.upload_path').'/'.$resized_filename.$asset->extension;
+		
+		$filename = $pathinfo['filename'];
+		
+		$path = Kohana::config('admin/asset.upload_path').'/'.$filename.$asset->extension;
 		
 		if ($width AND $height)
 		{
-			$resized_filename .= "_{$width}_{$height}_{$crop}";		
-			$resized_path = Kohana::config('admin/asset.upload_path').'/resized/'.$resized_filename.$asset->extension;
+			$filename .= "_{$width}_{$height}_{$crop}";		
+			$path = Kohana::config('admin/asset.upload_path').'/resized/'.$filename.$asset->extension;
 		}
 		
-		if (!file_exists(DOCROOT.$resized_path))
+		if (!file_exists(DOCROOT.$path))
 		{
-			Image::factory( $file )
-				->resize($width, $height)
-				->save($resized_path);
+			$image = Image::factory( $file );
+			
+			if ($crop AND $width AND $height)
+			{
+				if ($image->width / $image->height > $width / $height)
+				{
+					$resized_w = ($height / $image->height) * $image->width;
+					$offset_x = round(($resized_w - $width) / 2);
+					$offset_y = 0;			
+					$image->resize(NULL, $height);
+				}
+				else
+				{
+					$resized_h = ($width / $image->width) * $image->height;
+					$offset_x = 0;
+					$offset_y = round(($resized_h - $height) / 2);			
+					$image->resize(NULL, $height);				
+				}
+								
+				$image->crop($width, $height, $offset_x, $offset_y);	
+			}
+			else 
+			{
+				$image->resize($width, $height);
+			}
+									
+			$image->save($path);
 		}
 			
-		$this->request->send_file($resized_path, FALSE, array('inline' => true));
+		$this->request->send_file($path, FALSE, array('inline' => true));
 	}
 	
 	public function action_edit($id = 0)
@@ -86,7 +112,6 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			$this->response->redirect('admin');
 		} 
 		
-		// If POST is empty then set the default form data
 		!$_POST AND $default_data = $asset->as_array();
 
 		$this->template->title = __('Admin - Edit asset');
@@ -94,7 +119,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			->bind('asset', $asset)
 			->bind('errors', $errors);
 			
-		if (ORM::factory('asset')->update_admin($_POST))
+		if (ORM::factory('asset')->admin_update($_POST))
 		{
 			Message::set(Message::SUCCESS, __('Asset successfully updated.'));			
 			$this->request->redirect($this->request->uri);
@@ -105,8 +130,18 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			Messages::set(MESSAGE::ERROR, __('Please correct the errors.'));
 		}
 
-		// If POST is empty, then add the default data to POST
 		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);		
+	}
+	
+	public function action_download($id = 0)
+	{
+		$asset = ORM::factory('asset', (int) $id);
+		
+		if (!$asset->loaded()) exit;
+		
+		$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
+		
+		$this->request->send_file($file);
 	}
 
 } // End Controller_Admin_Assets

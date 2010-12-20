@@ -28,7 +28,6 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 		// Try save the config
 		if (ORM::factory('config')->update_all($_POST))
 		{
-			Activity::set(Activity::SUCCESS, __('Config saved'));	
 			Message::set(Message::SUCCESS, __('Config successfully saved.'));
 
 			// Delete the configuration data from cache

@@ -21,7 +21,7 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 
 		array_push($this->template->styles, Kohana::config('admin/media.paths.tinymce_skin'));
 		
-		if ($page = ORM::factory('page')->add_admin($_POST))
+		if ($page = ORM::factory('page')->admin_add($_POST))
 		{
 			Message::set(Message::SUCCESS, __('Page saved.'));
 			$this->request->redirect('admin/pages');
@@ -70,9 +70,8 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 		
 		array_push($this->template->styles, Kohana::config('admin/media.paths.tinymce_skin'));
 		
-		if ($page->update_admin($_POST))
+		if ($page->admin_update($_POST))
 		{
-			Activity::set(Activity::SUCCESS, __('Page updated: :title', array(':title' => $_POST['title'])));	
 			Message::set(Message::SUCCESS, __('Page successfully updated.'));
 			
 			$this->request->redirect($this->request->uri);

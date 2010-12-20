@@ -5,7 +5,7 @@ class Controller_Admin_Wysiwyg extends Controller_Admin_Base {
 	public function action_index()
 	{
 		$this->template->title = __('Admin - Wysiwyg');
-		$this->template->content = View::factory('admin/page/wysiwyg');
+		$this->template->content = View::factory('admin/page/wysiwyg/index');
 		
 		// Add wysiwyg script paths
 		array_push($this->template->scripts, 'modules/admin/media/js/tinymce/jscripts/tiny_mce/tiny_mce.js');
