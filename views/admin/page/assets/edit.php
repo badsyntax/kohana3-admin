@@ -8,16 +8,30 @@
 	<h1>Edit asset</h1>
 </div>
 
-<?php echo Form::open()?>
+<?php echo Form::open(NULL, array('class' => 'assets-edit'))?>
 
 	<fieldset>
 		<legend>Edit asset</legend>
 		
-		<img src="<?php echo URL::site('admin/assets/get_asset/'.$asset->id)?>/300/300" />
+		<a href="<?php echo URL::site('admin/assets/get_asset/'.$asset->id)?>" class="thumb ui-lightbox">
+			<img src="<?php echo URL::site('admin/assets/get_asset/'.$asset->id)?>/300/300" />
+		</a>
 		<div class="field">
 			<?php echo
 				Form::label('filename', 'Filename', NULL, $errors).
 				Form::input('filenmae', $_POST['filename'], NULL, $errors)
+			?>
+		</div>
+		<div class="field">
+			<?php echo
+				Form::label('title', 'Title', NULL, $errors).
+				Form::input('title', $_POST['title'], NULL, $errors)
+			?>
+		</div>
+		<div class="field">
+			<?php echo
+				Form::label('description', 'Description', NULL, $errors).
+				Form::input('description', $_POST['description'], NULL, $errors)
 			?>
 		</div>
 		

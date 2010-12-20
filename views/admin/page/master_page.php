@@ -16,7 +16,11 @@
 
 	<?php echo View::factory('admin/page/fragments/header') ?>
 
-	<div id="content">	
+	<div id="ajax-loading">
+		<img src="/modules/admin/media/img/ajax_loader.gif" />
+	</div>
+
+	<div id="content">
 
 		<div id="admin-nav" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
 			
@@ -45,7 +49,7 @@
 	
 	<script type="text/javascript">
 	(function(){
-		VEX.init({
+		Admin.init({
 			paths: <?php echo $paths?>,
 			route: {
 				controller: '<?php echo Request::instance()->controller?>',

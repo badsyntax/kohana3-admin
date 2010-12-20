@@ -1,12 +1,6 @@
 <?php echo Form::open(NULL, array('class' => 'ajax-validate'))?>
 	<fieldset>
-		
-		<div class="field">
-			<?php echo 
-				Form::label('parent_id', __('Parent page'), NULL, $errors),
-				Form::select('parent_id', $pages, ($_POST['parent_id'] ? $_POST['parent_id'] : $parent_id), NULL, $errors)
-			?>
-		</div>
+		<legend>Metadata</legend>
 		<div class="field">
 			<?php echo 
 				Form::label('title', __('Title'), NULL, $errors),
@@ -25,10 +19,24 @@
 				Form::input('description', $_POST['description'], NULL, $errors)
 			?>
 		</div>
+	</fieldset>
+	
+	<fieldset>
+		<legend>Categorize</legend>
 		<div class="field">
 			<?php echo 
-				Form::label('body', __('Content'), NULL, $errors),
-				Form::textarea('body', $_POST['body'], NULL, TRUE, $errors)
+				Form::label('parent_id', __('Parent page'), NULL, $errors),
+				Form::select('parent_id', $pages, ($_POST['parent_id'] ? $_POST['parent_id'] : $parent_id), NULL, $errors)
+			?>
+		</div>
+	</fieldset>
+
+	<fieldset class="last">
+		<legend>Content</legend>
+		<div class="field">
+			<?php echo 
+				Form::label('body', __('Body content'), NULL, $errors),
+				Form::textarea('body', $_POST['body'], array('class' => 'wysiwyg'), TRUE, $errors)
 			?>
 		</div>
 		

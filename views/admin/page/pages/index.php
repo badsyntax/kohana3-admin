@@ -8,7 +8,12 @@
 	<h1>Pages</h1>
 </div>
 
-<fieldset>
+<fieldset class="pages-list last">
 <div id="page-tree" class="ui-tree">
+	loading tree...
 </div>
+</fieldset>
+
+<fieldset id="pages-information" class="pages-information ui-helper-hidden last">
+	Showing <span id="total-pages"></span> pages
 </fieldset>

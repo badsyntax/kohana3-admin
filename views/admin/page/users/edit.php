@@ -46,6 +46,19 @@
 			<?php }?>
 		</div>
 		<div class="field">
+			<?php echo
+				Form::label('groups', __('Groups'))
+			?>
+			<?php foreach($groups as $group){?>
+			<div class="checkbox">
+				<?php echo 
+					Form::checkbox('groups[]', $group->id, in_array($group, $user_groups), array('id' => 'group-'.$group->id)),
+					Form::label('group-'.$group->id, $group->name)
+				?>
+			</div>
+			<?php }?>
+		</div>
+		<div class="field">
 			<?php echo 
 				Form::label('password', 'New password', NULL, $errors),
 				Form::password('password', NULL, $errors)
@@ -58,6 +71,6 @@
 			?>
 		</div>
 
-		<?php echo Form::submit('update', 'Update', array('class' => 'button'))?>
+		<?php echo Form::button('save', 'Update', array('class' => 'ui-button save'))?>
 	</fieldset>
 <?php echo Form::close()?>

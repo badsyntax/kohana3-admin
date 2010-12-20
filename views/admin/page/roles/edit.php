@@ -15,7 +15,7 @@
 </div>
 
 <?php echo Form::open()?>
-	<fieldset>
+	<fieldset class="last">
 		
 		<div class="field">
 			<?php echo 
@@ -30,6 +30,6 @@
 			?>
 		</div>
 
-		<?php echo Form::submit('save', 'Save', array('class' => 'button'))?>
+		<?php echo Form::button('save', 'Save', array('type' => 'submit', 'class' => 'ui-button save'))?>
 	</fieldset>
 <?php echo Form::close()?>

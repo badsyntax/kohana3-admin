@@ -1,18 +1,18 @@
-<h1>Add role</h1>
+<h1>Add group</h1>
 
 <?php echo Form::open(NULL, array('class' => 'ajax-validate'))?>
 	<fieldset class="last">
-		
+
 		<div class="field">
 			<?php echo 
-				Form::label('name', __('Name'), NULL, $errors),
-				Form::input('name', $_POST['name'], NULL, $errors)
+				Form::label('parent_id', __('Parent group'), NULL, $errors),
+				Form::select('parent_id', $groups, $_POST['parent_id'], NULL, $errors)
 			?>
 		</div>
 		<div class="field">
 			<?php echo 
-				Form::label('description', __('Descripton'), NULL, $errors),
-				Form::input('description', $_POST['description'], NULL, $errors)
+				Form::label('name', __('Name'), NULL, $errors),
+				Form::input('name', $_POST['name'], NULL, $errors)
 			?>
 		</div>
 

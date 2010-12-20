@@ -10,7 +10,7 @@
 			<?php echo Form::file('asset', NULL, $errors)?>
 		</div>
 		
-		<?php echo Form::button('save', 'Upload',  array('type' => 'submit', 'class' => 'ui-button save'))?>
+		<?php echo Form::button('save', 'Upload', array('type' => 'submit', 'class' => 'ui-button save'))?>
 		
 	</fieldset>
 
