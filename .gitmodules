@@ -4,3 +4,6 @@
 [submodule "media/js/tinymce"]
 	path = media/js/tinymce
 	url = git@github.com:badsyntax/tinymce.git
+[submodule "media/js/jquery-tree"]
+	path = media/js/jquery-tree
+	url = git@github.com:badsyntax/jQuery-Tree-Control.git
