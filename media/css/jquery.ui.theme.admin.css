@@ -140,17 +140,16 @@
 }
 .tree li a { 
 	color:#555; 
-	padding:.1em 7px .1em 27px; 
+	padding:.1em 7px .1em 0; 
 	display:block; 
 	text-decoration:none; 
 	border:1px dashed #fff; 
-	background:url(../img/ui-theme/icon_file.gif) 5px 50% no-repeat; 
 }
 .tree li a.tree-parent { 
-	background:url(../img/ui-theme/icon_folder_open.gif) 5px 50% no-repeat; 
+	background:url(../img/ui-theme/icon_toggle_open.gif) 6px 50% no-repeat; 
 }
 .tree li a.tree-parent-collapsed { 
-	background:url(../img/ui-theme/icon_folder.gif) 5px 50% no-repeat; 
+	background:url(../img/ui-theme/icon_toggle_closed.gif) 8px 50% no-repeat; 
 }
 .tree li a:hover,
 .tree li a.tree-parent:hover,
@@ -172,4 +171,14 @@
 }
 .tree ul.tree-group-collapsed { 
 	display:none; 
+}
+.tree li .tree-toggle {
+	cursor: pointer;
+	height: 1.2em;
+    width: 20px;
+	float: left;
+	margin: 0;
+}
+.tree li img {
+	float: left;
 }
