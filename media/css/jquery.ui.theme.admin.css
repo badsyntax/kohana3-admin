@@ -146,33 +146,34 @@
 	border:1px dashed #fff; 
 }
 .tree li a.tree-parent { 
-	background:url(../img/ui-theme/icon_toggle_open.gif) 6px 50% no-repeat; 
+	background: url(../img/ui-theme/icon_toggle_open.gif) 6px 50% no-repeat; 
 }
 .tree li a.tree-parent-collapsed { 
-	background:url(../img/ui-theme/icon_toggle_closed.gif) 8px 50% no-repeat; 
+	background: url(../img/ui-theme/icon_toggle_closed.gif) 8px 50% no-repeat; 
 }
 .tree li a:hover,
 .tree li a.tree-parent:hover,
 .tree li a:focus,
 .tree li a.tree-parent:focus,
 .tree li a.tree-item-active { 
-	color:#000; 
-	border:1px solid#eee; 
-	background-color:#fafafa; 
-	-moz-border-radius:4px; 
-	-webkit-border-radius:4px; 
-	border-radius:4px; 
+	color: #000; 
+	border: 1px solid#eee; 
+	background-color: #fafafa; 
+	-moz-border-radius: 4px; 
+	-webkit-border-radius: 4px; 
+	border-radius: 4px; 
 }
 .tree li a:focus,
 .tree li a.tree-parent:focus,
 .tree li a.tree-item-active { 
-	border:1px solid #e2f3fb; 
-	background-color:#FAFAFA; 
+	border: 1px solid #e2f3fb; 
+	background-color: #FAFAFA; 
 }
 .tree ul.tree-group-collapsed { 
 	display:none; 
 }
-.tree li .tree-toggle {
+.tree li .tree-icon-toggle,
+.tree li .tree-icon-item {
 	cursor: pointer;
 	height: 1.2em;
     width: 20px;
@@ -181,4 +182,15 @@
 }
 .tree li img {
 	float: left;
+}
+/* Default icon */
+.tree li .tree-icon-item {
+	background: url(../img/ui-theme/icon_file.gif) 0px 50% no-repeat;
+}
+/* Groups */
+.users li a.group .tree-icon-item {
+	background-image: url(../img/ui-theme/icon_users.png);
+}
+.users li a.user .tree-icon-item {
+	background-image: url(../img/ui-theme/icon_user.png);
 }
