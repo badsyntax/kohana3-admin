@@ -9,58 +9,107 @@
 
 	if (window.Admin) return;
 
-	var Admin = {};
-	
-	Admin.util = Admin.controller = {};
-	
-	Admin.init = function(config){
-		
-		this.config = config;
-
-		var self = this;
-		
-
-		/*
-		 * PRIVATE METHODS
-		 */
-		
-		// build the ui, reset ajax actions, bind common page events
-		function setup(){
-
-			self.util.ajaxLoad(true);
-
-			self.util.ui('body');
-
-			self.util.validate();
-		}
-		
-		// execute a controller action		
-		function bootstrap(route){
-	
-			if (route.controller && self.controller[route.controller]) {
-
-				if (self.controller[route.controller]['init']) {
-
-					self.controller[route.controller]['init']();
-				}
-
-				if (route.action && self.controller[route.controller]['action_' + route.action]) {
-
-					self.controller[route.controller]['action_' + route.action]();
-				}
+	var 
+		// Defaults
+		config = {
+			environment: 'development',
+			route: {
+				controller: 'default',
+				action: 'index'
 			}
 		}
 		
-		/*
-		 * PRIVILEDGED METHODS
-		 */
+		// Constants */
+		  BEGIN = 1
+		, END = 0
+		, RESET = -1
 		
+		// Our main global admin Admin object
+		, Admin = {}
+	;
+
+	Admin.model = Admin.view = Admin.controller = Admin.util = {};
+	
+	function log(msg){	
+			
+		(window.console && window.console.log)
+		
+			&& window.console.log(msg);
+	}
+	
+	Admin.init = function(options){
+		
+		this.config = $.extend(config, options);
+		var 
+			self = this
+			, benchmark_start
+			, benchmark_end
+			, benchmark_time
+		;			
+		
+		function benchmark(action){
+			
+			switch(action) {
+				case BEGIN:
+					benchmark_start = (new Date).getTime();
+					break;
+				case END:
+					benchmark_end = (new Date).getTime();
+					benchmark_time = benchmark_end - benchmark_start;
+			}
+		}
+				
+		// build the ui, reset ajax actions, bind common page events
+		function setup(){
+
+			self.util.ajax.loader(RESET);
+
+			self.util.ui('body');
+		}
+		
+		// Execute a controller action		
+		function bootstrap(route){
+			
+			var controller = self.controller[route.controller];
+			
+			// TODO: If controller doesn't exist then try load it in via require.js
+			
+			if (!route.action && route.controller && controller) return;
+			
+			var base = new Controller(route.controller);
+			
+			controller = $.extend({}, base, controller);
+
+			controller.before && controller.before();
+
+			controller['action_' + route.action] && controller['action_' + route.action]();
+					
+			controller.after && controller.after();			
+		}
+		
+		// Allow access to the benchmark results
+		this.benchmark = function(){
+			
+			return {
+				
+				benchmark_start: benchmark_start
+			}			
+		};		
+		
+		benchmark(BEGIN);
+		
+		// build page elements and init interactions
 		setup();
 		
 		// begin the routing
 		bootstrap(config.route);
+		
+		benchmark(END);
+		
+		// If environment mode is DEVELOPMENT then log the benchmark results
 	};
 	
+	// Build the interface on an element
 	Admin.util.ui = function(selector){
 		
 		var elem = $(selector);
@@ -174,24 +223,35 @@
 	 	( type === 'function' ) && callback.apply( scope, arg );
 	};
 	
-	Admin.util.ajaxLoad = function(finished){
+	Admin.util.ajax = {
 		
-		var method = finished ? 'fadeOut' : 'fadeIn';
+		loader : function(action){
+			
+			var method;
+			switch(action){
+				case END:
+				case RESET:
+					method = 'fadeOut';
+					break;
+				default:
+					method = 'fadeIn';
+			}
 		
-		$('#ajax-loading img')[method]('fast');
+			$('#ajax-loading img')[method]('fast');
+		}
 	};
 	
 	Admin.util.validate = function(){
 		
 		var form;
 		
-		function postSuccess(errors){
+		function postSuccess(data){
 			
-			Admin.util.ajaxLoad(true);
+			Admin.util.ajax.loader(BEGIN);
 
 			$('.form-error, .label-error').hide();
 
-			if (!errors.length && errors.length !== undefined) {
+			if (data.status && (data.errors.length !== undefined && !data.errors.length)) {
 
 				Admin.util.message('success', 'Successfully updated.');
 
@@ -199,7 +259,7 @@
 				
 				Admin.util.message('error', 'Please correct the errors.');
 
-				$.each(errors, function(key, val){
+				$.each(data.errors, function(key, val){
 					
 					var id = $('[name="' + key + '"]').attr('id'),
 						label = $('label[for="' + id + '"]');
@@ -219,7 +279,7 @@
 			.submit(function(e){
 				
 				e.preventDefault();
-				Admin.util.ajaxLoad();
+				Admin.util.ajax.loader(END);
 				form = this;
 
 				$.ajax({
@@ -255,20 +315,52 @@
 			}
 		}
 	};
+	
+	/* CONTROLLERS */
+	
+	// base controller
+	function Controller(name){
+		
+		this.controller = name || 'controller';
+		
+		this.elements = {};
+		
+		
+		// base init stuff here
+	}
 
 	Admin.controller.pages = {
 		
-		init: function(){
-			
-		},
-		
 		action_index: function(){
 			
-			Admin.util.ajaxLoad();
+			this.getPageTree();
+		},
+		
+		action_add: function(){
+	
+			this.getWysiwyg();
+		},
+		
+		action_edit: function(){
+
+			this.getWysiwyg();
+		},
+		
+		getWysiwyg: function(){
+
+			// load and initiate wysiwyg
+			require([Admin.config.paths.tinymce, Admin.config.paths.tinymce_init], function() {
+			
+			});
+		},
+
+		getPageTree: function(){
+
+			Admin.util.ajax.loader(BEGIN);
 			
 			function load(){
 			
-				Admin.util.ajaxLoad(true);
+				Admin.util.ajax.loader(END);
 					
 				$(this).parent().ui();
 				
@@ -279,39 +371,19 @@
 				$('fieldset.pages-information').addClass('last').show();
 			}
 			
-			$('#page-tree').load(Admin.config.paths.base + '/pages/tree', load);
-		},
-		
-		action_add: function(){
-			
-			// load and initiate wysiwyg
-			require([Admin.config.paths.tinymce, Admin.config.paths.tinymce_init], function() {
-			
-			});
-		},
-		
-		action_edit: function(){
-			
-			// load and initiate wysiwyg
-			require([Admin.config.paths.tinymce, Admin.config.paths.tinymce_init], function() {
-			
-			});
+			$('#page-tree').load(Admin.config.paths.base + '/pages/tree', load);			
 		}
 	};
-	
+
 	Admin.controller.users = {
 	
-		init: function(){
-
-		},
-		
 		action_index: function(){
 			
-			Admin.util.ajaxLoad();
+			Admin.util.ajax.loader(BEGIN);
 			
 			function load(){
 			
-				Admin.util.ajaxLoad(true);
+				Admin.util.ajax.loader(END);
 					
 				$(this).parent().ui();				
 			}
@@ -319,12 +391,6 @@
 			$('#page-tree').load(Admin.config.paths.base + '/users/tree', load);
 		}
 	};
-	
-	Admin.controller.assets = {
-		
-	};
-	
-	window.Admin = Admin;
 	
 	$.fn.ui = function(){
 		
@@ -334,4 +400,6 @@
 		})
 	};
 	
+	window.Admin = Admin;
+		
 })(this, this.jQuery);
