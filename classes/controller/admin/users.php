@@ -74,7 +74,7 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		}
 		
 		// Try update the user, if succesful then reload the page
-		if ($user->update_admin($_POST))
+		if ($user->admin_update($_POST))
 		{
 			Message::set(Message::SUCCESS, __('User successfully updated.'));
 			$this->request->redirect($this->request->uri);
@@ -117,7 +117,7 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 	
 	public function action_tree()
 	{
-		$this->template->content = ORM::factory('group')->tree_list_html('admin/page/users/tree');
+		$this->template->content = ORM::factory('group')->admin_tree_list_html('admin/page/users/tree');
 	}
 
 } // End Controller_Admin_users

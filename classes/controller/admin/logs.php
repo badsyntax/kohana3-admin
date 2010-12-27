@@ -16,8 +16,8 @@ class Controller_Admin_Logs extends Controller_Admin_Base {
 
 		$entries = Admin_Log::get_entries($file, $cur_year, $cur_month);
 
-		if ($entries !== NULL) {
-		
+		if ($entries !== NULL)
+		{
 			$entries = Admin_Log::format_entries($entries);
 		}
 

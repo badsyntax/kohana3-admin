@@ -15,22 +15,17 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 		{
 			Message::set(Message::SUCCESS, __('Role successfully saved.'));
 			
-			$this->request->redirect('admin/roles');
+			!$this->is_ajax AND $this->request->redirect('admin/roles');
 		}
 
-		if ( $errors = $_POST->errors('admin/user'))
+		if ($errors = $_POST->errors('admin/user'))
 		{
 			 Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
 
 		$_POST = $_POST->as_array();
 		
-		if ( $is_ajax ) {
-
-			$this->template->content = json_encode($errors);
-
-			$this->request->headers['Content-Type'] = 'application/json';
-		}
+		$this->json_response($errors);
 	}
 
 	public function action_edit($id = 0)
@@ -60,7 +55,6 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 			$this->request->redirect($this->request->uri);
 		}
 
-		// Get validation errors
 		if ($errors = $_POST->errors('admin/user'))
 		{
 			Message::set(Message::ERROR, __('Please correct the errors.'));
@@ -68,6 +62,8 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 
 		// If POST is empty, then add the default data to POST
 		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);
+		
+		$this->json_response($errors);
 	}
 
 } // End Controller_Admin_Roles
