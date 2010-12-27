@@ -17,6 +17,8 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	
 	public function before()
 	{
+		$this->is_ajax = (bool) Request::$is_ajax;
+		
 		// If the crud model isn't set then use the controller name (default)
 		$this->crud_model === FALSE AND $this->crud_model = $this->request->controller;
 		
@@ -40,8 +42,28 @@ abstract class Controller_Admin_Base extends Controller_Base {
 			$this->template->scripts = array_merge($this->template->scripts, Kohana::config('admin/media.scripts'));
 			$this->template->paths = json_encode(array_map('URL::site', array_merge($this->template->paths, Kohana::config('admin/media.paths'))));
 		}
-		
+				
 		parent::after();
+	}
+	
+	public function json_response($data=array(), $data_type='errors')
+	{
+		if ($this->is_ajax)
+		{			
+			$data = ($data)
+				? array(
+					'status' => FALSE,
+					$data_type => $data
+				)
+				: array(
+					'status' => TRUE,
+					'redirect_url' => URL::site('admin/'.$this->request->controller)
+				);
+				
+			$this->template->content = json_encode($data);
+
+			$this->request->headers['Content-Type'] = 'application/json';
+		}
 	}
 
 	// A generic index action to show lists of model items
@@ -88,7 +110,7 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		parent::authenticate();
 	}
 	
-	// A generic delete action to deletes a model item by ID
+	// A generic delete action to delete a model item by ID
 	public function action_delete($id = 0)
 	{
 		$item = ORM::factory( $this->crud_model_singular, (int) $id);
