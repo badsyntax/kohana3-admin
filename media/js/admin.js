@@ -1,7 +1,7 @@
 /*
  *
  * @filename : admin.js
- * @developer : badsyntax
+ * @developer : badsyntax.co
  *
  */
 
@@ -19,16 +19,19 @@
 			}
 		}
 		
-		// Constants */
+		// Constants
 		  BEGIN = 1
 		, END = 0
 		, RESET = -1
 		
-		// Our main global admin Admin object
+		// Our main global Admin object
 		, Admin = {}
 	;
 
-	Admin.model = Admin.view = Admin.controller = Admin.util = {};
+	Admin.model = {};
+	Admin.view = {};
+	Admin.controller = {};
+	Admin.util = {};
 	
 	function log(msg){	
 			
@@ -40,6 +43,7 @@
 	Admin.init = function(options){
 		
 		this.config = $.extend(config, options);
+		
 		var 
 			self = this
 			, benchmark_start
@@ -59,11 +63,18 @@
 			}
 		}
 				
-		// build the ui, reset ajax actions, bind common page events
 		function setup(){
 
+			// Build the models
+			$.each(Admin.model, function(key, val){
+				
+				Admin.model[key] = $.extend({}, new Model(key), this);
+			});
+
+			// Reset the ajax loader
 			self.util.ajax.loader(RESET);
 
+			// Build the interface and bind interaction handlers
 			self.util.ui('body');
 		}
 		
@@ -72,43 +83,190 @@
 			
 			var controller = self.controller[route.controller];
 			
-			// TODO: If controller doesn't exist then try load it in via require.js
+			// TODO: If controller doesn't exist then try load it in via require.js (optional)
 			
 			if (!route.action && route.controller && controller) return;
 			
-			var base = new Controller(route.controller);
-			
-			controller = $.extend({}, base, controller);
+			// Extend the base controller with controller methods
+			controller = $.extend({}, new Controller(route.controller), controller);
 
+			// Execute before method
 			controller.before && controller.before();
 
+			// Execute action methods
 			controller['action_' + route.action] && controller['action_' + route.action]();
-					
+			
+			// Execute after method
 			controller.after && controller.after();			
 		}
 		
-		// Allow access to the benchmark results
+		// Global Ajax event handlers
+		$.ajaxSetup({
+
+			error: function(xhr, textStatus, error, callback) {
+
+				// data is sent as a serialized string
+
+				var queryvar = /([^&=]+)=([^&]+)/g;
+
+				while (match = queryvar.exec( decodeURIComponent( this.data ) )) {
+
+					if ( match[1] == 'showAjaxError' && match[2] == 0 ) {
+
+							showError = 0;
+					}
+				}
+
+				setTimeout(function(){
+
+					Admin.util.events.register('page.saveError', 'sites');
+
+					alert('Sorry, an unexpected error occured. Please try again.');
+
+					(callback) && callback.apply();
+				});
+			}
+		});		
+		
+		// Expose the benchmark results
 		this.benchmark = function(){
 			
 			return {
 				
 				benchmark_start: benchmark_start
 			}			
-		};		
+		};
 		
+		
+		// Start the benchmark
 		benchmark(BEGIN);
 		
-		// build page elements and init interactions
+		// Build page elements and init interactions
 		setup();
 		
-		// begin the routing
+		// Begin the routing
 		bootstrap(config.route);
 		
+		// Stop the benchmark
 		benchmark(END);
 		
 		// If environment mode is DEVELOPMENT then log the benchmark results
+		log('executed in: ' + benchmark_time + 'ms');
 	};
 	
+	// Base controller constructor
+	function Controller(name){
+		
+		this.controller = name || 'controller';
+		
+		this.elements = {};
+		
+		// base init stuff here
+		
+		// Bind the submit validation handler to validation forms 
+		Admin.util.validate();		
+	}
+
+	Admin.controller.pages = {
+		
+		action_index: function(){
+			
+			Admin.model.page.getTree('#page-tree');
+		},
+		
+		action_add: function(){
+	
+			this.getWysiwyg();
+		},
+		
+		action_edit: function(){
+
+			this.getWysiwyg();
+		},
+		
+		getWysiwyg: function(){
+
+			// load and initiate wysiwyg
+			require([Admin.config.paths.tinymce, Admin.config.paths.tinymce_init], function() {
+			
+			});
+		},
+	};
+
+	Admin.controller.users = {
+	
+		action_index: function(){
+			
+			Admin.model.user.getTree('#page-tree');
+		}
+	};
+	
+	Admin.controller.groups = {
+	
+		action_index: function(){
+			
+			Admin.model.group.getTree('#groups-tree');
+		}
+	};
+	
+	// Base model
+	function Model(name){
+		
+		this.controller = '';
+		
+		this.getTree = function(elem){
+	
+			var self = this, uri = [
+				Admin.config.paths.base,
+				self.controller,
+				'tree'
+			];
+			Admin.util.ajax.loader(BEGIN);
+
+			function load(){
+
+				Admin.util.ajax.loader(END);
+
+				// Build the tree widget
+				$(this).parent().ui();
+
+				var total = $(this).find('a').length;
+
+				$('#total-' + self.controller).html( total.toString() );
+
+				$('fieldset.' + self.controller +'-list.last').removeClass('last');
+
+				$('fieldset.' + self.controller + '-information').addClass('last').show();
+			}
+			
+			$(elem).load(uri.join('/'), load);
+		};		
+	}
+	
+	// Set the models here
+	// You need to define the controller var. The model
+	// uses this controller to collect the data.
+
+	Admin.model.page = {
+		
+		controller: 'pages'
+	};
+	
+	Admin.model.user = {
+		
+		controller: 'users'
+	};
+	
+	Admin.model.group = {
+	
+		controller: 'groups'
+	};
+	
+	
+	
+	/* UTILS METHODS */
+	
+
 	// Build the interface on an element
 	Admin.util.ui = function(selector){
 		
@@ -116,20 +274,17 @@
 		
 		/* Messages */
 		elem.find('#messages').children().length 
-			&& $('#messages')
-				.bind('show.vex', function(){
+			
+			&& $('#messages').bind('show', function(){
 					$(this).fadeIn(1400);
 				})
-				.trigger('show.vex');
+				.trigger('show');
 
 		/* Selectmenu */
-		elem
-			.find('select')
-			.selectmenu();
+		elem.find('select').selectmenu();
 
 		/* Save Button */
-		elem
-			.find('button.ui-button.save')
+		elem.find('button.ui-button.save')
 			.button({
 				icons: {
 					primary: "ui-icon-disk"
@@ -137,23 +292,16 @@
 			});
 
 		/* Default Button */
-		elem
-			.find('button.default')
-			.button();
+		elem.find('button.default').button();
 
 		/* Tabs */
-		elem
-			.find('.tabs')
-			.tabs();
+		elem.find('.tabs').tabs();
 
 		/* Tree */
-		elem
-			.find('.ui-tree ul:first')
-			.tree();
+		elem.find('.ui-tree ul:first').tree();
 
 		/* Button Menu */
-		elem.find('.action-menu button')
-		.button({
+		elem.find('.action-menu button').button({
 			icons: {
 				primary: "ui-icon-gear",
 				secondary: "ui-icon-triangle-1-s"
@@ -165,10 +313,8 @@
 				.next()
 				.menu({
 					select: function(event, ui) {
-
 						$(this).hide();
-
-						if (ui.item) {
+						if (ui.item) {							
 							window.location = ui.item.find('a').attr('href'); 
 						}
 					},
@@ -182,16 +328,13 @@
 			$(this)
 				.trigger('mousedown.button')
 				.bind('mouseleave.admin.button', function(){
-
 					$(this).addClass('ui-state-active');
 				});
 
 			var menu = $(this).next();
 
 			if (menu.is(":visible")) {
-
 				menu.hide();
-
 				return false;
 			}
 
@@ -220,7 +363,7 @@
 		
 		arg = arg || [];
 		
-	 	( type === 'function' ) && callback.apply( scope, arg );
+		( type === 'function' ) && callback.apply( scope, arg );
 	};
 	
 	Admin.util.ajax = {
@@ -247,15 +390,15 @@
 		
 		function postSuccess(data){
 			
-			Admin.util.ajax.loader(BEGIN);
+			Admin.util.ajax.loader(END);
 
 			$('.form-error, .label-error').hide();
+			
+			if (data.status && data.redirect_url) {
 
-			if (data.status && (data.errors.length !== undefined && !data.errors.length)) {
+				window.location = data.redirect_url;
 
-				Admin.util.message('success', 'Successfully updated.');
-
-			} else {
+			} else if (!data.status && data.errors){
 				
 				Admin.util.message('error', 'Please correct the errors.');
 
@@ -264,8 +407,7 @@
 					var id = $('[name="' + key + '"]').attr('id'),
 						label = $('label[for="' + id + '"]');
 					
-					!label.find('.label-error').length 
-						&& label.append('<span class="label-error"></span>');
+					!label.find('.label-error').length && label.append('<span class="label-error"></span>');
 					
 					label.find('.label-error')
 						.hide()
@@ -279,7 +421,7 @@
 			.submit(function(e){
 				
 				e.preventDefault();
-				Admin.util.ajax.loader(END);
+				Admin.util.ajax.loader(BEGIN);
 				form = this;
 
 				$.ajax({
@@ -316,82 +458,49 @@
 		}
 	};
 	
-	/* CONTROLLERS */
-	
-	// base controller
-	function Controller(name){
-		
-		this.controller = name || 'controller';
-		
-		this.elements = {};
-		
-		
-		// base init stuff here
-	}
+	Admin.util.events = {
 
-	Admin.controller.pages = {
-		
-		action_index: function(){
-			
-			this.getPageTree();
-		},
-		
-		action_add: function(){
-	
-			this.getWysiwyg();
-		},
-		
-		action_edit: function(){
+		callbacks : {},
 
-			this.getWysiwyg();
-		},
-		
-		getWysiwyg: function(){
+		register : function(eventname, namespace, vars){
 
-			// load and initiate wysiwyg
-			require([Admin.config.paths.tinymce, Admin.config.paths.tinymce_init], function() {
-			
+			namespace = namespace || 'default';
+			vars = vars || {};
+
+			var self = this;
+
+			(this.callbacks[eventname] && this.callbacks[eventname][namespace]) &&
+
+				$.each(this.callbacks[eventname][namespace], function(i){
+
+					(this.callback && this.callback.constructor == Function) && this.callback(vars);
+
+					(this.fireonce) && delete self.callbacks[eventname][namespace][i];
+				});
+		}
+	};
+
+	Admin.util.hooks = {
+
+		register : function(eventname, namespace, callback, fireonce) {
+
+			namespace = namespace || 'default';
+			fireonce = fireonce || false;
+
+			if (!$.sledge.events.callbacks[eventname]) {
+
+				Admin.util.events.callbacks[eventname] = [];
+
+				Admin.util.events.callbacks[eventname][namespace] = [];
+			}
+
+			Admin.util.events.callbacks[eventname][namespace].push({
+				callback: callback,
+				fireonce: fireonce
 			});
-		},
-
-		getPageTree: function(){
-
-			Admin.util.ajax.loader(BEGIN);
-			
-			function load(){
-			
-				Admin.util.ajax.loader(END);
-					
-				$(this).parent().ui();
-				
-				$('#total-pages').html( $(this).find('a').length );
-				
-				$('fieldset.pages-list.last').removeClass('last');
-				
-				$('fieldset.pages-information').addClass('last').show();
-			}
-			
-			$('#page-tree').load(Admin.config.paths.base + '/pages/tree', load);			
 		}
 	};
-
-	Admin.controller.users = {
-	
-		action_index: function(){
-			
-			Admin.util.ajax.loader(BEGIN);
-			
-			function load(){
-			
-				Admin.util.ajax.loader(END);
-					
-				$(this).parent().ui();				
-			}
-			
-			$('#page-tree').load(Admin.config.paths.base + '/users/tree', load);
-		}
-	};
-	
+		
 	$.fn.ui = function(){
 		
 		return this.each(function(){
