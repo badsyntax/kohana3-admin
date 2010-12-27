@@ -27,24 +27,12 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 			$this->request->redirect('admin/pages');
 		}
 		
-		if ($errors = $_POST->errors('admin'))
+		if ($this->errors = $_POST->errors('admin'))
 		{
 			 Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
 		
 		$_POST = $_POST->as_array();
-		
-		if ( Request::$is_ajax ) {
-
-			$this->template->content = json_encode($errors);
-
-			$this->request->headers['Content-Type'] = 'application/json';
-		}
-	}
-	
-	public function action_tree()
-	{
-		$this->template->content = ORM::factory('page')->tree_list_html('admin/page/pages/tree');
 	}
 	
 	public function action_edit($id = 0)
@@ -77,20 +65,18 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 			$this->request->redirect($this->request->uri);
 		}
 		
-		if ($errors = $_POST->errors('pages'))
+		if ($this->errors = $_POST->errors('pages'))
 		{
  			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
 
 		// Add the default data to POST
 		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);
-
-		if ( $is_ajax ) {
-
-			$this->template->content = json_encode($errors);
-
-			$this->request->headers['Content-Type'] = 'application/json';
-		}
+	}
+	
+	public function action_tree()
+	{
+		$this->template->content = ORM::factory('page')->tree_list_html('admin/page/pages/tree');
 	}
 
 } // End Controller_Admin_Pages
