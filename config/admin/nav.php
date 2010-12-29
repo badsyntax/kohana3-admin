@@ -12,6 +12,7 @@ return array(
 		'admin/config' 		=> __('Config'),
 		'admin/cache' 		=> __('Cache'),
 		'admin/activity' 	=> __('Activity'),
-		'admin/wysiwyg'		=> __('Wysiwyg')
+		'admin/wysiwyg'		=> __('Wysiwyg'),
+		'admin/migrations'	=> __('Migrations')
 	)
 );
