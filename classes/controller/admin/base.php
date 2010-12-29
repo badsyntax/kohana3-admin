@@ -15,6 +15,8 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	// Only users with role 'admin' can view this controller
 	protected $auth_required = 'admin';
 	
+	protected $view_path = NULL;
+	
 	public function before()
 	{
 		$this->is_ajax = (bool) Request::$is_ajax;
@@ -38,44 +40,31 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	{
 		if ($this->auto_render)
 		{
-			$this->template->styles = array_merge($this->template->styles, Kohana::config('admin/media.styles'));
-			$this->template->scripts = array_merge($this->template->scripts, Kohana::config('admin/media.scripts'));
-			$this->template->paths = json_encode(array_map('URL::site', array_merge($this->template->paths, Kohana::config('admin/media.paths'))));
+			$this->template->styles = array_merge(Kohana::config('admin/media.styles'), $this->template->styles);
+			$this->template->scripts = array_merge(Kohana::config('admin/media.scripts'), $this->template->scripts);
+			$this->template->paths = json_encode(array_map('URL::site', array_merge(Kohana::config('admin/media.paths', $this->template->paths))));
+
+			$this->template->breadcrumbs = $this->get_breadcrumbs();
 		}
 				
 		parent::after();
-	}
-	
-	public function json_response($data=array(), $data_type='errors')
-	{
-		if ($this->is_ajax)
-		{			
-			$data = ($data)
-				? array(
-					'status' => FALSE,
-					$data_type => $data
-				)
-				: array(
-					'status' => TRUE,
-					'redirect_url' => URL::site('admin/'.$this->request->controller)
-				);
-				
-			$this->template->content = json_encode($data);
-
-			$this->request->headers['Content-Type'] = 'application/json';
-		}
 	}
 
 	// A generic index action to show lists of model items
 	public function action_index()
 	{
+		if ($this->view_path === NULL)
+		{
+			$this->view_path = 'admin/page/'.$this->crud_model.'/index';
+		}
+		
 		// Crud model needs to be set
 		$this->crud_model === FALSE AND $this->request->redirect('admin');
 
 		$this->template->title = __('Edit '.ucfirst($this->crud_model));
 
 		// Bind useful data objects to the view
-		$this->template->content = View::factory('admin/page/'.$this->crud_model.'/index')
+		$this->template->content = View::factory($this->view_path)
 			->bind($this->crud_model, $items)
 			->bind('total', $total)
 			->bind('page_links', $page_links);
@@ -103,9 +92,17 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	{
 		// The user may be logged in but not have the correct permissions to view this controller and/or action, 
 		// so instead of redirecting to signin page we redirect to 403 Forbidden
-		Auth::instance()->logged_in() 
-			AND Auth::instance()->logged_in($this->auth_required) === FALSE
-			AND $this->request->redirect('403');
+		if ( Auth::instance()->logged_in() AND Auth::instance()->logged_in($this->auth_required) === FALSE)
+		{
+			if (!$this->is_ajax)
+			{
+				$this->request->redirect('403');
+			}
+			else
+			{
+				exit(__('No permission.'));
+			}
+		}
 
 		parent::authenticate();
 	}
@@ -115,14 +112,15 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	{
 		$item = ORM::factory( $this->crud_model_singular, (int) $id);
 
-		! $item->loaded() AND $this->request->redirect('admin');
+		!$item->loaded() AND $this->request->redirect('admin');
 		
 		$data = array('id' => $id);
 
 		if ( $item->admin_delete(NULL, $data))
 		{
-			$message = ucfirst($this->crud_model_singular).' '.__('successfully deleted.');
+			$message = ucfirst($this->crud_model_singular).' '.__('successfully deleted.');			
 			Message::set(Message::SUCCESS, $message);
+			
 			$this->request->redirect('admin/'.$this->crud_model);
 		}
 		
@@ -130,6 +128,39 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		{
 			throw new Exception(implode("\n", $errors));
 		}		
+	}
+	
+	private function get_breadcrumbs($pages = array())
+	{
+		foreach($segments = explode('/', $this->request->uri) as $key => $page)
+		{
+			$pages[] = array(
+				'title' => $page,
+				'url'	=> URL::site(join('/', array_slice($segments, 0, ($key + 1))))
+			);
+		}
+		
+		return View::factory('admin/page/fragments/breadcrumbs')->set('pages', $pages);
+	}
+	
+	public function json_response($data=array(), $data_type='errors')
+	{
+		if ($this->is_ajax)
+		{			
+			$data = ($data)
+				? array(
+					'status' => FALSE,
+					$data_type => $data
+				)
+				: array(
+					'status' => TRUE,
+					'redirect_url' => URL::site('admin/'.$this->request->controller)
+				);
+				
+			$this->template->content = json_encode($data);
+
+			$this->request->headers['Content-Type'] = 'application/json';
+		}
 	}
 
 } // End Controller_Admin_Base
