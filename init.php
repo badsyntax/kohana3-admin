@@ -12,12 +12,21 @@ Route::set('admin/media', 'admin/media(/<file>)', array('file' => '.+'))
 	));
 	
 // Assets
-Route::set('admin-assets', 'admin/assets/get_asset(/<id>)(/<width>)(/<height>)(/<crop>)')
+Route::set('admin/get-asset', 'admin/assets/get_asset(/<id>)(/<width>)(/<height>)(/<crop>)')
 	->defaults(array(
 		'action' => 'get_asset',
 		'directory' => 'admin',
 		'controller' => 'assets'
 	));
+	
+// Popup assets
+Route::set('admin/popup-assets', 'admin/assets/popup(/<action>)(/<id>)')
+	->defaults(array(
+		'controller' => 'assets',
+		'directory' => 'admin',
+		'popup' => TRUE
+	));
+	
 // Admin Actions
 Route::set('admin', 'admin/<controller>(/<action>)(/<id>)')
 	->defaults(array(
@@ -26,7 +35,7 @@ Route::set('admin', 'admin/<controller>(/<action>)(/<id>)')
 	));
 	
 // Logs
-Route::set('admin-logs', 'admin/logs(/<file>)', array('file' => '.+'))
+Route::set('admin/logs', 'admin/logs(/<file>)', array('file' => '.+'))
 	->defaults(array(
 		'controller' => 'admin_logs',
 		'action'     => 'index',	
