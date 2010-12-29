@@ -18,10 +18,17 @@
 
 		<?php echo $content ?>
 	</div>
-	<?php if (Kohana::$environment === Kohana::DEVELOPMENT){?>
-		<div class="benchmark"> {execution_time} - {memory_usage} </div>
-	<?php } else {?>
-		<!-- {execution_time} - {memory_usage} -->
-	<?php }?>
+	<script type="text/javascript">
+	(function(){
+		Admin.init({
+			paths: <?php echo $paths?>,
+			route: {
+				controller: '<?php echo Request::instance()->controller?>',
+				action: '<?php echo Request::instance()->action?>'
+			}
+		});
+	})(this.jQuery);
+	</script>
+	<!-- {execution_time} - {memory_usage} -->
 </body>
 </html>
