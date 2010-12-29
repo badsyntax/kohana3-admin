@@ -36,7 +36,7 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		$user = ORM::factory('user', (int) $id);
 
 		! $user->loaded() AND $this->request->redirect('admin');
-
+		
 		$this->template->title = __('Edit user').' '.$user->username;
 
 		// If POST is empty then set the default form data
@@ -117,7 +117,14 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 	
 	public function action_tree()
 	{
-		$this->template->content = ORM::factory('group')->admin_tree_list_html('admin/page/users/tree');
+		$open_groups = Arr::get($_COOKIE, 'users/index', array());
+		
+		if ($open_groups)
+		{
+			$open_groups = explode(',', $open_groups);
+		}
+
+		$this->template->content = ORM::factory('group')->tree_list_html('admin/page/users/tree', 0, $open_groups);
 	}
 
 } // End Controller_Admin_users

@@ -17,7 +17,7 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 			->set('parent_id', Arr::get($_POST, 'parent_id', $parent_id))
 			->bind('errors', $errors);
 
-		$pages = ORM::factory('page')->tree_select(4, 0, array(__('None')));
+		$pages = ORM::factory('page')->tree_select(4, 0, array(__('None')), 0, 'title');
 
 		array_push($this->template->styles, Kohana::config('admin/media.paths.tinymce_skin'));
 		
@@ -53,8 +53,8 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 			->bind('page', $page)
 			->bind('pages', $pages)
 			->bind('errors', $errors);
-			
-		$pages = ORM::factory('page')->tree_select(4, 0, array(__('None')));
+
+		$pages = ORM::factory('page')->tree_select(4, 0, array(__('None')), 0, 'title');
 		
 		array_push($this->template->styles, Kohana::config('admin/media.paths.tinymce_skin'));
 		
@@ -76,7 +76,14 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 	
 	public function action_tree()
 	{
-		$this->template->content = ORM::factory('page')->tree_list_html('admin/page/pages/tree');
+		$open_pages = Arr::get($_COOKIE, 'pages/index', array());
+		
+		if ($open_pages)
+		{
+			$open_pages = explode(',', $open_pages);
+		}
+
+		$this->template->content = ORM::factory('page')->tree_list_html('admin/page/pages/tree', 0, $open_pages);
 	}
 
 } // End Controller_Admin_Pages
