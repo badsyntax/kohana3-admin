@@ -32,6 +32,7 @@
 					<?php echo Message::render() ?>
 				</div>
 
+				<?php echo $breadcrumbs?>
 				<?php echo $content ?>
 			</div>
 		
@@ -50,6 +51,7 @@
 	<script type="text/javascript">
 	(function(){
 		Admin.init({
+			environment: '<?php echo Kohana::$environment?>',
 			paths: <?php echo $paths?>,
 			route: {
 				controller: '<?php echo Request::instance()->controller?>',
