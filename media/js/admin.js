@@ -4,7 +4,6 @@
  * @developer : badsyntax.co
  *
  */
-
 (function(window, $){
 
 	if (window.Admin) return;
@@ -19,10 +18,11 @@
 			}
 		}
 		
-		// Constants
-		  BEGIN = 1
+		, BEGIN = 1
 		, END = 0
 		, RESET = -1
+		, DEVELOPMENT = 'development'
+		, PRODUCTION = 'production'
 		
 		// Our main global Admin object
 		, Admin = {}
@@ -50,7 +50,7 @@
 			, benchmark_end
 			, benchmark_time
 		;			
-		
+
 		function benchmark(action){
 			
 			switch(action) {
@@ -81,11 +81,9 @@
 		// Execute a controller action		
 		function bootstrap(route){
 			
+			if (!route.action) return;
+
 			var controller = self.controller[route.controller];
-			
-			// TODO: If controller doesn't exist then try load it in via require.js (optional)
-			
-			if (!route.action && route.controller && controller) return;
 			
 			// Extend the base controller with controller methods
 			controller = $.extend({}, new Controller(route.controller), controller);
@@ -104,22 +102,12 @@
 		$.ajaxSetup({
 
 			error: function(xhr, textStatus, error, callback) {
-
-				// data is sent as a serialized string
-
-				var queryvar = /([^&=]+)=([^&]+)/g;
-
-				while (match = queryvar.exec( decodeURIComponent( this.data ) )) {
-
-					if ( match[1] == 'showAjaxError' && match[2] == 0 ) {
-
-							showError = 0;
-					}
-				}
+				
+				Admin.util.ajax.loader(END);
 
 				setTimeout(function(){
 
-					Admin.util.events.register('page.saveError', 'sites');
+					Admin.util.events.register('error', 'ajax');
 
 					alert('Sorry, an unexpected error occured. Please try again.');
 
@@ -131,12 +119,8 @@
 		// Expose the benchmark results
 		this.benchmark = function(){
 			
-			return {
-				
-				benchmark_start: benchmark_start
-			}			
-		};
-		
+			return { benchmark_start: benchmark_start }			
+		};		
 		
 		// Start the benchmark
 		benchmark(BEGIN);
@@ -151,7 +135,7 @@
 		benchmark(END);
 		
 		// If environment mode is DEVELOPMENT then log the benchmark results
-		log('executed in: ' + benchmark_time + 'ms');
+		this.config.environment == DEVELOPMENT && log('executed in: ' + benchmark_time + 'ms');
 	};
 	
 	// Base controller constructor
@@ -192,6 +176,17 @@
 			});
 		},
 	};
+	
+	Admin.controller.wysiwyg = {
+	
+		action_index: function(){
+			
+			// load and initiate wysiwyg
+			require([Admin.config.paths.tinymce, Admin.config.paths.tinymce_init], function() {
+
+			});
+		}
+	};
 
 	Admin.controller.users = {
 	
@@ -208,6 +203,62 @@
 			Admin.model.group.getTree('#groups-tree');
 		}
 	};
+	
+	Admin.controller.assets = {
+		
+		action_index: function(){
+		
+			$('#delete-assets').click(function(){
+				
+				var ids = [];
+				$('input[name^=asset-]:checked').each(function(){
+					ids.push(this.value);
+				});
+
+				if (ids.length) {
+					
+					window.location = this.href + '?assets=' + ids.join(',');
+					
+				} else {
+					
+					alert('Please select some assets');
+				}
+				
+				return false;
+			});
+		},
+	
+		action_edit: function(){
+
+			$('#filename')
+			.focus(function(){
+	
+				if (!$.data(this, 'extension')){
+
+					$.data(this, 'extension', this.value.replace(/^.*(\..*?)$/, '$1'));
+				}				
+				this.value = this.value.replace(new RegExp($.data(this, 'extension') + '$'), '');
+			})
+			.blur(function(){
+				this.value += $.data(this, 'extension');				
+			})
+		},
+		
+		action_upload: function(){
+			
+			return;
+			$('#asset').uploadify({
+			    uploader  		: '/modules/admin/media/flash/uploadify.swf',
+			    script    		: '/admin/assets/upload',
+			    cancelImg 		: '/modules/admin/media/img/uploadify-cancel.png',
+			    auto      		: true,
+				debug			: true,
+				fileDataName 	: 'asset'
+			});			
+		}		
+		
+	}; // End Controller Assets
+	
 	
 	// Base model
 	function Model(name){
@@ -271,36 +322,68 @@
 	Admin.util.ui = function(selector){
 		
 		var elem = $(selector);
-		
-		/* Messages */
+
+		// Messages
 		elem.find('#messages').children().length 
 			
 			&& $('#messages').bind('show', function(){
 					$(this).fadeIn(1400);
-				})
-				.trigger('show');
+				}).trigger('show');
 
-		/* Selectmenu */
+		// Selectmenu
 		elem.find('select').selectmenu();
 
-		/* Save Button */
+		// Save Button
 		elem.find('button.ui-button.save')
 			.button({
-				icons: {
-					primary: "ui-icon-disk"
-				}
+				icons: { primary: "ui-icon-disk" }
 			});
 
-		/* Default Button */
+		// Default Button
 		elem.find('button.default').button();
 
-		/* Tabs */
+		// Tabs
 		elem.find('.tabs').tabs();
 
-		/* Tree */
-		elem.find('.ui-tree ul:first').tree();
+		// Tree
+		function setTreeCookie(event){
 
-		/* Button Menu */
+			var id = $(this).data('id'), 
+				name = (Admin.config.route.controller + '/' + Admin.config.route.action),
+				ids = Admin.util.cookie.get(name);
+				
+			if (!id) return;
+
+			ids = (ids)
+				? ids.split(',')
+				: [];
+				
+			if (event.type == 'expand') {
+
+				if ( $.inArray( id.toString(), ids ) !== -1 ) return;
+
+				ids.push(id.toString());
+
+				Admin.util.cookie.set(name, ids.join(','));
+				
+			} else if (event.type == 'collapse') {
+				
+				for (var i in ids) {
+					
+					( ids[i] == id ) && ids.splice( i, 1 );
+				}
+
+				Admin.util.cookie.set(name, ids.join(','));
+			}
+		}
+		elem.find('.ui-tree ul:first').tree({
+			onExpand: setTreeCookie,
+			onCollapse: setTreeCookie
+		})
+		// expand the open tree nodes
+		.find('.tree-open').trigger('expand', [0]);
+		
+		// Button Menu
 		elem.find('.action-menu button').button({
 			icons: {
 				primary: "ui-icon-gear",
@@ -309,14 +392,11 @@
 		})
 		.each(function() {
 
-			$(this)
-				.next()
+			$(this).next()
 				.menu({
 					select: function(event, ui) {
 						$(this).hide();
-						if (ui.item) {							
-							window.location = ui.item.find('a').attr('href'); 
-						}
+						if (ui.item) { window.location = ui.item.find('a').attr('href'); }
 					},
 					input: $(this)
 				}).hide();
@@ -409,8 +489,7 @@
 					
 					!label.find('.label-error').length && label.append('<span class="label-error"></span>');
 					
-					label.find('.label-error')
-						.hide()
+					label.find('.label-error').hide()
 						.html(' - ' + val)
 						.fadeIn('slow');
 				});
@@ -458,6 +537,53 @@
 		}
 	};
 	
+	Admin.util.cookie = {
+
+		config : {
+			expiredays: 1,
+			path: '/'
+		},
+
+		_save : function(name, val, expiredays){
+			
+			expiredays = expiredays || this.config.expiredays || null;
+
+			var expiredate = new Date();
+
+			expiredate.setDate(expiredate.getDate() + expiredays);
+
+			document.cookie = 
+				name + '=' 
+				+ escape(val) 
+				+ ((expiredays === null) 
+						? '' 
+						: ';expires=' + expiredate.toGMTString()) 
+				+ ';path=' + this.config.path;
+		},
+
+		get : function(name){
+
+			if (!document.cookie.length) return;
+
+			var start = document.cookie.indexOf(name + '=');
+
+			if (start === -1) return '';
+
+			start = start + name.length + 1;
+
+			var end = document.cookie.indexOf(';', start);
+
+			if (end === -1) end = document.cookie.length;
+
+			return unescape(document.cookie.substring(start, end));
+		},
+
+		set : function(name, val, expiredays){
+			
+			this._save(name, val, expiredays);
+		}
+	};
+	
 	Admin.util.events = {
 
 		callbacks : {},
@@ -472,7 +598,7 @@
 			(this.callbacks[eventname] && this.callbacks[eventname][namespace]) &&
 
 				$.each(this.callbacks[eventname][namespace], function(i){
-
+					
 					(this.callback && this.callback.constructor == Function) && this.callback(vars);
 
 					(this.fireonce) && delete self.callbacks[eventname][namespace][i];
