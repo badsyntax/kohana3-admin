@@ -15,7 +15,7 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/pages/add')
 			->bind('pages', $pages)
 			->set('parent_id', Arr::get($_POST, 'parent_id', $parent_id))
-			->bind('errors', $errors);
+			->bind('errors', $this->errors);
 
 		$pages = ORM::factory('page')->tree_select(4, 0, array(__('None')), 0, 'title');
 
@@ -24,7 +24,7 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 		if ($page = ORM::factory('page')->admin_add($_POST))
 		{
 			Message::set(Message::SUCCESS, __('Page saved.'));
-			$this->request->redirect('admin/pages');
+			!$this->is_ajax AND $this->request->redirect('admin/pages');
 		}
 		
 		if ($this->errors = $_POST->errors('admin'))

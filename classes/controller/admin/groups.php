@@ -7,7 +7,7 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 		$this->template->title = __('Add group');
 
 		$this->template->content = View::factory('admin/page/groups/add')
-			->bind('errors', $errors)
+			->bind('errors', $this->errors)
 			->bind('groups', $groups);
 			
 		$groups = ORM::factory('group')->tree_select(4, 0, array(__('None')));
@@ -19,14 +19,12 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 			!$this->is_ajax AND $this->request->redirect('admin/groups');
 		}
 
-		if ( $errors = $_POST->errors('admin/groups'))
+		if ($this->errors = $_POST->errors('admin/groups'))
 		{
 			 Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
 
 		$_POST = $_POST->as_array();
-		
-		$this->json_response($errors);
 	}
 	
 	public function action_edit($id = 0)
@@ -47,7 +45,7 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/groups/edit')
 			->bind('group', $group)
 			->bind('groups', $groups)
-			->bind('errors', $errors);
+			->bind('errors', $this->errors);
 			
 		$groups = ORM::factory('group')->tree_select(4, 0, array(__('None')));
 
@@ -67,8 +65,6 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 
 		// If POST is empty, then add the default data to POST
 		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);
-		
-		$this->json_response($errors);
 	}
 	
 	public function action_tree()

@@ -8,8 +8,7 @@ class Controller_Admin_Home extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/home/index')
 			->bind('db_config', $db_config)
 			->bind('modules', $modules)
-			->bind('db_size', $db_size)
-			->bind('logs', $log_entries);
+			->bind('db_size', $db_size);
 
 		// Get the database configuration
 		$db_config = Kohana::config('database');
@@ -28,8 +27,6 @@ class Controller_Admin_Home extends Controller_Admin_Base {
 			WHERE TABLE_SCHEMA LIKE "'.$db_config['connection']['database'].'"'
 			)->execute()->as_array();
 		$db_size = $db_size['0']['size'];
-
-		$log_entries = Admin_Log::latest_entries();
 	}
 
 } // End Controller_Admin_Home

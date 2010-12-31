@@ -8,8 +8,8 @@ class Controller_Admin_Wysiwyg extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/wysiwyg/index');
 		
 		// Add wysiwyg script paths
-		array_push($this->template->scripts, 'modules/admin/media/js/tinymce/jscripts/tiny_mce/tiny_mce.js');
-		array_push($this->template->scripts, 'modules/admin/media/js/wysiwyg.init.js');
+		array_push($this->template->styles, Kohana::config('admin/media.paths.tinymce_skin'));
+
 	}
 
 } // End Controller_Admin_Wysiwyg

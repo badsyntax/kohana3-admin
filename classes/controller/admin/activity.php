@@ -13,4 +13,4 @@ class Controller_Admin_Activity extends Controller_Admin_Base {
 			->find_all();
 	}
 
-} // End Controller_Admin_Notifications
+} // End Controller_Admin_Activity

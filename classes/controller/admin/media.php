@@ -9,7 +9,7 @@ class Controller_Admin_Media extends Controller_Admin_Base {
 		// Get the file path from the request
 		$file = $this->request->param('file');
 
-		$ext = preg_replace('/^.*\.(.*?)$/', '$1', $file);
+		$ext = trim(strrchr($file, '.'), '.');
 
 		if ($file)
 		{
@@ -26,4 +26,4 @@ class Controller_Admin_Media extends Controller_Admin_Base {
 		$this->request->headers['Content-Type'] = File::mime_by_ext($ext);
 	}
 	
-} // End Controller_Admin_Notifications
+} // End Controller_Admin_Media

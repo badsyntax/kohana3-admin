@@ -35,7 +35,7 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 	{
 		$user = ORM::factory('user', (int) $id);
 
-		! $user->loaded() AND $this->request->redirect('admin');
+		! $user->loaded() AND $this->request->redirect('admin/users');
 		
 		$this->template->title = __('Edit user').' '.$user->username;
 
