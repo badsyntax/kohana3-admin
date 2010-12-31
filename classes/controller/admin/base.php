@@ -17,6 +17,9 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	
 	protected $view_path = NULL;
 	
+	// Validation errors
+	protected $errors = NULL;
+	
 	public function before()
 	{
 		$this->is_ajax = (bool) Request::$is_ajax;
@@ -46,6 +49,11 @@ abstract class Controller_Admin_Base extends Controller_Base {
 
 			$this->template->breadcrumbs = $this->get_breadcrumbs();
 		}
+		
+		if ($this->is_ajax AND $this->errors !== NULL)
+		{			
+			$this->json_response($this->errors);
+		}
 				
 		parent::after();
 	}
@@ -53,18 +61,18 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	// A generic index action to show lists of model items
 	public function action_index()
 	{
-		if ($this->view_path === NULL)
+		if (!$this->template->content)
 		{
-			$this->view_path = 'admin/page/'.$this->crud_model.'/index';
+			$this->template->content = View::factory('admin/page/'.$this->request->controller.'/index');
 		}
 		
 		// Crud model needs to be set
 		$this->crud_model === FALSE AND $this->request->redirect('admin');
 
-		$this->template->title = __('Edit '.ucfirst($this->crud_model));
+		$this->template->title = __(ucfirst($this->crud_model));
 
 		// Bind useful data objects to the view
-		$this->template->content = View::factory($this->view_path)
+		$this->template->content
 			->bind($this->crud_model, $items)
 			->bind('total', $total)
 			->bind('page_links', $page_links);
