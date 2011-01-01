@@ -10,10 +10,8 @@ class Model_Page extends Model_Base_Page {
 			->rules('description', $this->_rules['description'])
 			->rules('uri', $this->_rules['uri'])
 			->rules('body', $this->_rules['body'])
-			->filter('title', 'trim')
-			->filter('description', 'trim')
-			->filter('uri', 'trim')
-			->filter('body', 'trim');
+			->rules('visible_from', $this->_rules['visible_from'])
+			->rules('visible_to', $this->_rules['visible_to']);
 	
 		if (!$data->check()) return FALSE;
 
@@ -32,10 +30,8 @@ class Model_Page extends Model_Base_Page {
 			->rules('description', $this->_rules['description'])
 			->rules('uri', $this->_rules['uri'])
 			->rules('body', $this->_rules['body'])
-			->filter('title', 'trim')
-			->filter('description', 'trim')
-			->filter('uri', 'trim')
-			->filter('body', 'trim')
+			->rules('visible_from', $this->_rules['visible_from'])
+			->rules('visible_to', $this->_rules['visible_to'])
 			->callback('parent_id', array($this, 'admin_check_parent_id'));
 		
 		if ( !$data->check()) return FALSE;
