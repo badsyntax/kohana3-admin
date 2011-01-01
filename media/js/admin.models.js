@@ -1,3 +1,9 @@
+/*
+ *
+ * @filename : admin.models.js
+ * @developer : badsyntax.co
+ *
+ */
 (function(window, $, Admin){
 	
 	if (!Admin) return;

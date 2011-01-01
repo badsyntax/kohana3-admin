@@ -1,3 +1,9 @@
+/*
+ *
+ * @filename : admin.controllers.js
+ * @developer : badsyntax.co
+ *
+ */
 (function(window, $, Admin){
 	
 	if (!Admin) return;
