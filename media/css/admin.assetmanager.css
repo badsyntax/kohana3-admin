@@ -1,0 +1,97 @@
+.assetmanager.popup body {
+	margin: 6px;
+	background: #F1F1F1;
+}
+.assetmanager.popup header, 
+.assetmanager.popup #content, 
+.assetmanager.popup footer,
+.assetmanager.popup.development .benchmark
+{
+	margin: 0;
+	width: auto;
+} 
+
+
+.assetmanager.popup { 
+	overflow: hidden;
+}
+
+.assetmanager.popup .ui-tabs .ui-tabs-nav li a {
+    padding: 0.2em 1em;
+}
+.assetmanager.popup .ui-state-active, 
+.assetmanager.popup .ui-widget-content .ui-state-active, 
+.assetmanager.popup .ui-widget-header .ui-state-active {
+	/*border-color: #ccc;*/
+}
+
+.assetmanager.popup .ui-tabs .ui-tabs-nav li .ui-icon-close {
+    cursor: pointer;
+    float: left;
+	margin: 0.2em 0.2em 0 -5px;
+}
+
+.assetmanager.popup .ui-tabs .ui-tabs-panel {
+	border-width: 1px;
+	border-color: #aaa;
+	background: #fff;
+}
+.assetmanager.popup .ui-tabs fieldset {
+	border: 0;
+	padding: 0;
+	background: transparent;
+}
+.assetmanager.popup .ui-tabs fieldset legend {
+	display: none;
+}
+.assetmanager.popup .ui-tabs.ui-widget-content {
+	border: 0;
+	background: transparent;
+	padding: 0;
+	margin-bottom: .8em;
+}
+.assetmanager.popup .ui-tabs .ui-tabs-nav {
+	padding: 0;
+	background: transparent;
+	border: 0;
+}
+.assetmanager.popup .ui-tabs-nav .action-menu {
+	background: transparent;
+	border: 0;
+}
+
+.assetmanager.popup .ui-dialog #messages {
+	background: transparent;
+	border: 0;
+	text-align: left;
+	padding: 1em;
+}
+
+.assetmanager.popup .ui-dialog #messages-content {
+	font-size: 108%;
+}
+
+.assetmanager.popup fieldset {
+	border-color: #aaa;
+	margin-bottom: 0;
+	padding: .4em 1em;
+}
+
+/* IMAGE SIZE TAB */
+#resize-image-wrapper {
+	overflow: auto;
+	height: 300px;
+	margin-top: 1em;
+	position: relative;
+	margin-bottom: 1em;
+	border: 1px solid #666;
+}
+#resize-image-dimensions {
+	background: #000;
+	color: #fff;
+	position: absolute;
+	top: 2px;
+	left: 4px;
+	z-index: 2;
+	padding: 2px;
+}
