@@ -1,16 +1,5 @@
-
-<div class="tabs">
-	
-
-	<ul>
-		<li><a href="#tabs-1">Thumbails</a></li>
-		<li><a href="#tabs-2">Details list</a></li>
-
-	</ul>
-	
-	<div class="action-bar clear" style="position: absolute;
-    right: 0.4em;
-    top: 0.4em;">
+	<div class="clear">
+	<div class="action-bar">
 
 		<div class="action-menu helper-right">
 			<button>Actions</button>
@@ -21,38 +10,54 @@
 		</div>
 
 	</div>
-	<div id="tabs-1">
+	
+
+		<?php echo $breadcrumbs?>
+	</div>
+	
 	<h1>Assets</h1>
 
 <form id="assets-list">
 <fieldset>	
-	<div class="assets-list">
-		<ul>
-		<?php foreach($assets as $asset){?>
-			<li>
-				<input type="checkbox" class="checkbox" name="asset-<?php echo $asset->id?>" value="<?php echo $asset->id?>" id="asset-<?php echo $asset->id?>" />
-				<a href="<?php echo URL::site('admin/assets/edit/'.$asset->id)?>">
-					<img src="<?php echo URL::site($asset->image_url(100, 100, TRUE))?>" />
-				</a>
-			</li>
-		<?php }?>
-		</ul>
-	</div>	
+	<div class="assets-list view-list clear">
+	<table>
+		<thead>
+			<tr>
+				<th><input type="checkbox" class="checkbox helper-left" style="margin-right:6px"/> File</th>
+				<th>Type</th>
+				<th>Size</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($assets as $asset){?>
+			<tr>
+				<td>
+					<a href="<?php echo URL::site('admin/assets/edit/'.$asset->id)?>" class="helper-left" style="background:transparent;padding:0">
+					<img src="<?php echo URL::site($asset->image_url(80, 80, TRUE))?>" class="asset-thumb helper-left" />
+					</a>
+					<input type="checkbox" class="checkbox helper-left" name="asset-<?php echo $asset->id?>" value="<?php echo $asset->id?>" id="asset-<?php echo $asset->id?>" style="margin-right:5px;margin-left:5px"/>
+					<?php echo HTML::anchor('admin/assets/edit/'.$asset->id, $asset->filename, array(
+						'class' => 'asset subtype-'.$asset->mimetype->subtype.' type-'.$asset->mimetype->type, 'data-id' =>$asset->id
+					))?>
+				</td>
+				<td><?php echo $asset->mimetype->type?></td>
+				<td><?php echo Text::bytes($asset->filesize)?></td>
+			</tr>
+			<?php }?>
+		</tbody>
+	</table>
+	</div>
+
 </fieldset>
 </form>
 
 <fieldset class="last">
 	<div id="page-links">
 		<div style="float:right"><?php echo $page_links?></div>
-		Showing <?php echo $assets->count()?> of <?php echo $total?> assets |
+		Showing <?php echo $assets->count()?> of <?php echo $total?> assets
+		<?php if ($assets->count() > 0){?> |
 		<a id="select-all" href="#select-all">Select all</a> |
 		<a id="select-none" href="#select-none">Select none</a>
+		<?php }?>
 	</div>
 </fieldset>
-
-</div>
-<div id="tabs-2">
-	<p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
-</div>
-
-</div>
