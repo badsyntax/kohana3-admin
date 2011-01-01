@@ -2,7 +2,7 @@
 
 <?php echo Form::open()?>
 	<fieldset>
-		
+		<legend>Account</legend>
 		<div class="field">
 			<?php echo 
 				Form::label('username', __('Username'), NULL, $errors),
@@ -16,32 +16,6 @@
 			?>
 		</div>
 		<div class="field">
-			<?php echo
-				Form::label('roles', __('Roles'))
-			?>
-			<?php foreach($roles as $role){?>
-			<div class="checkbox">
-				<?php echo 
-					Form::checkbox('roles[]', $role->id, FALSE, array('id' => 'role-'.$role->id)),
-					Form::label('role-'.$role->id, $role->name)
-				?>
-			</div>
-			<?php }?>
-		</div>
-		<div class="field">
-			<?php echo
-				Form::label('groups', __('Groups'))
-			?>
-			<?php foreach($groups as $group){?>
-			<div class="checkbox">
-				<?php echo 
-					Form::checkbox('groups[]', $role->id, FALSE, array('id' => 'group-'.$group->id)),
-					Form::label('group-'.$group->id, $group->name)
-				?>
-			</div>
-			<?php }?>
-		</div>
-		<div class="field">
 			<?php echo 
 				Form::label('password', __('New password'), NULL, $errors),
 				Form::password('password', NULL, NULL, $errors)
@@ -53,7 +27,25 @@
 				Form::password('password_confirm', NULL, NULL, $errors)
 			?>
 		</div>
-
-		<?php echo Form::button('save', 'Save', array('class' => 'ui-button save'))?>
 	</fieldset>
+	<fieldset>
+		<legend>Roles</legend>
+		<div class="field">
+			<?php foreach($roles as $role){?>
+			<div class="checkbox">
+				<?php echo 
+					Form::checkbox('roles[]', $role->id, FALSE, array('id' => 'role-'.$role->id)),
+					Form::label('role-'.$role->id, $role->name)
+				?>
+			</div>
+			<?php }?>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>Groups</legend>
+		<div class="field">
+			<div id="groups-tree">Loading tree...</div>
+		</div>
+	</fieldset>	
+	<?php echo Form::button('save', 'Save', array('class' => 'ui-button save'))?>			
 <?php echo Form::close()?>
