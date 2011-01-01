@@ -38,6 +38,7 @@
 	Admin.view = {};
 	Admin.controller = {};
 	Admin.util = {};
+	Admin.elements = {};
 	Admin.cons = cons;
 	
 	function log(msg){	
@@ -80,13 +81,10 @@
 
 			// Reset the ajax loader
 			self.util.ajax.loader(cons.RESET);
-
-			// Build the interface and bind interaction handlers
-			self.util.ui('body');
 		}
 		
 		// Execute a controller action		
-		function bootstrap(route){
+		function bootstrap(route, param){
 			
 			// Check the route
 			if (!route.controller || !route.action) return;
@@ -100,11 +98,13 @@
 			// Extend the base controller with controller methods
 			controller = $.extend({}, new Controller(route.controller), controller);
 
-			// Execute before method
+			// Execute before controller init method
 			controller.before && controller.before();
+			
+			controller.init();
 
 			// Execute action methods
-			controller['action_' + route.action] && controller['action_' + route.action]();
+			controller['action_' + route.action] && controller['action_' + route.action].call(controller, param);
 			
 			// Execute after method
 			controller.after && controller.after();			
@@ -132,16 +132,21 @@
 		this.benchmark = function(){
 			
 			return { benchmark_start: benchmark_start }			
-		};		
+		};
+		
+		// Get the page elements		
+		Admin.elements = {
+			tabs: $('.tabs')
+		};	
 		
 		// Start the benchmark
 		benchmark(cons.BEGIN);
 		
 		// Build page elements and init interactions
 		setup();
-		
+	
 		// Begin the routing
-		bootstrap(config.route);
+		bootstrap(config.route, config.param);
 		
 		// Stop the benchmark
 		benchmark(cons.END);
@@ -155,7 +160,11 @@
 		
 		this.controller = name || 'controller';
 		
-		this.elements = {};
+		this.init = function(){
+			
+			// Build the interface and bind interaction handlers
+			Admin.util.ui('body');
+		};
 		
 		// base init stuff here
 		
