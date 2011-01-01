@@ -46,8 +46,7 @@ abstract class Controller_Admin_Base extends Controller_Base {
 			$this->template->styles = array_merge(Kohana::config('admin/media.styles'), $this->template->styles);
 			$this->template->scripts = array_merge(Kohana::config('admin/media.scripts'), $this->template->scripts);
 			$this->template->paths = json_encode(array_map('URL::site', array_merge(Kohana::config('admin/media.paths', $this->template->paths))));
-
-			$this->template->breadcrumbs = $this->get_breadcrumbs();
+			$this->template->param = json_encode($this->request->param());
 		}
 		
 		if ($this->is_ajax AND $this->errors !== NULL)
@@ -138,7 +137,7 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		}		
 	}
 	
-	private function get_breadcrumbs($pages = array())
+	public function get_breadcrumbs($pages = array())
 	{
 		foreach($segments = explode('/', $this->request->uri) as $key => $page)
 		{
