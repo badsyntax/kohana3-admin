@@ -6,15 +6,15 @@ class Model_Config extends Model_Base_Config {
 	{
 		$data = Validate::factory($data);
 
-		foreach($this->find_all() as $config){
-
+		foreach($this->find_all() as $config)
+		{
 			$data->rules($config->group_name.'_'.$config->config_key, (array) unserialize($config->rules));
 		}
 
 		if (!$data->check()) return FALSE;
 
-		foreach($data as $name => $value){
-			
+		foreach($data as $name => $value)
+		{			
 			list($group_name, $config_key) = explode('_', $name);
 
 			$config = ORM::factory('config')
