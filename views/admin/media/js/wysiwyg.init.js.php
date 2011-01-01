@@ -32,19 +32,20 @@
 			.windowManager
 			.open({
 				file : config.file_browser_url, 
-				width : 720,	
-				height : 500,
-				resizable : "yes",
+				width : 680,
+				height : 462,
+				resizable : "no",
 				inline : "yes", 
-				maximizable : "yes", 
-				close_previous : "no"
+				maximizable : "no", 
+				close_previous : "no",
+				popup_css : false
 			}, 
 			{
-				window : win, 
+				window : win,
 				input : field_name
 			});
 
-		return false;
+		return false;		
 	};
 
 	tinyMCE.init(config);
