@@ -32,7 +32,6 @@
 					<?php echo Message::render() ?>
 				</div>
 
-				<?php echo $breadcrumbs?>
 				<?php echo $content ?>
 			</div>
 		
@@ -40,25 +39,6 @@
 
 	</div> <!-- /#content -->
 
-	<?php echo View::factory('admin/page/fragments/footer') ?>
-
-	<?php if (Kohana::$environment === Kohana::DEVELOPMENT){?>
-		<div class="benchmark"> {execution_time} - {memory_usage} </div>
-	<?php } else {?>
-		<!-- {execution_time} - {memory_usage} -->
-	<?php }?>
-	
-	<script type="text/javascript">
-	(function(){
-		Admin.init({
-			environment: '<?php echo Kohana::$environment?>',
-			paths: <?php echo $paths?>,
-			route: {
-				controller: '<?php echo Request::instance()->controller?>',
-				action: '<?php echo Request::instance()->action?>'
-			}
-		});
-	})(this.jQuery);
-	</script>
+	<?php echo View::factory('admin/page/fragments/footer', array('paths' => $paths)) ?>
 </body>
 </html>

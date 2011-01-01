@@ -27,6 +27,7 @@
 	Admin.init({
 		environment: '<?php echo Kohana::$environment?>',
 		paths: <?php echo $paths?>,
+		<?php if ($param){?>param: <?php echo $param?>,<?php }?>
 		route: {
 			controller: '<?php echo Request::instance()->controller?>',
 			action: '<?php echo Request::instance()->action?>'
