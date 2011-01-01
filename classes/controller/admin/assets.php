@@ -4,8 +4,8 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 	
 	public function after()
 	{
-		array_push($this->template->styles, 'modules/admin/media/css/assetmanager.css');		
-		array_push($this->template->scripts, 'modules/admin/media/js/assetmanager.js');
+		array_push($this->template->styles, 'modules/admin/media/css/admin.assetmanager.css');		
+		array_push($this->template->scripts, 'modules/admin/media/js/admin.assetmanager.js');
 		parent::after();
 	}
 	
@@ -13,8 +13,8 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 	{
 		$this->template->title = 'Assets';
 
-		// Bind useful data objects to the view
 		$this->template->content = View::factory('admin/page/assets/index')
+			->set('breadcrumbs', $this->get_breadcrumbs())
 			->bind('assets', $assets)
 			->bind('total', $total)
 			->bind('page_links', $page_links);
@@ -28,7 +28,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			'items_per_page' => 18
 		));
 
-		// Get the items
+		// Get the assets
 		$assets = ORM::factory('asset')
 			->limit($pagination->items_per_page)
 			->offset($pagination->offset)
@@ -39,10 +39,10 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		$page_links = $pagination->render();
 	}
 
-	public function action_upload()
+	public function action_upload($view_path = 'admin/page/assets/upload', $redirect_to = NULL)
 	{
 		$this->template->title = __('Admin - Upload assets');
-		$this->template->content = View::factory('admin/page/assets/upload')
+		$this->template->content = View::factory($view_path)
 			->bind('errors', $errors)
 			->bind('allowed_upload_type', $allowed_upload_type)
 			->bind('max_file_uploads', $max_file_uploads)
@@ -54,14 +54,14 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		$field_name = 'asset';
 		$assets = array();
 		$errors = array();
-		
+
 		array_push($this->template->scripts, 'modules/admin/media/js/jquery.uploadify.min.js');
 		array_push($this->template->scripts, 'modules/admin/media/js/jquery.multifile.pack.js');
 		
-		// Have any files been uploaded?
+		// Have files been uploaded?
 		if ($_FILES AND isset($_FILES[$field_name]) AND is_array($_FILES[$field_name]))
 		{
-			// Loop through upload files
+			// Loop through uploaded files
 			foreach($_FILES[$field_name]['name'] as $c => $v)
 			{			
 				// Create the file upload array
@@ -78,26 +78,54 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 				// Process the uploaded file and save data to db
 				$asset = ORM::factory('asset')->upload($file, $field_name);
 				
-				// Store the upload validation errors
+				// Store the validation errors
 				if ($error = $file->errors('asset'))
 				{
-					$errors[] = $error;	
+					$errors[$field_name][] = $error;	
 				}
-				
-				// Store the asset
-				$assets[] = $asset;
+				// Else store the asset
+				else
+				{
+					$assets[] = $asset;
+				}
 			}
-		}		
+		}
+		if ($assets)
+		{
+			$c = count($assets);
+			
+			$message = ($c > 1)
+				? ':assets_count assets successfully uploaded.'
+				: ':assets_count asset successfully uploaded.';
+				
+			Message::set(Message::SUCCESS, __($message, array(':assets_count' => $c)));
+		}
 		if ($errors)
 		{
-			die(print_r($errors));
-			Message::set(Message::ERROR, __('Please correct the errors.'));
+			if (isset($errors[$field_name]) and count($errors[$field_name]))
+			{
+				$c = count($errors[$field_name]);
+			
+				$message = ($c > 1) 
+					? ':errors_count assets were not uploaded.'
+					: ':errors_count asset was not uploaded.';
+			
+				Message::set(Message::ERROR, __($message, array(':errors_count' => $c)));
+			}
 		}
-
+		if ($_POST AND !$errors)
+		{
+			$redirect_url = ($redirect_to === NULL)
+				? 'admin/assets'
+				: $redirect_to;
+	
+			$this->request->redirect($redirect_url);
+		}
+		
 		//$_POST = $_POST->as_array();
 	}
 	
-	public function action_edit($id = 0)
+	public function action_edit($id = 0)	
 	{
 		$asset = ORM::factory('asset', (int) $id);
 
@@ -157,7 +185,14 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			{
 				$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$item->filename;
 
-				@unlink($file);				
+				try
+				{
+					unlink($file);
+				} 
+				catch(Exception $e)
+				{
+					// Log this
+				}
 			}
 			
 			// Delete the resized image assets from db and filesystem
@@ -169,7 +204,14 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 				{
 					$resized_file = DOCROOT.Kohana::config('admin/asset.upload_path').'/resized/'.$resized->filename;
 
-					@unlink($resized_file);
+					try
+					{
+						unlink($resized_file);
+					}
+					catch(Exception $e)
+					{
+						// Log this
+					}
 				}
 			}
 		}
@@ -198,7 +240,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 
 		if (!$asset->loaded()) exit;
 
-		$path = $asset->image_url($width, $height, $crop, TRUE);
+		$path = $asset->image_path($width, $height, $crop, TRUE);
 
 		$this->request->headers['Content-Type'] = $asset->mimetype->subtype.'/'.$asset->mimetype->type;
 
@@ -208,6 +250,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			{
 				$file_in = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
 				
+				// Generate a PNG image of the PDF
 				Asset::pdfthumb($file_in, DOCROOT.$path, $width, $height, $crop);
 			}
 			else
@@ -219,16 +262,46 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		$this->request->send_file($path, FALSE, array('inline' => true));
 	}
 	
+	public function action_get_url($id = 0)
+	{
+		$this->auto_render = FALSE;
+		
+		$asset = ORM::factory('asset', $id);
+
+		if (!$asset->loaded()) exit;
+		
+		echo $asset->url(TRUE);
+	}
+	
+	public function action_get_image_url($id = 0, $width = NULL, $height = NULL)
+	{
+		$this->auto_render = FALSE;
+		
+		$asset = ORM::factory('asset', $id);
+
+		if (!$asset->loaded() OR $asset->mimetype->subtype != 'image') exit;
+		
+		echo $asset->image_url($width, $height, NULL, TRUE);
+	}
+	
+	public function action_get_download_html($id = 0)
+	{
+		$this->auto_render = FALSE;
+		
+		$asset = ORM::factory('asset', $id);
+
+		if (!$asset->loaded()) exit;
+		
+		echo View::factory('admin/page/assets_popup/download_html')->set('asset', $asset);
+	}	
+	
 	public function action_rotate($id = 0)
 	{
 		$asset = ORM::factory('asset', (int) $id);
 		
 		if (!$asset->loaded() OR $asset->mimetype->subtype !== 'image') exit;
 		
-		$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
-		$image = Image::factory( $file );
-		$image->rotate(90);
-		$image->save();
+		$asset->rotate(90);
 
 		$this->request->redirect('admin/assets/edit/'.$asset->id);
 	}
@@ -240,9 +313,8 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		if (!$asset->loaded() OR $asset->mimetype->subtype !== 'image') exit;
 
 		$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
-		$image = Image::factory( $file );
-		$image->sharpen(20);
-		$image->save();
+		
+		$asset->sharpen(20);
 
 		$this->request->redirect('admin/assets/edit/'.$asset->id);
 	}
@@ -254,9 +326,8 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		if (!$asset->loaded() OR $asset->mimetype->subtype !== 'image') exit;
 
 		$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
-		$image = Image::factory( $file );
-		$image->flip(Image::HORIZONTAL);
-		$image->save();
+		
+		$asset->flip_horizontal();
 
 		$this->request->redirect('admin/assets/edit/'.$asset->id);
 	}
@@ -266,19 +337,10 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		$asset = ORM::factory('asset', (int) $id);
 
 		if (!$asset->loaded() OR $asset->mimetype->subtype !== 'image') exit;
-
-		$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
-		$image = Image::factory( $file );
-		$image->flip(Image::VERTICAL);
-		$image->save();
+		
+		$asset->flip_vertical();
 
 		$this->request->redirect('admin/assets/edit/'.$asset->id);
 	}
 	
-	public function action_check_exists()
-	{
-		echo 0;
-		exit;
-	}
-
 } // End Controller_Admin_Assets
