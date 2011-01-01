@@ -18,14 +18,15 @@
 		<?php echo $content ?>
 	</div>
 	<script type="text/javascript">
-	(function(){
+	(function($){
 		Admin.init({
 			paths: <?php echo $paths?>,
+			param: <?php echo $param?>,
 			route: {
 				controller: '<?php echo Request::instance()->controller?>',
 				action: '<?php echo Request::instance()->action?>'
 			}
-		});
+		});			
 	})(this.jQuery);
 	</script>
 	<!-- {execution_time} - {memory_usage} -->
