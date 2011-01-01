@@ -9,7 +9,7 @@ class Controller_Admin_Assets_Popup extends Controller_Admin_Assets {
 	public function action_index()
 	{		
 		$this->template->title = 'Assets';
-				
+
 		// Bind useful data objects to the view
 		$this->template->content = View::factory('admin/page/assets_popup/index')
 			->bind('assets', $assets)
@@ -29,7 +29,7 @@ class Controller_Admin_Assets_Popup extends Controller_Admin_Assets {
 		// Generate the pagination values
 		$pagination = Pagination::factory(array(
 			'total_items' => $total,
-			'items_per_page' => 18
+			'items_per_page' => 13
 		));
 
 		// Get the items
@@ -44,7 +44,27 @@ class Controller_Admin_Assets_Popup extends Controller_Admin_Assets {
 		
 		array_push($this->template->scripts, 'modules/admin/media/js/jquery.uploadify.min.js');
 		array_push($this->template->scripts, 'modules/admin/media/js/jquery.multifile.pack.js');
-
+		
+		array_push($this->template->scripts, Kohana::config('admin/media.paths.tinymce_popup'));
+	}
+	
+	public function action_upload()
+	{
+		parent::action_upload('admin/page/assets_popup/upload', 'admin/assets/popup#browse');
+	}
+	
+	public function action_view($id = 0)
+	{
+		$asset = ORM::factory('asset', (int) $id);
+		
+		if (!$asset->loaded())
+		{
+			$this->request->redirect('admin/assets/popup');
+		}
+		
+		$this->template->title = __('View Asset');
+		$this->template->content = View::factory('admin/page/assets_popup/view')
+			->bind('asset', $asset);
 	}
 
 } // End Controller_Admin_Assets_Popup
