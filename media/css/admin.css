@@ -8,6 +8,8 @@ h2, h2, h4 { margin-bottom: 1em; }
 ul, ol { margin: 0 2em 1em 2em; }
 p, form { margin: 0 0 1em 0; }
 
+a, a:active, a:visited { color: #000;}
+
 /* FORMS & FORM CONTROLS 
 ===============================*/
 form {
@@ -91,6 +93,8 @@ textarea.error-field {
 }
 .label-error { 
 	color: #BB0000; 
+	background: url(../img/error.gif) no-repeat 5px 2px;
+	padding-left: 20px;
 }
 .checkbox input { 
 	float: left; 
@@ -193,17 +197,24 @@ td, th {
 .grid-50 .first { float: left; } 
 .helper-center { text-align: center; }
 .helper-right { float: right; }
+.helper-left { float: left; }
 .helper-hidden { display: none; }
 
 /* DEVELOPMENT */
 .development .benchmark { 
 	margin: 1em auto; 
 	padding-top: 1em; 
-	border-top: 1px solid #eee; 
+	border-top: 1px solid #ddd;
 	font-size: .9em; 
 	color: #888; 
 	text-align: left; 
-	width: 840px;
+	width: 850px;
+}
+.development .benchmark .profiler .ui-icon {
+	margin: -2px 0 0 0;
+}
+.development .benchmark .profiler .ui-helper-hidden {
+	display: none;
 }
 
 :outline {
@@ -223,7 +234,7 @@ td, th {
 /* BREADCRUMBS
 ==============================*/
 #breadcrumbs {
-	margin: .4em 0 .8em 0;
+	margin: .2em 0 1em 0;
 	padding: 0;
 	float: left;
 }
@@ -306,11 +317,11 @@ textarea.wysiwyg {
 
 /* ASSETS 
 ===============================*/
-.assets-list ul {
+.assets-list.view-thumbs ul {
 	padding: 0;
 	margin: 0;
 }
-.assets-list li {
+.assets-list.view-thumbs li {
 	list-style: none;
 	margin: 0 6px 6px 0;
 	float: left;
@@ -318,22 +329,22 @@ textarea.wysiwyg {
 	height: 84px;
 	position: relative;
 }
-.assets-list a {
+.assets-list.view-thumbs a {
 	border: 1px solid #AAA;
 	float: left;
 	padding: 2px;
 	width: 80px;
 	height: 80px;
 }
-.assets-list li .checkbox {
+.assets-list.view-thumbs li .checkbox {
 	position: absolute;
 	left: 4px;
 	bottom: 4px;
 }
-.assets-list a:hover {
+.assets-list.view-thumbs a:hover {
 	border-color: #000;
 }
-.assets-list img {
+.assets-list.view-thumbs img {
 	display: block;
 	width: 80px;
 	height: 80px;
@@ -347,6 +358,23 @@ textarea.wysiwyg {
 .assets-edit a.thumb img {
 	display: block;
 }	
+
+.assets-list.view-list a {
+	padding-left: 20px;
+	min-height: 16px;
+}
+.assets-list.view-list a.subtype-image {
+	background: url(../img/assets/image-medium.png) no-repeat 0 center;
+}
+.assets-list.view-list a.subtype-application.type-pdf {
+	background: url(../img/assets/document-pdf.png) no-repeat 0 center;
+}
+.assets-list.view-list img.asset-thumb {
+	width: 80px;
+	height: 80px;
+	border: 1px solid #ccc;
+	padding: 2px;
+}
 
 /*
 Uploadify v3.0.0
@@ -413,4 +441,10 @@ THE SOFTWARE.
 	background-color: #0099FF;
 	height: 3px;
 	width: 1px;
+}
+
+
+
+#kohana_error h1 { 
+	display: block;
 }
