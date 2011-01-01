@@ -1,6 +1,5 @@
 * Clean the admin stylesheet
 * Ajaxify the admin page forms
-* Breadcrumbs
 * Slick grid (grooveshark blog post)
 * Assets/controller
 * Admin messages
@@ -8,3 +7,13 @@
 * Add new page >> parent page must open a dialog popup with page tree on click
 * Save activity in message class
 * Page draft auto save
+* AJAX Form on complete
+* Add checkbox to tree
+* Prefix 'admin' to all classnames/ids
+
+Done
+* Groups in navigation
+* JS controllers extend base controller
+* Cookie trees
+* Breadcrumbs
+* Show profiler
