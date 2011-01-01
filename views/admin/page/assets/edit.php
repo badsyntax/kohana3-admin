@@ -14,7 +14,7 @@
 	<fieldset>
 		<legend>Preview</legend>
 		<a href="<?php echo URL::site('admin/assets/get_asset/'.$asset->id)?>" class="thumb ui-lightbox">
-			<img src="<?php echo URL::site('admin/assets/get_asset/'.$asset->id)?>/300/300" />
+			<img src="<?php echo URL::site($asset->image_url(300, 300))?>" />
 		</a>
 	</fieldset>
 
@@ -23,9 +23,9 @@
 		<strong>Uploaded by:</strong> <?php echo HTML::anchor('admin/users/view/'.$asset->user->id, $asset->user->username).' on '.$asset->date?> <br />
 		<strong>Mimetype:</strong> <?php echo $asset->mimetype->subtype.'/'.$asset->mimetype->type?> <br />
 		<strong>Filesize:</strong> <?php echo Text::bytes($asset->filesize)?><br />
-
-
 	</fieldset>
+	
+	<?php if ($asset->mimetype->subtype == 'image'){?>
 	<fieldset>
 		<legend>Image actions</legend>
 	
@@ -36,7 +36,16 @@
 			<li><?php echo HTML::anchor('admin/assets/flip_vertical/'.$asset->id, 'Flip vertical')?></li>						
 		</ul>
 	</fieldset>
+	<fieldset>
+		<legend>Image sizes</legend>
 	
+		<ul>
+			<?php foreach($sizes = $asset->sizes->find_all() as $size){?>
+			<li><a href="<?php echo URL::site('media/assets/resized/'.$size->filename)?>"><?php echo $size->filename?></a>
+			<?php }?>
+		</ul>
+	</fieldset>
+	<?php }?>
 	<fieldset class="last">
 		<legend>Edit asset</legend>
 		
