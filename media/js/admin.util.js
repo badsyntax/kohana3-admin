@@ -1,3 +1,9 @@
+/*
+ *
+ * @filename : admin.util.js
+ * @developer : badsyntax.co
+ *
+ */
 (function(window, $, Admin){
 	
 	if (!Admin) return;
@@ -17,7 +23,9 @@
 				}).trigger('show');
 
 		// Selectmenu
-		elem.find('select').selectmenu();
+		elem.find('select').selectmenu({
+			transferClasses: true
+		});
 
 		// Save Button
 		elem.find('.ui-button.save')
@@ -29,7 +37,11 @@
 		elem.find('.ui-button.default').button();
 
 		// Tabs
-		elem.find('.tabs').tabs();
+		elem.find('.tabs').tabs({
+			show: function(event, ui) { 
+				//window.location.hash = ui.tab.hash;
+			}
+		});
 	
 		// Datepicker
 	
@@ -331,10 +343,15 @@
 					buttons: {
 						Okay: function() {
 						
-							$(this).dialog("close");
+							$(this).dialog("close").addClass('okay');
 						
 							Admin.util.trigger(this, callback);
-						}
+						},
+					},
+					open: function(){
+						setTimeout(function(){
+						$(this).parent('div').find('button:first')[0].focus();
+						}, 500);
 					}
 				});
 		}
