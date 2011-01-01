@@ -1,5 +1,5 @@
 <div class="action-bar clear">
-	<a href="<?php echo URL::site('admin/users/delete/'.$user->id)?>" id="delete-user" class="button delete small helper-right">
+	<a href="<?php echo URL::site('admin/users/delete/'.$user->id)?>" id="delete-user" class="button ui-button default helper-right">
 		<span>Delete user</span>
 	</a>
 	<script type="text/javascript">
@@ -16,10 +16,7 @@
 
 <?php echo Form::open()?>
 	<fieldset>
-		<p>
-			ID: <?php echo $user->id?>
-		</p>
-		
+		<legend>Edit user</legend>
 		<div class="field">
 			<?php echo 
 				Form::label('username', 'Username', NULL, $errors),
@@ -33,9 +30,21 @@
 			?>
 		</div>
 		<div class="field">
-			<?php echo
-				Form::label('roles', 'Roles')
+			<?php echo 
+				Form::label('password', 'New password', NULL, $errors),
+				Form::password('password', NULL, $errors)
 			?>
+		</div>
+		<div class="field">
+			<?php echo 
+				Form::label('password_confirm', 'Confirm password', NULL, $errors),
+				Form::password('password_confirm', NULL, $errors)
+			?>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>Roles</legend>
+		<div class="field">
 			<?php foreach($roles as $role){?>
 			<div class="checkbox">
 				<?php echo 
@@ -45,6 +54,9 @@
 			</div>
 			<?php }?>
 		</div>
+	</fieldset>
+	<fieldset>
+		<legend>Groups</legend>
 		<div class="field">
 			<?php echo
 				Form::label('groups', __('Groups'))
@@ -58,19 +70,6 @@
 			</div>
 			<?php }?>
 		</div>
-		<div class="field">
-			<?php echo 
-				Form::label('password', 'New password', NULL, $errors),
-				Form::password('password', NULL, $errors)
-			?>
-		</div>
-		<div class="field">
-			<?php echo 
-				Form::label('password_confirm', 'Confirm password', NULL, $errors),
-				Form::password('password_confirm', NULL, $errors)
-			?>
-		</div>
-
-		<?php echo Form::button('save', 'Update', array('class' => 'ui-button save'))?>
 	</fieldset>
+			<?php echo Form::button('save', 'Update', array('class' => 'ui-button save'))?>
 <?php echo Form::close()?>
