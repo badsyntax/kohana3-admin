@@ -11,10 +11,14 @@
 	<h1>Users</h1>
 </div>
 
-<fieldset class="last">
+<fieldset>
 	
 	<div id="page-tree" class="ui-tree">
 		loading tree...
 	</div>
 	
+</fieldset>
+
+<fieldset id="users-information" class="users-information ui-helper-hidden last">
+	Showing <span id="total-users"></span> users and groups
 </fieldset>
