@@ -33,6 +33,9 @@
 	color: #212121;
 }
 /* Tabs */
+.ui-tabs {
+	position: relative;
+}
 .ui-tabs-selected, .ui-widget-content .ui-tabs-selected {
 	background: #FFF;
 }
@@ -73,6 +76,7 @@
 ----------------------------------*/
 .ui-menu {
 	position: absolute; 
+	z-index: 10;
 }
 
 /* Dialog */
@@ -136,25 +140,28 @@
 	zoom: 1; 
 }
 .tree ul { 
-	margin-left: 16px; 
+	clear: both;
 }
 .tree li {
-	background: transparent url(../img/ui-theme/tree_default_line.gif) no-repeat 2px 0;
+	background: transparent url(../img/ui-theme/tree_default_line.gif) no-repeat 0 0;
+	padding: 3px 0 2px 16px;
 }
 .tree li.collapsable, .tree li.expandable {
-    background-position: 2px -176px;
+    background-position: 0 -176px;
 }
 .tree li a { 
 	color: #555; 
-	padding: 1px 7px 1px 0; 
+	height: 11px; 
 	display: block; 
-	text-decoration: none; 
+	text-decoration: none;
+	padding: 1px 0 1px 34px;
+	font-size: 82%;
 }
 .tree li a.tree-parent { 
-	background: url(../img/ui-theme/icon_toggle_open.gif) 6px 50% no-repeat; 
+	/*background: url(../img/ui-theme/icon_toggle_open.gif) 5px 50% no-repeat;*/
 }
 .tree li a.tree-parent-collapsed { 
-	background: url(../img/ui-theme/icon_toggle_closed.gif) 8px 50% no-repeat; 
+	/*background: url(../img/ui-theme/icon_toggle_closed.gif) 9px 50% no-repeat;*/
 }
 .tree li a:hover,
 .tree li a.tree-parent:hover,
@@ -162,38 +169,47 @@
 .tree li a.tree-parent:focus,
 .tree li a.tree-item-active { 
 	color: #000;
-	/*border: 1px solid#eee;*/
-	/*background-color: #fafafa; */
-	-moz-border-radius: 4px; 
-	-webkit-border-radius: 4px; 
-	border-radius: 4px; 
+
 }
 .tree li a:focus,
 .tree li a.tree-parent:focus,
 .tree li a.tree-item-active { 
-	/*border: 1px solid #e2f3fb;*/
-	/*background-color: #FAFAFA;*/
+	background-color: #FAFAFA;
 }
 .tree ul.tree-group-collapsed { 
 	display:none; 
 }
 .tree li .tree-icon-toggle,
 .tree li .tree-icon-item {
-	cursor: pointer;
-	height: 1.2em;
-    width: 20px;
+	background: url(../img/ui-theme/tree_default.gif) no-repeat -64px -25px;
+}
+.tree li .tree-icon-toggle,
+.tree li .tree-icon-item,
+.tree-icon-toggle-transparent {
+	height: 16px;
+	width: 16px;
 	float: left;
-	margin: 0;
+	margin: 0 0 0 -16px;	
+	cursor: pointer;
+}
+.tree-icon-toggle-transparent {
+	background: transparent;
 }
 .tree li img {
 	float: left;
+}
+.tree li .checkbox {
+	float: left;
+	margin: 0 2px 0 0;
+	padding: 0;
 }
 /* Default icon */
 .tree li .tree-icon-item {
 	background: url(../img/ui-theme/icon_file.gif) 0px 50% no-repeat;
 }
 /* Groups */
-.users li a.group .tree-icon-item {
+.groups .tree li a .tree-icon-item,
+.users .tree li a .tree-icon-item {
 	background-image: url(../img/ui-theme/icon_users.png);
 }
 .users li a.user .tree-icon-item {
