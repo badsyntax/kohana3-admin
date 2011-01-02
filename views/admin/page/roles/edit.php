@@ -14,7 +14,7 @@
 	<h1>Edit role</h1>
 </div>
 
-<?php echo Form::open()?>
+<?php echo Form::open(NULL, array('class' => 'ajax-validate'))?>
 	<fieldset class="last">
 		
 		<div class="field">
