@@ -13,6 +13,7 @@ return array(
 		'admin/cache' 		=> __('Cache'),
 		'admin/activity' 	=> __('Activity'),
 		'admin/wysiwyg'		=> __('Wysiwyg'),
-		'admin/migrations'	=> __('Migrations')
+		'admin/migrations'	=> __('Migrations'),
+		'admin/ui'			=> __('UI')
 	)
 );
