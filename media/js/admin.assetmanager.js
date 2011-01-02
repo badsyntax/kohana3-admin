@@ -10,16 +10,43 @@
 	
 	var Admin = window.Admin;
 	
+	var Tabs = {
+		
+		create: function(url, id, title, callback){
+			
+			title = title || 'Default tab';
+
+			// Create and select a new tab
+			Admin.elements.tabs
+				.tabs('add', '#' + id, title)
+				.tabs("select" , id);
+
+			// Load the tab contents
+			$('#' + id).load(url, function(){
+
+				// Build the UI
+				$(this).ui();
+
+				// Trigger the callback function
+				Admin.util.trigger(this, callback);				
+			});
+		}
+	};
+	
 	var PDF = {
 	
-		insert: function(id){
+		insert: function(path, content){
 			
 			var win = tinyMCEPopup.getWindowArg("window");			
 
 			// The assetmanager was initiated by a dialog window 
 			if (win){
+				
+				var fieldId = tinyMCEPopup.getWindowArg('input');
+				win.document.getElementById(fieldId).value = path;
 
-			
+				// close popup window
+				tinyMCEPopup.close();
 			}			
 			// The assetmanager was initiated by a toolbar button
 			else {
@@ -32,14 +59,11 @@
 				// Fixes crash in Safari
 				(tinymce.isWebKit) && ed.getWin().focus();
 				
-				$.get('/admin/assets/get_download_html/' + id, function(data){
-					
-					ed.execCommand('mceInsertContent', false, $.trim(data));
-					ed.undoManager.add();
+				ed.execCommand('mceInsertContent', false, content);
+				ed.undoManager.add();
 
-					// close popup window
-					tinyMCEPopup.close();				
-				});
+				// close popup window
+				tinyMCEPopup.close();		
 			}
 		}
 	};
@@ -47,7 +71,9 @@
 	var Image = {
 		
 		getDimensions: function(width, height, value){
+			
 			var w = (width / 100) * value;
+			
 			return {
 				width: Math.round(w),
 				height: Math.round((height / 100) * ((w / width) * 100))
@@ -106,66 +132,7 @@
 				// close popup window
 				tinyMCEPopup.close();
 			}
-		},
-		
-		load: function(){
-			
-			var elem = {
-					loader: $('#resize-image-loading'),
-					slider: $('#resize-slider'),
-					resizeWidth: $('#resize-image-dimension-width'),
-					resizeHeight: $('#resize-image-dimension-height')
-				},
-				image = $(this), 
-				id = image.data('id'),
-				width = this.width, 
-				height = this.height, 
-				d = Image.getDimensions(width, height, 50);
-			
-			this.width = d.width;
-			elem.resizeWidth.html(d.width);
-			elem.resizeHeight.html(d.height);
-								
-			elem.loader.hide();			
-			$('#resize-asset-width-max').html(width + 'px');			
-			$('#resize-image-contents').show();	
-										
-			$('#resize-image-wrapper')
-				.find('img')
-				.remove()
-				.end()
-				.append(this);
-			
-			elem.slider.slider({
-				value: 50,
-			 	slide: function(event, ui) {	
-					d = Image.getDimensions(width, height, ui.value);														
-					elem.resizeWidth.html(d.width);
-					elem.resizeHeight.html(d.height);
-					image.attr('width', d.width)
-				}
-			});
-			
-			$('#resize-insert').click(function(){
-				
-				$.get('/admin/assets/get_image_url/' + id + '/' + d.width + '/' + d.height, function(data){				
-					Image.insert($.trim(data));
-				})
-			});
-		},				
-
-		loadImage: function(path, id) {
-			
-			$('<img />', {
-				id: 'resize-image-' + id,
-				'data-id': id
-			})
-			.load(this.load)
-			.error(function(){			
-				alert('There was an error loading the image.');
-			})
-			.attr('src', path);
-		}
+		}	
 	};	
 	
 	Admin.controller.assets_popup = {
@@ -179,6 +146,7 @@
 			Admin.elements.tabs
 				.bind('tabsshow', function(event, ui) {
 			  
+					// If selecting the 'browse' tab then show the pagination links, else hide them
 					var method = ( $(ui.tab).text().toLowerCase() == 'browse' )
 						? 'show'
 						: 'hide';					
@@ -192,17 +160,15 @@
 					}					
 				});
 				
-				// close icon: removing the tab on click
-				Admin.elements.tabs
-					.find("span.ui-icon-close")
-					.live( "click", function(){
+			// close icon: removing the tab on click
+			Admin.elements.tabs
+				.find("span.ui-icon-close")
+				.live( "click", function(){
 					
-						var index = $( "li", Admin.elements.tabs ).index( $( this ).parent() );
+					var index = $('li', Admin.elements.tabs).index( $(this).parent() );
 						
-						Admin.elements.tabs.tabs( "remove", index );
-					});
-					
-			$('a[href="#resize"]').parent().hide();
+					Admin.elements.tabs.tabs('remove', index);
+				});
 		},
 
 		after: function(){
@@ -218,29 +184,15 @@
 
 				event.preventDefault();
 
-				var anchor = $(this), 
-					id = anchor.data('id'), 
-					mimetype = anchor.data('mimetype'), 
-					filename = anchor.data('filename');
-
-				if (!$('a[href="#preview-'+id+'"]').length) {
-
-					var tab_title = 'Preview';
-
-					Admin.elements.tabs.tabs( "add", "#preview-" + id, tab_title );
-				}
-
-				Admin.elements.tabs.tabs( "select" , 'preview-' + id );
-
-				$('#preview-' + id).load(this.href, function(){
-
-					$(this).ui();
-					
+				var anchor = $(this), id = anchor.data('id');
+				
+				Tabs.create(this.href, 'preview-' + id, 'Preview', function(){
+		
 					self.action_view({
 						id: id,
-						mimetype: mimetype,
-						filename: filename
-					});
+						mimetype: anchor.data('mimetype'),
+						filename: anchor.data('filename')
+					});					
 				});				
 			}
 			
@@ -251,45 +203,128 @@
 		
 			if (!param.id || !param.filename || !param.mimetype) return;
 			
-			var self = this, 
-				mimetype = param.mimetype.split('/'),
-				win = tinyMCEPopup.getWindowArg("window");
+			var win, self = this, 
+				mimetype = param.mimetype.split('/');						
+			
+			function loadResizeTab(){
 				
-			$('#insert-asset').click(function(){
+				$.get('/admin/assets/get_url/' + param.id, function(data){
+
+					var url = $.trim(data);
+
+					if (url) {
+
+						Tabs.create('/admin/assets/popup/resize/' + param.id, 'resize-' + param.id, 'Resize', function(){
+
+							self.action_resize({id: param.id || 0, url: url});	
+						});
+					}				
+				});				
+			}
 				
-				if (mimetype[0] == 'image')
-				{
-					// Get full size (original) image url
-					$.get('/admin/assets/get_url/' + (param.id || 0), function(data){
-
-						var url = $.trim(data);
-						if (url) {
-
-							// Show the resize tab
-							Admin.elements.tabs.tabs('select' , 'resize');
-							$('a[href="#resize"]').parent().show();
-
-							// Load the resize image and build/show resize controls
-							Image.loadImage(url, param.id);
-						}				
-					});
-				}
-				else
-				{
-					if (win) {
-						
-						// check window type
-						
-					} else {
-												
+			$('#preview-' + param.id)
+				.find('.resize-insert')
+				.click(function(){
+				
+					loadResizeTab();				
+					return false;				
+				})
+				.end()
+				.find('.insert-asset')
+				.click(function(e){
+				
+					e.preventDefault();
+				
+					if (mimetype[0] == 'image') {
+					
+						$.get('/admin/assets/get_url/' + param.id, function(data){
+							var url = $.trim(data);
+							Image.insert(url);
+						});
+					}
+					else
+					{
 						if (mimetype[0] == 'application' && mimetype[1] == 'pdf') {
 							
-							PDF.insert(param.id);							
+							$.get('/admin/assets/get_url/' + param.id, function(data){
+								
+								var url = $.trim(data);
+								
+								$.get('/admin/assets/get_download_html/' + param.id, function(data){
+									
+									var content = $.trim(data);
+
+									PDF.insert(url, content);
+								});
+							});
 						}
 					}
-				}
-			});
-		}		
+				});
+		},
+		
+		action_resize: function(param){
+			
+			function init(){
+
+				var image = $(this), 
+					id = image.data('id'),
+					tab = $('#resize-' + id),
+					width = this.width, 
+					height = this.height,
+					d = Image.getDimensions(width, height, 50),
+					elem = {
+						wrapper:		tab.find('.resize-image-wrapper'),
+						loader: 		tab.find('.resize-image-loading'),
+						slider: 		tab.find('.resize-slider'),
+						resizeWidth: 	tab.find('.resize-image-dimension-width'),
+						resizeHeight: 	tab.find('.resize-image-dimension-height'),
+						widthMax: 		tab.find('.resize-image-width-max'),
+						contents: 		tab.find('.resize-image-contents'),
+						insertResized: 	$('#resize-' + id).find('.button-resize-insert')
+					};
+
+				this.width = d.width;
+				elem.resizeWidth.html(d.width);
+				elem.resizeHeight.html(d.height);
+
+				elem.loader.hide();			
+				elem.widthMax.html(width + 'px');			
+				elem.contents.show();										
+				elem.wrapper
+					.find('img')
+					.remove()
+					.end()
+					.append(this);
+
+				elem.slider.slider({
+					value: 50,
+				 	slide: function(event, ui) {	
+						d = Image.getDimensions(width, height, ui.value);														
+						elem.resizeWidth.html(d.width);
+						elem.resizeHeight.html(d.height);
+						image.attr('width', d.width)
+					}
+				});
+
+				elem.insertResized.click(function(e){
+
+					e.preventDefault();
+					$.get('/admin/assets/get_image_url/' + id + '/' + d.width + '/' + d.height, function(data){				
+						Image.insert($.trim(data));
+					})
+				});
+			}
+
+			$('<img />', {
+				id: 'resize-image-' + param.id,
+				'data-id': param.id
+			})
+			.load(init)
+			.error(function(){			
+				alert('There was an error loading the image.');
+			})
+			.attr('src', param.url);
+		}	
 	}
 		
 })(this, this.jQuery, this.tinyMCEPopup);
