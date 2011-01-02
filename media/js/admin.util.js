@@ -10,7 +10,6 @@
 	
 	var cons = Admin.cons;
 	
-	// Build the interface on an element
 	Admin.util.ui = function(selector){
 	
 		var elem = $(selector);
@@ -18,14 +17,18 @@
 		// Messages
 		elem.find('#messages').children().length 
 		
-			&& $('#messages').bind('show', function(){
+			&& $('#messages')
+				.bind('show', function(){
+					
 					$(this).fadeIn(1400);
-				}).trigger('show');
+				})
+				.trigger('show');
 
 		// Selectmenu
-		elem.find('select').selectmenu({
-			transferClasses: true
-		});
+		elem.find('select')
+			.selectmenu({
+				transferClasses: true
+			});
 
 		// Save Button
 		elem.find('.ui-button.save')
@@ -35,54 +38,78 @@
 
 		// Default Button
 		elem.find('.ui-button.default').button();
-
-		// Tabs
-		elem.find('.tabs').tabs({
-			show: function(event, ui) { 
-				//window.location.hash = ui.tab.hash;
-			}
-		});
-	
-		// Datepicker
-	
-		elem.find('.datepicker').datepicker();
-
-		// Tree node expand/collapse
-		function setTreeCookie(event){
-
-			var id = $(this).data('id'), 
-				name = (Admin.config.route.controller + '/' + Admin.config.route.action),
-				ids = Admin.util.cookie.get(name);
+		
+		// Split button
+		elem
+			.find('.ui-buttonset')
+			.buttonset()
+			.find('button:first')
+			.button()
+			.click(function() {
 			
-			if (!id) return;
-
-			ids = (ids)
-				? ids.split(',')
-				: [];
-			
-			if (event.type == 'expand') {
-
-				if ( $.inArray( id.toString(), ids ) !== -1 ){
-					return;
+				var url = $(this).data('url');
+				
+				if (url){
+					window.location = url;
 				}
-				ids.push(id.toString());				
-							
-			} else if (event.type == 'collapse') {
-			
-				for (var i in ids) {					
-					( ids[i] == id ) && ids.splice( i, 1 );
-				}
-			}
-			Admin.util.cookie.set(name, ids.join(','));
-		}
-	
-		elem.find('.ui-tree ul:first').tree({
-			onExpand: setTreeCookie,
-			onCollapse: setTreeCookie
-		})
-		// expand the open tree nodes
-		.find('.tree-open').trigger('expand', [0]);
-	
+			})
+			.next()
+				.button({
+					text: false,
+					icons: {
+						primary: "ui-icon-triangle-1-s"
+					}
+				})
+				.click(function(event) {
+
+					var btn = this;
+
+					$(this)
+						.trigger('mousedown.button')
+						.bind('mouseleave.admin.button', function(){
+							$(this).addClass('ui-state-active');
+						});
+
+					var menu = $(this).parent().next();
+
+					if (menu.is(":visible")) {
+						menu.hide();
+						return false;
+					}
+
+					menu
+						.menu("deactivate")
+						.css({top:0, left:0})
+						.show();
+						
+					var width = menu.width(), 
+						splitwidth = ($(btn).width() + $(btn).prev().width()) - 3;
+					
+					(menu.width() < splitwidth) && menu.width(splitwidth);
+
+					menu.position({
+						my: "right top",
+						at: "right bottom",
+						of: this
+					});
+
+					$(document).one("click", function() {
+						menu.hide();
+						$(btn).removeClass('ui-state-active').unbind('mouseleave.admin.button');
+					});
+
+					return false;
+				})
+				.parent()
+				.next()
+					.menu({
+						select: function(event, ui) {
+							$(this).hide();
+							if (ui.item) { window.location = ui.item.find('a').attr('href'); }
+						},
+						input: $(this)
+					}).hide();
+					
 		// Button Menu
 		elem.find('.action-menu button').button({
 			icons: {
@@ -99,7 +126,8 @@
 						if (ui.item) { window.location = ui.item.find('a').attr('href'); }
 					},
 					input: $(this)
-				}).hide();
+				})
+				.hide();
 		})
 		.click(function(event) {
 
@@ -135,6 +163,52 @@
 
 			return false;
 		});
+
+		// Tabs
+		elem.find('.tabs').tabs({
+			show: function(event, ui) { 
+				
+				//window.location.hash = ui.tab.hash;
+			}
+		});
+	
+		// Datepicker	
+		elem.find('.datepicker').datepicker();
+
+		// Tree node expand/collapse
+		function setTreeCookie(event){
+
+			var id = $(this).data('id'), 
+				name = (Admin.config.route.controller + '/' + Admin.config.route.action),
+				ids = Admin.util.cookie.get(name);
+			
+			if (!id) return;
+
+			ids = (ids) ? ids.split(',') : [];
+			
+			if (event.type == 'expand') {
+
+				if ( $.inArray( id.toString(), ids ) !== -1 ){
+					return;
+				}
+				
+				ids.push(id.toString());				
+							
+			} else if (event.type == 'collapse') {
+			
+				for (var i in ids) {					
+					( ids[i] == id ) && ids.splice( i, 1 );
+				}
+			}
+			Admin.util.cookie.set(name, ids.join(','));
+		}
+	
+		elem.find('.ui-tree ul:first').tree({
+			onExpand: setTreeCookie,
+			onCollapse: setTreeCookie
+		})
+		// expand the open tree nodes
+		.find('.tree-open').trigger('expand', [0]);
 	};
 
 	Admin.util.trigger = function(scope, callback, arg){
