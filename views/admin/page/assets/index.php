@@ -33,7 +33,7 @@
 			<tr>
 				<td>
 					<a href="<?php echo URL::site('admin/assets/edit/'.$asset->id)?>" class="helper-left" style="background:transparent;padding:0">
-					<img src="<?php echo URL::site($asset->image_url(80, 80, TRUE))?>" class="asset-thumb helper-left" />
+					<img src="<?php echo URL::site($asset->image_url(60, 60, TRUE))?>" class="asset-thumb helper-left" />
 					</a>
 					<input type="checkbox" class="checkbox helper-left" name="asset-<?php echo $asset->id?>" value="<?php echo $asset->id?>" id="asset-<?php echo $asset->id?>" style="margin-right:5px;margin-left:5px"/>
 					<?php echo HTML::anchor('admin/assets/edit/'.$asset->id, $asset->filename, array(
