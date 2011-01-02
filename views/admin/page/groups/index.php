@@ -9,10 +9,14 @@
 	<h1>Groups</h1>
 </div>
 
-<fieldset class="last">
+<fieldset>
 	
-	<div id="page-tree" class="ui-tree">
+	<div id="groups-tree" class="ui-tree">
 		loading tree...
 	</div>
 	
+</fieldset>
+
+<fieldset id="groups-information" class="groups-information ui-helper-hidden last">
+	Showing <span id="total-groups"></span> groups
 </fieldset>

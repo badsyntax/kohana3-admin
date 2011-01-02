@@ -26,7 +26,6 @@
 		<br />
 		<?php echo Form::button('save', 'Save', array('type' => 'submit', 'class' => 'ui-button save'))?>
 	</fieldset>
-	<br/>
 	<?php }?>
 	
 <?php echo Form::close()?>
