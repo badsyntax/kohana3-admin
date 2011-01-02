@@ -8,7 +8,7 @@ class Controller_Admin_Assets_Popup extends Controller_Admin_Assets {
 
 	public function action_index()
 	{		
-		$this->template->title = 'Assets';
+		$this->template->title = 'Asset Manager';
 
 		// Bind useful data objects to the view
 		$this->template->content = View::factory('admin/page/assets_popup/index')
@@ -51,6 +51,20 @@ class Controller_Admin_Assets_Popup extends Controller_Admin_Assets {
 	public function action_upload()
 	{
 		parent::action_upload('admin/page/assets_popup/upload', 'admin/assets/popup#browse');
+	}
+	
+	public function action_resize($id = 0)
+	{
+		$asset = ORM::factory('asset', (int) $id);
+
+		if (!$asset->loaded())
+		{
+			$this->request->redirect('admin/assets/popup');
+		}
+		
+		$this->template->title = __('Resize Asset');
+		$this->template->content = View::factory('admin/page/assets_popup/resize')
+			->bind('asset', $asset);
 	}
 	
 	public function action_view($id = 0)
