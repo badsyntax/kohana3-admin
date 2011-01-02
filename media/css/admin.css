@@ -370,8 +370,8 @@ textarea.wysiwyg {
 	background: url(../img/assets/document-pdf.png) no-repeat 0 center;
 }
 .assets-list.view-list img.asset-thumb {
-	width: 80px;
-	height: 80px;
+	width: 60px;
+	height: 60px;
 	border: 1px solid #ccc;
 	padding: 2px;
 }
