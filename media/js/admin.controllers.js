@@ -87,6 +87,10 @@
 		}
 	};
 	
+	Admin.controller.ui = {
+		
+	};
+	
 	Admin.controller.assets = {
 		
 		action_index: function(){
