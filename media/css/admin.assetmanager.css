@@ -78,7 +78,7 @@
 }
 
 /* IMAGE SIZE TAB */
-#resize-image-wrapper {
+.resize-image-wrapper {
 	overflow: auto;
 	height: 300px;
 	margin-top: 1em;
@@ -86,12 +86,13 @@
 	margin-bottom: 1em;
 	border: 1px solid #666;
 }
-#resize-image-dimensions {
+.resize-image-dimensions {
 	background: #000;
 	color: #fff;
 	position: absolute;
-	top: 2px;
-	left: 4px;
+	top: 0;
+	left: 0;
 	z-index: 2;
 	padding: 2px;
+	opacity: .9;
 }
