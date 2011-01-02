@@ -32,6 +32,8 @@ class Admin_Log {
 		// Split the entry details into useful arrays
 		foreach($entries as $key => $entry)
 		{
+			if (!strstr($entry, '---')) continue;
+				
 			list($date, $log) = explode('---', $entry);
 			list($date, $time) = explode(' ', $date);
 			list($year, $month, $day) = explode('-', $date);
