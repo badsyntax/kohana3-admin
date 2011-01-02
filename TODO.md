@@ -10,6 +10,7 @@
 * AJAX Form on complete
 * Add checkbox to tree
 * Prefix 'admin' to all classnames/ids
+* jQuery UI dialog drag http://threedubmedia.com/code/event/drag
 
 Done
 * Groups in navigation
