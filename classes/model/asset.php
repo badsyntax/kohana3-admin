@@ -2,7 +2,7 @@
 
 class Model_Asset extends Model_Base_Asset {
 	
-	public function upload(& $file = array(), $field_name = 'asset')
+	public function admin_upload(& $file = array(), $field_name = 'asset')
 	{
 		$file_data = $file;
 		$filename = $file[$field_name]['name'];
