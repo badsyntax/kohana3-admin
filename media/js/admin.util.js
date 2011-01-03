@@ -249,7 +249,7 @@
 		
 			var o = $.data(form, 'config');
 		
-			Admin.util.ajax.loader(END);
+			Admin.util.ajax.loader(cons.END);
 
 			$('.form-error, .label-error').hide();
 		
@@ -299,7 +299,7 @@
 				.submit(function(e){
 			
 					e.preventDefault();
-					Admin.util.ajax.loader(BEGIN);
+					Admin.util.ajax.loader(cons.BEGIN);
 					var form = this;
 
 					$.ajax({
