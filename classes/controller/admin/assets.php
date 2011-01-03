@@ -90,16 +90,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 				}
 			}
 		}
-		if ($assets)
-		{
-			$c = count($assets);
-			
-			$message = ($c > 1)
-				? ':assets_count assets successfully uploaded.'
-				: ':assets_count asset successfully uploaded.';
-				
-			Message::set(Message::SUCCESS, __($message, array(':assets_count' => $c)));
-		}
+		// Upload fail!
 		if ($errors)
 		{
 			if (isset($errors[$field_name]) and count($errors[$field_name]))
@@ -113,8 +104,17 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 				Message::set(Message::ERROR, __($message, array(':errors_count' => $c)));
 			}
 		}
-		if ($_POST AND !$errors)
+		// Upload success!
+		if ($_POST AND !$errors AND $assets)
 		{
+			$c = count($assets);
+
+			$message = ($c > 1)
+				? ':assets_count assets successfully uploaded.'
+				: ':assets_count asset successfully uploaded.';
+
+			Message::set(Message::SUCCESS, __($message, array(':assets_count' => $c)));
+			
 			$redirect_url = ($redirect_to === NULL)
 				? 'admin/assets'
 				: $redirect_to;
@@ -251,7 +251,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 				$file_in = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
 				
 				// Generate a PNG image of the PDF
-				Asset::pdfthumb($file_in, DOCROOT.$path, $width, $height, $crop);
+				Asset::pdfthumb($file_in, $path, $width, $height, $crop);
 			}
 			else
 			{
