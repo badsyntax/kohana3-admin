@@ -60,10 +60,7 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 	public function action_save_config()
 	{
 		// Site title
-		$config = ORM::factory('config', array(
-			'group_name' => 'site',
-			'config_key' => 'title'
-		));
+		$config = ORM::factory('config');
 		$config->group_name = 'site';
 		$config->config_key = 'title';
 		$config->label = 'Site title';		
@@ -77,10 +74,7 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 		$config->save();
 
 		// Site description
-		$config = ORM::factory('config', array(
-			'group_name' => 'site',
-			'config_key' => 'description'
-		));			
+		$config = ORM::factory('config');
 		$config->group_name = 'site';
 		$config->config_key = 'description';
 		$config->label = 'Site description';
@@ -94,10 +88,7 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 		$config->save();
 		
 		// TinyMCE Plugins
-		$config = ORM::factory('config', array(
-			'group_name' => 'tinymce',
-			'config_key' => 'plugins'
-		));			
+		$config = ORM::factory('config');
 		$config->group_name = 'tinymce';
 		$config->config_key = 'plugins';
 		$config->label = 'TinyMCE Plugins';
@@ -111,10 +102,7 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 		$config->save();
 		
 		// TinyMCE Toolbar1
-		$config = ORM::factory('config', array(
-			'group_name' => 'tinymce',
-			'config_key' => 'toolbar1'
-		));
+		$config = ORM::factory('config');
 		$config->group_name = 'tinymce';
 		$config->config_key = 'toolbar1';
 		$config->label = 'TinyMCE Toolbar 1';
@@ -128,10 +116,7 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 		$config->save();
 		
 		// Assets
-		$config = ORM::factory('config', array(
-			'group_name' => 'asset',
-			'config_key' => 'allowed_upload_type'
-		));
+		$config = ORM::factory('config');
 		$config->group_name = 'asset';
 		$config->config_key = 'allowed_upload_type';
 		$config->label = 'Allowed upload types';
