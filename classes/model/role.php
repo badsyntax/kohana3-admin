@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 class Model_Role extends Model_Base_Role {
 
@@ -7,6 +7,11 @@ class Model_Role extends Model_Base_Role {
 		$data = Validate::factory($data)
 				->rules('name', $this->_rules['name'])
 				->rules('description', $this->_rules['description']);
+				
+		foreach($this->_callbacks['name'] as $callback)
+        {
+			$data->callback('name', array($this, $callback));
+		}
 
 		if (!$data->check()) return FALSE;
 
@@ -21,6 +26,11 @@ class Model_Role extends Model_Base_Role {
 		$data = Validate::factory($data)
 				->rules('name', $this->_rules['name'])
 				->rules('description', $this->_rules['description']);
+				
+		foreach($this->_callbacks['name'] as $callback)
+	    {
+			$data->callback('name', array($this, $callback));
+		}
 
 		if (!$data->check()) return FALSE;
 
@@ -28,6 +38,11 @@ class Model_Role extends Model_Base_Role {
 		$this->save();
 
 		return $data;
+	}
+	
+	public function admin_delete()
+	{
+		return parent::delete();
 	}
 
 } // End Model_Role
