@@ -13,7 +13,7 @@
 
 	<fieldset>
 		<legend>Preview</legend>
-		<a href="<?php echo URL::site('admin/assets/get_asset/'.$asset->id)?>" class="thumb ui-lightbox">
+		<a href="<?php echo $asset->image_url(600, 600)?>" data-type="<?php echo $asset->is_pdf() ? 'image' : $asset->mimetype->subtype?>" class="thumb ui-lightbox" title="<?php echo $asset->description?>">
 			<img src="<?php echo URL::site($asset->image_url(300, 300))?>" />
 		</a>
 	</fieldset>

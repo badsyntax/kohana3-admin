@@ -35,6 +35,9 @@
 			.button({
 				icons: { primary: "ui-icon-disk" }
 			});
+			
+		// Lightbox
+		elem.find('.ui-lightbox').lightbox();
 
 		// Default Button
 		elem.find('.ui-button.default').button();
@@ -414,6 +417,37 @@
 						}, 500);
 					}
 				});
+		},
+		
+		popup: function(src, alt){
+			
+			Admin.util.ajax.loader(cons.BEGIN);
+			
+			$('<img />')
+			.error(function(){
+				Admin.util.ajax.loader(cons.END);
+				alert('There was an error loading the image.');
+			})
+			.load(function(){
+								
+				Admin.util.ajax.loader(cons.END);
+				
+				var dialog = $('<div />', { title: alt });
+				
+				$(this).click(function(){
+					dialog.dialog('close');
+				})
+			
+				dialog
+				.append(this)
+				.dialog({
+					modal: true,
+					resizable: false,
+					width: this.width + 20, 
+					height: this.height + 40
+				});
+			})
+			.attr('src', src);
 		}
 	};
 
@@ -530,6 +564,24 @@
 	
 			Admin.util.smoothScroll({
 				target: this
+			});
+		});
+	};
+	
+	$.fn.lightbox = function(){
+	
+		return this.each(function(){
+			
+			var elem = $(this);
+			
+			elem.click(function(){
+
+				if (this.nodeName === 'A' && $(this).data('type') == 'image'){
+					
+					Admin.util.dialog.popup(this.href, this.title);
+					
+					return false;
+				}
 			});
 		});
 	};
