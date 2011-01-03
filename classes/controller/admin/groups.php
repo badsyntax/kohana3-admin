@@ -29,8 +29,6 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 	
 	public function action_edit($id = 0)
 	{
-		$is_ajax = (bool) Request::$is_ajax;
-				
 		// Try get the group
 		$group = ORM::factory('group', (int) $id);
 
@@ -54,7 +52,7 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 		{
 			Message::set(Message::SUCCESS, __('Group successfully updated.'));
 			 
-			!$is_ajax && $this->request->redirect($this->request->uri);
+			!$this->is_ajax && $this->request->redirect($this->request->uri);
 		}
 
 		// Get validation errors

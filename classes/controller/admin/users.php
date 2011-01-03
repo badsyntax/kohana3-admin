@@ -23,7 +23,7 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		$roles = ORM::factory('role')->find_all();
 		$groups = ORM::factory('group')->find_all();
 	
-		if ($errors = $_POST->errors('auth'))
+		if ($this->errors = $_POST->errors('auth'))
 		{
 			 Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
@@ -80,7 +80,7 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 			$this->request->redirect($this->request->uri);
 		}
 		
-		if ($errors = $_POST->errors('profile'))
+		if ($this->errors = $_POST->errors('profile'))
 		{
  			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
