@@ -71,10 +71,29 @@
 	font-size: 108%;
 }
 
+/*
+.assetmanager.popup tbody {
+	height: 300px;
+	overflow: auto;
+}
+*/
+
 .assetmanager.popup fieldset {
 	border-color: #aaa;
 	margin-bottom: 0;
 	padding: .4em 1em;
+}
+.assetmanager.popup .assets-list {
+	overflow: auto;
+	height: 374px;
+}
+.assetmanager.popup .assets-list.view-list img.asset-thumb {
+	width: 40px;
+	height: 40px;
+}
+
+.assetmanager.popup .ui-paging {
+	margin: 0;
 }
 
 /* IMAGE SIZE TAB */
