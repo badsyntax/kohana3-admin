@@ -2,6 +2,7 @@
  *
  * @filename : assetmanager.js
  * @developer : badsyntax.co
+ * This is the popup asset manager controller file.
  *
  */
 (function(window, $, tinyMCEPopup){
@@ -22,7 +23,9 @@
 				.tabs("select" , id);
 
 			// Load the tab contents
-			$('#' + id).load(url, function(){
+			$('#' + id)
+			.html('<p>Loading content...</p>')
+			.load(url, function(){
 
 				// Build the UI
 				$(this).ui();
@@ -153,11 +156,7 @@
 					$('#page-links')[method]();
 				})
 				.tabs({
-					tabTemplate: "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>",
-					add: function( event, ui ) {
-				
-						$( ui.panel ).append( "<p>Loading content...</p>" );
-					}					
+					tabTemplate: "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>"				
 				});
 				
 			// close icon: removing the tab on click
@@ -200,9 +199,11 @@
 		},
 		
 		action_view: function(param){
+			
+			// Can use a model at this point
 		
 			if (!param.id || !param.filename || !param.mimetype) return;
-			
+					
 			var win, self = this, 
 				mimetype = param.mimetype.split('/');						
 			
@@ -236,11 +237,26 @@
 					e.preventDefault();
 				
 					if (mimetype[0] == 'image') {
-					
-						$.get('/admin/assets/get_url/' + param.id, function(data){
-							var url = $.trim(data);
-							Image.insert(url);
-						});
+						
+						var width = Number($.trim($('#preview-' + param.id).find('.asset-width').text())),
+							height = Number($.trim($('#preview-' + param.id).find('.asset-height').text()));
+							
+						function insert(){
+							$.get('/admin/assets/get_url/' + param.id, function(data){
+								var url = $.trim(data);
+								Image.insert(url);
+							});
+						}
+						
+						if (width > 1000 || height > 1000) {
+								
+							var ed = tinyMCEPopup.editor;
+						
+							ed.windowManager.confirm('The image is larger than 1000 x 1000px, are you sure you want to insert it at this size?', function(s){
+								if (s) { insert(); }
+							});
+							
+						} else insert();
 					}
 					else
 					{
