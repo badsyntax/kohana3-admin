@@ -16,7 +16,9 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/assets/index')
 			->bind('assets', $assets)
 			->bind('total', $total)
-			->bind('page_links', $page_links);
+			->bind('direction', $direction)
+			->bind('order_by', $order_by)
+			->bind('pagination', $pagination);
 
 		// Get the total amount of items in the table
 		$total = ORM::factory('asset')->count_all();
@@ -26,17 +28,20 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			'total_items' => $total,
 			'items_per_page' => 18,
 			'view'  => 'admin/pagination/asset_links'
-		));
+		));		
+
+		$direction = (Arr::get($_REQUEST, 'direction', 'asc') == 'asc' ? 'desc' : 'asc');
+		$order_by = Arr::get($_REQUEST, 'sort', 'date');
 
 		// Get the assets
 		$assets = ORM::factory('asset')
+			->select('assets.*', 'mimetypes.type')
+			->join('mimetypes')
+			->on('assets.mimetype_id', '=', 'mimetypes.id')
+			->order_by($order_by, $direction)			
 			->limit($pagination->items_per_page)
 			->offset($pagination->offset)
-			->order_by('date', 'DESC')
 			->find_all();
-
-		// Generate the pagination links
-		$page_links = $pagination->render();
 	}
 
 	public function action_upload($view_path = 'admin/page/assets/upload', $redirect_to = NULL)
@@ -76,7 +81,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 				);
 
 				// Process the uploaded file and save data to db
-				$asset = ORM::factory('asset')->upload($file, $field_name);
+				$asset = ORM::factory('asset')->admin_upload($file, $field_name);
 				
 				// Store the validation errors
 				if ($error = $file->errors('asset'))
@@ -238,12 +243,20 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 
 		if (!$asset->loaded()) exit;
 
-		$path = $asset->image_path($width, $height, $crop, TRUE);
+		// Check the image size exists
+		$size = ORM::factory('asset_size')
+			->where('asset_id', '=', $asset->id)
+			->where('width', '=', $width)
+			->where('height', '=', $height)
+			->where('crop', '=', $crop)
+			->find();
+			
+		if ($size->loaded() AND !file_exists($path))
+		{			
+			$path = $asset->image_path($width, $height, $crop, TRUE);
 
-		$this->request->headers['Content-Type'] = $asset->mimetype->subtype.'/'.$asset->mimetype->type;
-
-		if (!file_exists($path))
-		{
+			$this->request->headers['Content-Type'] = $asset->mimetype->subtype.'/'.$asset->mimetype->type;
+			
 			if ($asset->mimetype->subtype === 'application' AND $asset->mimetype->type == 'pdf')
 			{
 				$file_in = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
@@ -255,9 +268,14 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			{
 				$asset->resize($path, $width, $height, $crop);
 			}
-		}
-
-		$this->request->send_file($path, FALSE, array('inline' => true));
+		
+			$size->filesize = filesize($path);
+			$size->resized = 1;
+			$size->save();
+			
+			$this->request->send_file($path, FALSE, array('inline' => true));			
+		}	
+		exit;
 	}
 	
 	public function action_get_url($id = 0)
