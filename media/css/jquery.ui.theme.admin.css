@@ -262,3 +262,22 @@
 .ui-selectmenu-status {
 	padding: .3em 1em;
 }
+
+/* Widget header (eg dialog) */
+.ui-dialog-titlebar {
+	/*background: url(../img/ui-theme/bg_glass.png) repeat-x 0 -12px transparent;*/
+}
+
+/* Grid
+		----------------------------------*/
+
+		.ui-paging .ui-icon { float: right; width: 18px;}
+		.ui-paging { float: right; margin-top: -2px; }
+		.ui-paging-num { float: left; width: 22px; height: 16px; text-align:center;}
+		.ui-paging-num.ui-state-focus { background: #fff;}
+		.ui-paging-prev { float: left; width: 20px; height: 16px; }
+		.ui-paging-next { float: right; width: 20px; height: 16px; }
+		
+		.ui-paging a:hover { background: #FAFAFA;}
+		
+
