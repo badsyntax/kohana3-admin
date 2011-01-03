@@ -8,14 +8,17 @@ class Model_Config extends Model_Base_Config {
 
 		foreach($this->find_all() as $config)
 		{
-			$data->rules($config->group_name.'_'.$config->config_key, (array) unserialize($config->rules));
+			$rules = unserialize($config->rules);
+			
+				$data->rules($config->group_name.'-'.$config->config_key, $rules);
+		
 		}
 
 		if (!$data->check()) return FALSE;
 
 		foreach($data as $name => $value)
 		{			
-			list($group_name, $config_key) = explode('_', $name);
+			list($group_name, $config_key) = explode('-', $name);
 
 			$config = ORM::factory('config')
 				->where('group_name', '=', $group_name)
