@@ -81,6 +81,8 @@
 
 			// Reset the ajax loader
 			self.util.ajax.loader(cons.RESET);
+			
+			Admin.util.ui('body');
 		}
 		
 		// Execute a controller action		
@@ -163,7 +165,6 @@
 		this.init = function(){
 			
 			// Build the interface and bind interaction handlers
-			Admin.util.ui('body');
 		};
 		
 		// base init stuff here
