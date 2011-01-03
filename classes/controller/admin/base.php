@@ -47,12 +47,13 @@ abstract class Controller_Admin_Base extends Controller_Base {
 			$this->template->scripts = array_merge(Kohana::config('admin/media.scripts'), $this->template->scripts);
 			$this->template->paths = json_encode(array_map('URL::site', array_merge(Kohana::config('admin/media.paths', $this->template->paths))));
 			$this->template->param = json_encode($this->request->param());
+			$this->template->set_global('breadcrumbs', $this->get_breadcrumbs());
 		}
 		
 		if ($this->is_ajax AND $this->errors !== NULL)
 		{			
 			$this->json_response($this->errors);
-		}
+		} 
 				
 		parent::after();
 	}
