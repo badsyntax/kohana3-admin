@@ -33,7 +33,7 @@
 			.open({
 				file : config.file_browser_url, 
 				width : 680,
-				height : 462,
+				height : 466,
 				resizable : "no",
 				inline : "yes", 
 				maximizable : "no", 
