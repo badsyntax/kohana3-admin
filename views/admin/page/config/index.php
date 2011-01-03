@@ -1,12 +1,6 @@
 <div class="action-bar clear">
-	<div class="action-menu helper-right">
-		<button>Actions</button>
-		<ul>
-			<li><?php echo HTML::anchor('admin/config/create', __('Create config'))?></li>
-		</ul>
-	</div>
-
-	<h1>Config</h1>
+	
+	<?php echo $breadcrumbs?>
 </div>
 
 <?php echo Form::open()?>
@@ -18,8 +12,8 @@
 			<div class="field">
 			<?php if ($item->field_type == 'text'){
 				echo 
-					Form::label("{$group}_{$item->config_key}", $item->label, NULL, $errors) . '<br />' .
-					Form::input("{$group}_{$item->config_key}", $_POST[$group.'_'.$item->config_key], NULL, $errors);
+					Form::label("{$group}-{$item->config_key}", $item->label, NULL, $errors) . '<br />' .
+					Form::input("{$group}-{$item->config_key}", $_POST[$group.'-'.$item->config_key], NULL, $errors);
 			}?>
 			</div>
 		<?php }?>
