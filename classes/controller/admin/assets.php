@@ -14,7 +14,6 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		$this->template->title = 'Assets';
 
 		$this->template->content = View::factory('admin/page/assets/index')
-			->set('breadcrumbs', $this->get_breadcrumbs())
 			->bind('assets', $assets)
 			->bind('total', $total)
 			->bind('page_links', $page_links);
@@ -25,7 +24,8 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		// Generate the pagination values
 		$pagination = Pagination::factory(array(
 			'total_items' => $total,
-			'items_per_page' => 18
+			'items_per_page' => 18,
+			'view'  => 'admin/pagination/asset_links'
 		));
 
 		// Get the assets
@@ -132,7 +132,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		if (!$asset->loaded())
 		{
 			Message::set(MESSAGE::ERROR, __('Asset not found.'));
-			$this->request->redirect('admin');
+			$this->request->redirect('admin/assets');
 		} 
 		
 		!$_POST AND $default_data = $asset->as_array();
@@ -157,7 +157,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		
 		$this->json_response($errors);	
 	}
-	
+
 	public function action_download($id = 0)
 	{
 		$asset = ORM::factory('asset', (int) $id);
@@ -181,10 +181,9 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 
 			// Delete the asset from db and filesystem
 			$data = array('id' => $id);
-			if ( $item->admin_delete(NULL, $data))
+			if ($item->admin_delete(NULL, $data))
 			{
 				$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$item->filename;
-
 				try
 				{
 					unlink($file);
@@ -200,10 +199,9 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			{
 				$data = array('id' => $resized->id);
 
-				if ( $resized->admin_delete(NULL, $data))
+				if ($resized->admin_delete(NULL, $data))
 				{
 					$resized_file = DOCROOT.Kohana::config('admin/asset.upload_path').'/resized/'.$resized->filename;
-
 					try
 					{
 						unlink($resized_file);

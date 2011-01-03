@@ -17,19 +17,20 @@ class Controller_Admin_Assets_Popup extends Controller_Admin_Assets {
 			->bind('page_links', $page_links)
 			->bind('browse_html', $browse_html)
 			->bind('upload_html', $upload_html);
-
+	
 		$browse_html = View::factory('admin/page/assets_popup/browse')
 			->bind('assets', $assets);
 
-		$upload_html = Request::factory('admin/assets/popup/upload')->execute()->response; 		
-
+		$upload_html = Request::factory('admin/assets/popup/upload')->execute()->response;
+	
 		// Get the total amount of items in the table
 		$total = ORM::factory('asset')->count_all();
 
 		// Generate the pagination values
 		$pagination = Pagination::factory(array(
 			'total_items' => $total,
-			'items_per_page' => 13
+			'items_per_page' => 13,
+			'view'  => 'admin/pagination/asset_links'
 		));
 
 		// Get the items
