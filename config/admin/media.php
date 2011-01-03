@@ -10,6 +10,7 @@ return array(
 	'scripts' => array(
 		'media/js/jquery-1.4.4.min.js',
 		'modules/admin/media/js/jquery-ui/build/dist/jquery-ui-1.9pre/ui/jquery-ui.js',
+		'modules/admin/media/js/jquery.ui.selectmenu.js',
 		'modules/admin/media/js/jquery-tree/js/jquery.tree.js',
 		'modules/admin/media/js/require.js',
 		'modules/admin/media/js/admin.js',
