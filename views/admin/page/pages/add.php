@@ -1,3 +1,5 @@
+<?php echo $breadcrumbs?>
+
 <?php echo Form::open(NULL, array('class' => 'ajax-validate'))?>
 
 	<fieldset>

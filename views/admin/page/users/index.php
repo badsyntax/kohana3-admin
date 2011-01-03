@@ -8,7 +8,7 @@
 		</ul>
 	</div>
 
-	<h1>Users</h1>
+	<?php echo $breadcrumbs?>
 </div>
 
 <fieldset>

@@ -11,7 +11,7 @@
 	})(this.jQuery);
 	</script>
 
-	<h1>Edit user</h1>
+	<?php echo $breadcrumbs?>
 </div>
 
 <?php echo Form::open()?>

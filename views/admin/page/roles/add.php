@@ -1,4 +1,4 @@
-<h1>Add role</h1>
+<?php echo $breadcrumbs?>
 
 <?php echo Form::open(NULL, array('class' => 'ajax-validate'))?>
 	<fieldset class="last">

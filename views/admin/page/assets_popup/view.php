@@ -1,16 +1,19 @@
 <fieldset class="clear">
 	<legend>Preview</legend>
 	<input type="hidden" id="insert_path" value="<?php echo URL::site($asset->image_url(300, 300))?>" />
-	<div style="float:left;margin-right:10px">
+	<div style="float:left;margin-right:10px;min-height: 130px;min-width:100px;">
 		<img src="<?php echo URL::site($asset->image_url(200, 300))?>" style="border:1px solid #ccc;padding:3px;"/>
 	</div>
 	<div>
+		<p>
+			<strong>Filename:</strong> <?php echo $asset->filename?>
+		</p>
 		<p>
 			<strong>Mimetype:</strong> <?php echo $asset->mimetype->subtype.'/'.$asset->mimetype->type?> 
 		</p>
 		<?php if ($asset->is_image()){?>
 		<p>
-			<strong>Width:</strong> <?php echo $asset->width?> x <?php echo $asset->height?>
+			<strong>Dimensions:</strong> <span class="asset-width"><?php echo $asset->width?></span> x <span class="asset-height"><?php echo $asset->height?></span> px
 		</p>
 		<?php }?>
 		<p>

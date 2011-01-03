@@ -47,13 +47,14 @@
 		<?php foreach($assets as $asset){?>
 		<tr>
 			<td>
+				<img src="<?php echo URL::site($asset->image_url(40, 40, TRUE))?>" class="asset-thumb helper-left" />
 				<?php echo HTML::anchor('admin/assets/popup/view/'.$asset->id, $asset->filename, array(
-					'class' => 'asset subtype-'.$asset->mimetype->subtype.' type-'.$asset->mimetype->type, 
+					'class' => 'asset', 
 					'data-id' => $asset->id,
 					'data-mimetype' => $asset->mimetype->subtype.'/'.$asset->mimetype->type,
 					'data-filename' => $asset->filename
 				))?></td>
-			<td><?php echo $asset->mimetype->type?></td>
+			<td><a href="#" class="asset-type subtype-<?php echo $asset->mimetype->subtype?> type-<?php echo $asset->mimetype->type?>"><?php echo $asset->mimetype->type?></a></td>
 			<td><?php echo Text::bytes($asset->filesize)?></td>
 		</tr>
 		<?php }?>

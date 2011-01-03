@@ -1,5 +1,5 @@
 <div class="action-bar clear">
-        <h1>Activity</h1>
+       <?php echo $breadcrumbs?>
 </div>
 
 <ul>

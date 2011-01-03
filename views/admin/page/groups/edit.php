@@ -6,7 +6,7 @@
 		</ul>
 	</div>
 
-	<h1>Edit group</h1>
+	<?php echo $breadcrumbs?>
 </div>
 
 <?php echo Form::open(NULL, array('class' => 'ajax-validate'))?>

@@ -6,7 +6,7 @@
 		</ul>
 	</div>
 
-	<h1>Groups</h1>
+	<?php echo $breadcrumbs?>
 </div>
 
 <fieldset>

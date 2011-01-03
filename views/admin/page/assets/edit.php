@@ -6,7 +6,7 @@
 			<li><?php echo HTML::anchor('admin/assets/delete/'.$asset->id, __('Delete asset'))?></li>
 		</ul>
 	</div>
-	<h1>Edit asset</h1>
+	<?php echo $breadcrumbs?>
 </div>
 
 <?php echo Form::open(NULL, array('class' => 'assets-edit ajax-validate'))?>

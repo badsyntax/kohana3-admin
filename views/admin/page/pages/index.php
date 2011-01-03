@@ -5,8 +5,11 @@
 			<li><?php echo HTML::anchor('admin/pages/add/', __('Add page'))?></li>
 		</ul>
 	</div>
-	<h1>Pages</h1>
+	<?php echo $breadcrumbs?>
 </div>
+
+<h1>Pages</h1>
+
 
 <fieldset class="pages-list last">
 <div id="page-tree" class="ui-tree">

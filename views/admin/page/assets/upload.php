@@ -1,4 +1,4 @@
-<h1>Upload assets</h1>
+<?php echo $breadcrumbs?>
 
 <?php echo Form::open(NULL, array('enctype' => 'multipart/form-data'))?>
 	<fieldset class="last">
