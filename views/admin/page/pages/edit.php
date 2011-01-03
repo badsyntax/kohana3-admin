@@ -14,7 +14,7 @@
 		});
 	})(this.jQuery);
 	</script>
-	<h1>Edit page</h1>
+	<?php echo $breadcrumbs?>
 </div>
 
 <?php echo Form::open(NULL, array('class' => 'ajax-validate'))?>

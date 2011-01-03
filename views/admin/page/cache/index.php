@@ -23,7 +23,7 @@
 	})(this.jQuery);
 	</script>
 
-	<h1>Cache</h1>
+	<?php echo $breadcrumbs?>
 </div>
 
 <h2>Application cache</h2>

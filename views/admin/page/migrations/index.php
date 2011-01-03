@@ -1,4 +1,4 @@
-<h1>Migrations</h1>
+<?php echo $breadcrumbs?>
 
 <ul>
 	<li><?php echo HTML::anchor('admin/migrations/save_mimetypes', 'Save mimetypes')?></li>

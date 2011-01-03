@@ -5,7 +5,7 @@
 			<li><?php echo HTML::anchor('admin/roles/add', __('Add role'))?></li>
 		</ul>
 	</div>
-	<h1>Roles</h1>
+	<?php echo $breadcrumbs?>
 </div>
 
 <table>

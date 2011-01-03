@@ -1,4 +1,4 @@
-<h1>Add user</h1>
+<?php echo $breadcrumbs?>
 
 <?php echo Form::open()?>
 	<fieldset>

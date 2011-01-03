@@ -5,7 +5,7 @@
 			<li><?php echo HTML::anchor('admin/logs/download/tar', 'Download logs')?></li>
 		</ul>
 	</div>
-	<h1>Logs</h1>
+	<?php echo $breadcrumbs?>
 </div>
 
 <div class="clear">
