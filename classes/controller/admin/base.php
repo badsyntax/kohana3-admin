@@ -83,7 +83,8 @@ abstract class Controller_Admin_Base extends Controller_Base {
 		// Generate the pagination values
 		$pagination = Pagination::factory(array(
 			'total_items' => $total,
-			'items_per_page' => $this->pagination_items_per_page
+			'items_per_page' => $this->pagination_items_per_page,
+			'view' => 'admin/pagination/asset_links'
 		));
 
 		// Get the items
