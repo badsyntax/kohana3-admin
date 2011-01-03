@@ -64,6 +64,8 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 			'group_name' => 'site',
 			'config_key' => 'title'
 		));
+		$config->group_name = 'site';
+		$config->config_key = 'title';
 		$config->label = 'Site title';		
 		$config->config_value = serialize('Default title');
 		$config->default = serialize('Default title');
@@ -79,6 +81,8 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 			'group_name' => 'site',
 			'config_key' => 'description'
 		));			
+		$config->group_name = 'site';
+		$config->config_key = 'description';
 		$config->label = 'Site description';
 		$config->config_value = serialize('Default description');
 		$config->default = serialize('Default description');
@@ -94,6 +98,8 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 			'group_name' => 'tinymce',
 			'config_key' => 'plugins'
 		));			
+		$config->group_name = 'tinymce';
+		$config->config_key = 'plugins';
 		$config->label = 'TinyMCE Plugins';
 		$config->config_value = serialize('safari,pagebreak,advimage,advlist,iespell,media,contextmenu,paste,nonbreaking,xhtmlxtras,jqueryinlinepopups,koassets');
 		$config->default = serialize('safari,pagebreak,advimage,advlist,iespell,media,contextmenu,paste,nonbreaking,xhtmlxtras,jqueryinlinepopups,koassets');
@@ -109,6 +115,8 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 			'group_name' => 'tinymce',
 			'config_key' => 'toolbar1'
 		));
+		$config->group_name = 'tinymce';
+		$config->config_key = 'toolbar1';
 		$config->label = 'TinyMCE Toolbar 1';
 		$config->config_value = serialize('formatselect,|,bold,italic,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,image,koassets,media,|,removeformat,cleanup,code');
 		$config->default = serialize('formatselect,|,bold,italic,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,image,koassets,media,|,removeformat,cleanup,code');
@@ -124,6 +132,8 @@ class Controller_Admin_Migrations extends Controller_Admin_Base {
 			'group_name' => 'asset',
 			'config_key' => 'allowed_upload_type'
 		));
+		$config->group_name = 'asset';
+		$config->config_key = 'allowed_upload_type';
 		$config->label = 'Allowed upload types';
 		$config->config_value = serialize('jpg,png,gif,pdf,txt,zip,tar');
 		$config->default = serialize('jpg,png,gif,pdf,txt,zip,tar');
