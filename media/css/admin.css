@@ -360,8 +360,13 @@ textarea.wysiwyg {
 }	
 
 .assets-list.view-list a {
-	padding-left: 20px;
+	padding-left: 2px;
 	min-height: 16px;
+}
+.assets-list.view-list a.asset-type {
+	min-height: 16px;
+	padding-left: 20px;
+	display: block;
 }
 .assets-list.view-list a.subtype-image {
 	background: url(../img/assets/image-medium.png) no-repeat 0 center;
