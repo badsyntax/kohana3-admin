@@ -39,6 +39,40 @@
 		// Default Button
 		elem.find('.ui-button.default').button();
 		
+		function menu(menu, btn){
+			
+			if (menu.is(":visible")) {
+				menu.hide();
+				return false;
+			}
+
+			menu
+				.menu("deactivate")
+				.css({top:0, left:0})
+				.show();
+				
+			var width = menu.width(), 
+				splitwidth = (btn.width() + btn.prev().width()) - 3;
+			
+			(menu.width() < splitwidth) && menu.width(splitwidth);
+
+			menu.position({
+				my: "right top",
+				at: "right bottom",
+				of: btn[0]
+			});
+			
+			$(document).one("click", function() {
+				menu.hide();
+				btn.removeClass('ui-state-active').unbind('mouseleave.admin.button');
+			});
+			
+			// not sure why this needs to be done !
+			menu.find('a').click(function(){
+				window.location = this.href;
+			});			
+		}
+		
 		// Split button
 		elem
 			.find('.ui-buttonset')
@@ -70,35 +104,7 @@
 							$(this).addClass('ui-state-active');
 						});
 
-					var menu = $(this).parent().next();
-
-					if (menu.is(":visible")) {
-						menu.hide();
-						return false;
-					}
-
-					menu
-						.menu("deactivate")
-						.css({top:0, left:0})
-						.show();
-						
-					var width = menu.width(), 
-						splitwidth = ($(btn).width() + $(btn).prev().width()) - 3;
-					
-					(menu.width() < splitwidth) && menu.width(splitwidth);
-
-					menu.position({
-						my: "right top",
-						at: "right bottom",
-						of: this
-					});
-
-					$(document).one("click", function() {
-						menu.hide();
-						$(btn).removeClass('ui-state-active').unbind('mouseleave.admin.button');
-					});
-
-					return false;
+					menu($(this).parent().next(), $(this));
 				})
 				.parent()
 				.next()
@@ -139,28 +145,8 @@
 					$(this).addClass('ui-state-active');
 				});
 
-			var menu = $(this).next();
-
-			if (menu.is(":visible")) {
-				menu.hide();
-				return false;
-			}
-
-			menu
-				.menu("deactivate")
-				.show()
-				.css({top:0, left:0})
-				.position({
-					my: "left top",
-					at: "left bottom",
-					of: this
-				});
-
-			$(document).one("click", function() {
-				menu.hide();
-				$(btn).removeClass('ui-state-active').unbind('mouseleave.admin.button');
-			});
-
+			menu($(this).next(), $(this));			
+			
 			return false;
 		});
 
