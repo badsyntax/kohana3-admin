@@ -22,7 +22,7 @@ class Model_Asset extends Model_Base_Asset {
 						
 		// Add validation callbacks			
 		foreach($this->_callbacks['extension'] as $callback)
-        {
+		{
 			$file->callback('extension', array($this, $callback));
 		}
 		
