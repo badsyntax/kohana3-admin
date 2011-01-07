@@ -1,6 +1,7 @@
-/* admin.css 
-==============================*/
-
+/*
+ * @filename : admin.css
+ * @developer : badsyntax.co
+ */
 
 body { text-align: center; }
 h1 { font-size: 1.5em; margin-bottom: .6em; display: none;}
@@ -10,7 +11,7 @@ p, form { margin: 0 0 1em 0; }
 
 a, a:active, a:visited { color: #000;}
 
-/* FORMS & FORM CONTROLS 
+/* FORMS & CONTROLS 
 ===============================*/
 form {
 	
@@ -359,7 +360,7 @@ textarea.wysiwyg {
 	display: block;
 }	
 
-.assets-list.view-list a {
+.assets-list.view-list tbody a {
 	padding-left: 2px;
 	min-height: 16px;
 }

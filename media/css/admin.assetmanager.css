@@ -1,3 +1,8 @@
+/*
+ * @filename : admin.assetmanager.css
+ * @developer : badsyntax.co
+ */
+
 .assetmanager.popup body {
 	margin: 6px;
 	background: #F1F1F1;
@@ -9,9 +14,7 @@
 {
 	margin: 0;
 	width: auto;
-} 
-
-
+}
 .assetmanager.popup { 
 	overflow: hidden;
 }
@@ -48,7 +51,7 @@
 	border: 0;
 	background: transparent;
 	padding: 0;
-	margin-bottom: .8em;
+	margin-bottom: .6em;
 }
 .assetmanager.popup .ui-tabs .ui-tabs-nav {
 	padding: 0;
@@ -90,10 +93,19 @@
 .assetmanager.popup .assets-list.view-list img.asset-thumb {
 	width: 40px;
 	height: 40px;
+	margin-right: 5px;
+}
+.assetmanager.popup .assets-list.view-list td,
+.assetmanager.popup .assets-list.view-list td img {
+	vertical-align: middle;
 }
 
 .assetmanager.popup .ui-paging {
 	margin: 0;
+}
+
+.assetmanager.popup .asset-preview {
+	margin-bottom: .3em;
 }
 
 /* IMAGE SIZE TAB */
