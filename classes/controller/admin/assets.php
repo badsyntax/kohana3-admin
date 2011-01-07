@@ -20,28 +20,53 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			->bind('order_by', $order_by)
 			->bind('pagination', $pagination);
 
+		$direction = (Arr::get($_REQUEST, 'direction', 'asc') == 'asc' ? 'desc' : 'asc');
+		$order_by = Arr::get($_REQUEST, 'sort', 'date');
+		$filter = Arr::get($_REQUEST, 'filter', NULL);
+		
 		// Get the total amount of items in the table
-		$total = ORM::factory('asset')->count_all();
+		$total = ORM::factory('asset')
+			->join('mimetypes')
+			->on('assets.mimetype_id', '=', 'mimetypes.id');
+		
+		if ($filter)
+		{
+			list($name, $value) = explode(':', $filter);
+			$values = explode('|', $value);
+			foreach($values as $value)
+			{
+				$total->or_where($name, '=', $value);
+			}
+		}
+		
+		$total = $total->count_all();
 
 		// Generate the pagination values
 		$pagination = Pagination::factory(array(
 			'total_items' => $total,
 			'items_per_page' => 18,
 			'view'  => 'admin/pagination/asset_links'
-		));		
-
-		$direction = (Arr::get($_REQUEST, 'direction', 'asc') == 'asc' ? 'desc' : 'asc');
-		$order_by = Arr::get($_REQUEST, 'sort', 'date');
+		));
 
 		// Get the assets
 		$assets = ORM::factory('asset')
-			->select('assets.*', 'mimetypes.type')
 			->join('mimetypes')
 			->on('assets.mimetype_id', '=', 'mimetypes.id')
 			->order_by($order_by, $direction)			
 			->limit($pagination->items_per_page)
-			->offset($pagination->offset)
-			->find_all();
+			->offset($pagination->offset);
+		
+		if ($filter)
+		{
+			list($name, $value) = explode(':', $filter);			
+			$values = explode('|', $value);
+			foreach($values as $value)
+			{
+				$assets->or_where($name, '=', $value);
+			}
+		}
+		
+		$assets = $assets->find_all();
 	}
 
 	public function action_upload($view_path = 'admin/page/assets/upload', $redirect_to = NULL)
@@ -153,25 +178,20 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			!$this->is_ajax AND $this->request->redirect($this->request->uri);
 		}
 		
-		if ($errors = $_POST->errors('assets'))
+		if ($this->errors = $_POST->errors('assets'))
 		{
 			Messages::set(MESSAGE::ERROR, __('Please correct the errors.'));
 		}
 
 		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);	
-		
-		$this->json_response($errors);	
 	}
 
 	public function action_download($id = 0)
 	{
-		$asset = ORM::factory('asset', (int) $id);
-		
+		$asset = ORM::factory('asset', (int) $id);		
 		if (!$asset->loaded()) exit;
 		
-		$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
-		
-		$this->request->send_file($file);
+		$this->request->send_file($asset->path(TRUE));
 	}
 	
 	public function action_delete($id = 0)
@@ -217,12 +237,10 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 					}
 				}
 			}
-		}
-		
+		}		
 		if (count($assets))
 		{
-			$message = ucfirst($this->crud_model).' '.__('successfully deleted.');
-			Message::set(Message::SUCCESS, $message);
+			Message::set(Message::SUCCESS, ucfirst($this->crud_model).' successfully deleted.');
 		}
 			
 		$this->request->redirect('admin/assets');
@@ -328,8 +346,6 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 
 		if (!$asset->loaded() OR $asset->mimetype->subtype !== 'image') exit;
 
-		$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
-		
 		$asset->sharpen(20);
 
 		$this->request->redirect('admin/assets/edit/'.$asset->id);
@@ -341,8 +357,6 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 
 		if (!$asset->loaded() OR $asset->mimetype->subtype !== 'image') exit;
 
-		$file = DOCROOT.Kohana::config('admin/asset.upload_path').'/'.$asset->filename;
-		
 		$asset->flip_horizontal();
 
 		$this->request->redirect('admin/assets/edit/'.$asset->id);

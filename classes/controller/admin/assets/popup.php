@@ -13,39 +13,70 @@ class Controller_Admin_Assets_Popup extends Controller_Admin_Assets {
 		// Bind useful data objects to the view
 		$this->template->content = View::factory('admin/page/assets_popup/index')
 			->bind('assets', $assets)
-			->bind('total', $total)
-			->bind('page_links', $page_links)
+			->bind('pagination', $pagination)
 			->bind('browse_html', $browse_html)
-			->bind('upload_html', $upload_html);
+			->bind('upload_html', $upload_html)
+			->bind('total', $total)
+			->bind('direction', $direction)
+			->bind('order_by', $order_by)
+			->bind('pagination', $pagination);
+			
 	
 		$browse_html = View::factory('admin/page/assets_popup/browse')
 			->bind('assets', $assets);
 
 		$upload_html = Request::factory('admin/assets/popup/upload')->execute()->response;
-	
+			
+		$direction = (Arr::get($_REQUEST, 'direction', 'asc') == 'asc' ? 'desc' : 'asc');
+		$order_by = Arr::get($_REQUEST, 'sort', 'date');
+		$filter = Arr::get($_REQUEST, 'filter', NULL);
+
 		// Get the total amount of items in the table
-		$total = ORM::factory('asset')->count_all();
+		$total = ORM::factory('asset')
+			->join('mimetypes')
+			->on('assets.mimetype_id', '=', 'mimetypes.id');
+
+		if ($filter)
+		{
+			list($name, $value) = explode(':', $filter);
+			$values = explode('|', $value);
+			foreach($values as $value)
+			{
+				$total->or_where($name, '=', $value);
+			}
+		}
+
+		$total = $total->count_all();
 
 		// Generate the pagination values
 		$pagination = Pagination::factory(array(
 			'total_items' => $total,
-			'items_per_page' => 13,
+			'items_per_page' => 18,
 			'view'  => 'admin/pagination/asset_links'
 		));
 
-		// Get the items
+		// Get the assets
 		$assets = ORM::factory('asset')
+			->join('mimetypes')
+			->on('assets.mimetype_id', '=', 'mimetypes.id')
+			->order_by($order_by, $direction)			
 			->limit($pagination->items_per_page)
-			->offset($pagination->offset)
-			->order_by('date', 'DESC')
-			->find_all();
+			->offset($pagination->offset);
 
-		// Generate the pagination links
-		$page_links = $pagination->render();
+		if ($filter)
+		{
+			list($name, $value) = explode(':', $filter);			
+			$values = explode('|', $value);
+			foreach($values as $value)
+			{
+				$assets->or_where($name, '=', $value);
+			}
+		}
+
+		$assets = $assets->find_all();
 		
 		array_push($this->template->scripts, 'modules/admin/media/js/jquery.uploadify.min.js');
-		array_push($this->template->scripts, 'modules/admin/media/js/jquery.multifile.pack.js');
-		
+		array_push($this->template->scripts, 'modules/admin/media/js/jquery.multifile.pack.js');		
 		array_push($this->template->scripts, Kohana::config('admin/media.paths.tinymce_popup'));
 	}
 	
