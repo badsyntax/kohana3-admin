@@ -34,26 +34,43 @@
 </div>
 */?>
 
-<div class="assets-list view-list clear">
+<div class="ui-grid assets-list view-list clear">
 <table>
 	<thead>
 		<tr>
-			<th>Filename</th>
-			<th>Type</th>
-			<th>Size</th>
+			<th>
+				<a href="#">
+					Filename <span title="sort ascending" class="ui-icon ui-icon-triangle-1-s"></span>
+				</a>
+			</th>
+			<th>
+				<a href="#">
+					Type <span title="sort ascending" class="ui-icon ui-icon-triangle-1-s"></span>
+				</a>
+			</th>
+			<th>
+				<a href="#">
+					Size <span title="sort ascending" class="ui-icon ui-icon-triangle-1-s"></span>
+				</a>
+			</th>
 		</tr>
 	</thead>
 	<tbody>
 		<?php foreach($assets as $asset){?>
 		<tr>
 			<td>
-				<img src="<?php echo URL::site($asset->image_url(40, 40, TRUE))?>" class="asset-thumb helper-left" />
-				<?php echo HTML::anchor('admin/assets/popup/view/'.$asset->id, $asset->filename, array(
-					'class' => 'asset', 
-					'data-id' => $asset->id,
-					'data-mimetype' => $asset->mimetype->subtype.'/'.$asset->mimetype->type,
-					'data-filename' => $asset->filename
-				))?></td>
+				<a 
+					href="<?php echo URL::site('admin/assets/popup/view/'.$asset->id)?>" 
+					class="asset" 
+					data-id="<?php echo $asset->id?>"
+					data-mimetype="<?php echo $asset->mimetype->subtype.'/'.$asset->mimetype->type?>"
+					data-filename="<?php echo $asset->filename?>">
+					
+					<img src="<?php echo URL::site($asset->image_url(40, 40, TRUE))?>" class="asset-thumb helper-left" />
+					
+					<?php echo $asset->filename?>
+				</a>
+			</td>
 			<td><a href="#" class="asset-type subtype-<?php echo $asset->mimetype->subtype?> type-<?php echo $asset->mimetype->type?>"><?php echo $asset->mimetype->type?></a></td>
 			<td><?php echo Text::bytes($asset->filesize)?></td>
 		</tr>
