@@ -1,5 +1,8 @@
-/* jQuery UI admin theme - requires the ui base theme!
-----------------------------------*/
+/*
+ * @filename : jquery.ui.theme.admin.css
+ * @developer : badsyntax.co
+ * jQuery UI admin theme - requires the ui base theme!
+ */
 
 .ui-widget, .ui-widget .ui-widget {
 	font-size: 1em;
@@ -77,11 +80,25 @@
 .ui-menu {
 	position: absolute; 
 	z-index: 10;
+	-moz-box-shadow: 1px 1px 5px #AAAAAA;
+	-webkit-box-shadow: 1px 1px 5px #AAAAAA;
+	box-shadow: 1px 1px 5px #AAAAAA;
 }
 
 /* Dialog */
+.ui-dialog {
+	-moz-box-shadow: 0 0 6px #888;
+	-webkit-box-shadow: 0 0 6px #888;
+	box-shadow:  0 0 6px #888;
+}
 .ui-dialog .ui-dialog-titlebar {
 	padding: 0.2em 1em 0.3em;	
+}
+.ui-dialog.ui-dialog-tinymce .ui-dialog-titlebar .ajax-loader {
+	position: absolute;
+	left: 50%;
+	margin-left: -21px;
+	top: .4em;
 }
 
 /* Overlay */
@@ -225,7 +242,7 @@
 	background-image: url(../img/ui-theme/icon_user.png);
 }
 
-/* Selectmenu
+/* Selectmenu default
 ----------------------------------*/
 .ui-selectmenu { display: block; display: inline-block; position: relative; height: 2.2em; text-decoration: none; overflow: hidden; zoom: 1; }
 .ui-selectmenu-icon { position:absolute; right:6px; margin-top:-8px; top: 50%; }
@@ -253,10 +270,16 @@
 * html .ui-selectmenu-menu li { border-color: pink; filter:chroma(color=pink); width:100%; }
 * html .ui-selectmenu-menu li a { position: relative }
 
-/* Selectmenu custom */
+/* Selectmenu custom 
+----------------------------------*/
 .ui-selectmenu {
 	display: block;
 	height: 2em;
+}
+.ui-selectmenu-menu {
+	-moz-box-shadow: 1px 2px 4px #CCCCCC;
+	-webkit-box-shadow: 1px 2px 4px #CCCCCC;
+	box-shadow: 1px 2px 4px #CCCCCC;
 }
 .ui-selectmenu-menu li a, 
 .ui-selectmenu-status {
@@ -269,15 +292,54 @@
 }
 
 /* Grid
-		----------------------------------*/
+----------------------------------*/
+.ui-grid th {
+	padding: 0;
+}
+.ui-grid th a {	
+	display: block;	
+	padding: .5em;
+}
+.ui-grid th a .ui-icon {
+	float: right;
+}
 
-		.ui-paging .ui-icon { float: right; width: 18px;}
-		.ui-paging { float: right; margin-top: -2px; }
-		.ui-paging-num { float: left; width: 22px; height: 16px; text-align:center;}
-		.ui-paging-num.ui-state-focus { background: #fff;}
-		.ui-paging-prev { float: left; width: 20px; height: 16px; }
-		.ui-paging-next { float: right; width: 20px; height: 16px; }
-		
-		.ui-paging a:hover { background: #FAFAFA;}
-		
+/* Paging
+----------------------------------*/
+.ui-paging .ui-icon { 
+	float: right; 
+	width: 18px;
+}
+.ui-paging { 
+	float: right; 
+	margin-top: -2px; 
+}
+.ui-paging-num { 
+	float: left; 
+	width: 22px; 
+	height: 16px; 
+	text-align: center;
+}
+.ui-paging-num.ui-state-focus { 
+	background: #fff;
+}
+.ui-paging-prev { 
+	float: left;
+	width: 20px;
+	height: 16px;
+}
+.ui-paging-next {
+	float: right;
+	width: 20px;
+	height: 16px;
+ }
+.ui-paging a:hover {
+	background: #FAFAFA;
+}		
 
+/* Slider 
+-----------------------------*/
+.ui-slider-horizontal .ui-slider-handle {
+    background-position: 0 -12px !important;
+	cursor: pointer;
+}
