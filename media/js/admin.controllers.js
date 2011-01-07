@@ -87,6 +87,23 @@
 		}
 	};
 	
+	Admin.controller.roles = {
+	
+		action_add: function(){
+			
+			Admin.util.validate({
+				redirect_url: '/admin/roles'
+			});
+		},
+		
+		action_edit: function(){
+			
+			Admin.util.validate({
+				redirect_url: window.location.toString()
+			});
+		}
+	};
+	
 	Admin.controller.ui = {
 		
 	};
