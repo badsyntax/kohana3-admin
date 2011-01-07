@@ -83,6 +83,10 @@
 			self.util.ajax.loader(cons.RESET);
 			
 			Admin.util.ui('body');
+			
+			$('nav .ui-tabs-nav li').bind('mouseenter mouseleave', function(){
+				$(this).toggleClass('ui-state-hover');
+			});
 		}
 		
 		// Execute a controller action		
