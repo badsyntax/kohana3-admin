@@ -11,7 +11,8 @@ class Model_Page extends Model_Base_Page {
 			->rules('uri', $this->_rules['uri'])
 			->rules('body', $this->_rules['body'])
 			->rules('visible_from', $this->_rules['visible_from'])
-			->rules('visible_to', $this->_rules['visible_to']);
+			->rules('visible_to', $this->_rules['visible_to'])
+			->callback('parent_id', array($this, 'admin_check_parent_id'));
 	
 		if (!$data->check()) return FALSE;
 
@@ -35,7 +36,7 @@ class Model_Page extends Model_Base_Page {
 			->callback('parent_id', array($this, 'admin_check_parent_id'));
 		
 		if ( !$data->check()) return FALSE;
-		
+
 		$this->values($data);
 		$this->save();
 				
