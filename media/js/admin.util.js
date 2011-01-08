@@ -42,13 +42,12 @@
 		// Default Button
 		elem.find('.ui-button.default').button();
 		
-		function menu(menu, btn){
+		function openmenu(menu, btn){
 			
 			if (menu.is(":visible")) {
 				menu.hide();
 				return false;
 			}
-
 			menu
 				.menu("deactivate")
 				.css({top:0, left:0})
@@ -65,15 +64,12 @@
 				of: btn[0]
 			});
 			
-			$(document).one("click", function() {
-				menu.hide();
-				btn.removeClass('ui-state-active').unbind('mouseleave.admin.button');
+			setTimeout(function(){
+				$(document).one("click", function() {
+					menu.hide();
+					btn.removeClass('ui-state-active').unbind('mouseleave.admin.button');
+				});
 			});
-			
-			// not sure why this needs to be done !
-			menu.find('a').click(function(){
-				window.location = this.href;
-			});			
 		}
 		
 		// Split button
@@ -82,13 +78,16 @@
 			.buttonset()
 			.find('button:first')
 			.button()
-			.click(function() {
+			.bind('redirect', function(){
 			
 				var url = $(this).data('url');
 				
 				if (url){
 					window.location = url;
 				}
+			})
+			.click(function(){
+				$(this).trigger('redirect');
 			})
 			.next()
 				.button({
@@ -98,7 +97,7 @@
 					}
 				})
 				.click(function(event) {
-
+					
 					var btn = this;
 
 					$(this)
@@ -107,7 +106,7 @@
 							$(this).addClass('ui-state-active');
 						});
 
-					menu($(this).parent().next(), $(this));
+					openmenu($(this).parent().next(), $(this));
 				})
 				.parent()
 				.next()
@@ -118,7 +117,7 @@
 						},
 						input: $(this)
 					}).hide();
-					
+				
 		// Button Menu
 		elem.find('.action-menu button').button({
 			icons: {
@@ -127,29 +126,24 @@
 			}
 		})
 		.each(function() {
-
-			$(this).next()
-				.menu({
-					select: function(event, ui) {
-						$(this).hide();
-						if (ui.item) { window.location = ui.item.find('a').attr('href'); }
-					},
-					input: $(this)
-				})
-				.hide();
+			// Create the menu
+			$(this).next().menu({
+				selected: function(e, ui){
+					// Load the href
+					var uri = ui.item.find('a:first')[0].href;
+					if (uri) { window.location = uri; }
+				}
+			}).hide();
 		})
 		.click(function(event) {
-
 			var btn = this;
-
 			$(this)
 				.trigger('mousedown.button')
 				.bind('mouseleave.admin.button', function(){
 					$(this).addClass('ui-state-active');
 				});
-
-			menu($(this).next(), $(this));			
-			
+	
+			openmenu($(this).next(), $(this));			
 			return false;
 		});
 
@@ -162,7 +156,11 @@
 		});
 	
 		// Datepicker	
-		elem.find('.datepicker').datepicker();
+		elem.find('.datepicker').datepicker({
+			showOn: "both",
+			buttonImage: "/modules/admin/media/img/calendar.png",
+			buttonImageOnly: true
+		});
 
 		// Tree node expand/collapse
 		function setTreeCookie(event){
@@ -211,7 +209,7 @@
 
 	Admin.util.ajax = {
 	
-		loader : function(action){
+		loader : function(action, elem){
 		
 			var method;
 			switch(action){
@@ -222,8 +220,10 @@
 				default:
 					method = 'fadeIn';
 			}
+			
+			elem = elem || $('#ajax-loading img');
 	
-			$('#ajax-loading img')[method]('fast');
+			elem[method]('fast');
 		}
 	};
 
@@ -290,7 +290,10 @@
 					e.preventDefault();
 					Admin.util.ajax.loader(cons.BEGIN);
 					var form = this;
-
+					
+					// Update the textarea contents
+					(window.tinyMCE) && tinyMCE.triggerSave();
+					
 					$.ajax({
 						type: 'POST',
 						url: this.action + '?' + (new Date().getTime()),
@@ -371,7 +374,6 @@
 		(o.target) ? scrollToTarget.call( $(o.target) ) : init();
 	};
 
-
 	Admin.util.message = function(type, msg){
 	
 		var elem = $('#messages').empty().hide(), 
@@ -383,14 +385,6 @@
 	}
 
 	Admin.util.dialog = {
-	
-		confirm : function(msg, callback){
-		
-			if (confirm(msg)){
-			
-				this.trigger(callback);
-			}
-		},
 		
 		alert : function(title, msg, callback){
 
@@ -404,22 +398,24 @@
 					resizable: false,
 					height: 140,
 					buttons: {
-						Okay: function() {
-						
-							$(this).dialog("close").addClass('okay');
-						
+						Okay: function() {						
+							$(this).dialog("close").addClass('okay');						
 							Admin.util.trigger(this, callback);
 						},
 					},
 					open: function(){
+						var button = this;
 						setTimeout(function(){
-						$(this).parent('div').find('button:first')[0].focus();
-						}, 500);
+							// Focus on the Okay button						
+							$(button).parent('div').find('button:contains(Okay)')[0].focus();
+						});
 					}
 				});
 		},
 		
-		popup: function(src, alt){
+		popup: function(src, alt, win){
+			
+			win = win || window;
 			
 			Admin.util.ajax.loader(cons.BEGIN);
 			
@@ -432,11 +428,11 @@
 								
 				Admin.util.ajax.loader(cons.END);
 				
-				var dialog = $('<div />', { title: alt });
+				var dialog = win.$('<div />', { title: alt });
 				
 				$(this).click(function(){
 					dialog.dialog('close');
-				})
+				});
 			
 				dialog
 				.append(this)
@@ -464,11 +460,9 @@
 			expiredays = expiredays || this.config.expiredays || null;
 
 			var expiredate = new Date();
-
 			expiredate.setDate(expiredate.getDate() + expiredays);
 		
-			var data = this.get();
-		
+			var data = this.get();		
 			data = (data) ? JSON.parse(data) :  {};
 			data[key] = val;
 			data = escape(JSON.stringify(data));
@@ -487,13 +481,10 @@
 			if (!document.cookie.length) return;
 
 			var start = document.cookie.indexOf(this.config.name + '=');
-
 			if (start === -1) return '';
-
 			start = start + this.config.name.length + 1;
 
 			var end = document.cookie.indexOf(';', start);
-
 			if (end === -1) end = document.cookie.length;
 
 			var data = unescape(document.cookie.substring(start, end));
@@ -568,7 +559,11 @@
 		});
 	};
 	
-	$.fn.lightbox = function(){
+	$.fn.lightbox = function(config){
+
+		config = $.extend({
+			win: window
+		}, config);	
 	
 		return this.each(function(){
 			
@@ -578,7 +573,7 @@
 
 				if (this.nodeName === 'A' && $(this).data('type') == 'image'){
 					
-					Admin.util.dialog.popup(this.href, this.title);
+					Admin.util.dialog.popup(this.href, this.title, config.win);
 					
 					return false;
 				}
