@@ -87,8 +87,18 @@
 	padding: .4em 1em;
 }
 .assetmanager.popup .assets-list {
+
+}
+.assetmanager.popup .assets-list .scroll {
 	overflow: auto;
 	height: 374px;
+}
+
+.assetmanager.popup .assets-list table .filesize {
+	width: 7em;
+}
+.assetmanager.popup .assets-list table .type {
+	width: 7em;
 }
 .assetmanager.popup .assets-list.view-list img.asset-thumb {
 	width: 40px;
