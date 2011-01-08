@@ -33,6 +33,6 @@
 </div>
 
 <fieldset id="page-links" class="last ui-widget">
-	<div style="float:right"><?php echo $page_links?></div>
+	<div style="float:right"><?php echo $pagination->render()?></div>
 	Showing <?php echo $assets->count()?> of <?php echo $total?> assets
 </fieldset>
