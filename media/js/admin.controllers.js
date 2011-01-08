@@ -20,11 +20,19 @@
 		action_add: function(){
 	
 			this.getWysiwyg();
+			
+			Admin.util.validate({
+				redirect_url: window.location.toString()
+			});
 		},
 		
 		action_edit: function(){
 
 			this.getWysiwyg();
+			
+			Admin.util.validate({
+				redirect_url: window.location.toString()
+			});
 		},
 		
 		getWysiwyg: function(){
