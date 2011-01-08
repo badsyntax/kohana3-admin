@@ -27,7 +27,7 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 			!$this->is_ajax AND $this->request->redirect('admin/pages');
 		}
 		
-		if ($this->errors = $_POST->errors('admin'))
+		if ($this->errors = $_POST->errors('admin/pages'))
 		{
 			 Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
@@ -37,8 +37,6 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 	
 	public function action_edit($id = 0)
 	{
-		$is_ajax = (bool) Request::$is_ajax;
-				
 		$page = ORM::factory('page', (int) $id);
 
 		!$page->loaded() AND $this->request->redirect('admin');
@@ -52,7 +50,7 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/pages/edit')
 			->bind('page', $page)
 			->bind('pages', $pages)
-			->bind('errors', $errors);
+			->bind('errors', $this->errors);
 
 		$pages = ORM::factory('page')->tree_select(4, 0, array(__('None')), 0, 'title');
 		
@@ -62,10 +60,10 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 		{
 			Message::set(Message::SUCCESS, __('Page successfully updated.'));
 			
-			$this->request->redirect($this->request->uri);
+			!$this->is_ajax AND $this->request->redirect($this->request->uri);
 		}
 		
-		if ($this->errors = $_POST->errors('pages'))
+		if ($this->errors = $_POST->errors('admin/pages'))
 		{
  			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}

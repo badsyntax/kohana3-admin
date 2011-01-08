@@ -15,7 +15,7 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 			!$this->is_ajax AND $this->request->redirect('admin/roles');
 		}
 
-		if ($this->errors = $_POST->errors('admin/user'))
+		if ($this->errors = $_POST->errors('admin/roles'))
 		{
 			 Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
@@ -48,7 +48,7 @@ class Controller_Admin_Roles extends Controller_Admin_Base {
 			!$this->is_ajax AND $this->request->redirect($this->request->uri);
 		}
 
-		if ($this->errors = $_POST->errors('admin/user'))
+		if ($this->errors = $_POST->errors('admin/roles'))
 		{
 			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}

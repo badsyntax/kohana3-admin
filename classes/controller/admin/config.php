@@ -40,7 +40,7 @@ class Controller_Admin_Config extends Controller_Admin_Base {
 		}
 
 		// Get the validation errors
-		if ( $errors = $_POST->errors('config'))
+		if ( $errors = $_POST->errors('admin/config'))
 		{
 			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}

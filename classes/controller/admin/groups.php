@@ -56,7 +56,7 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 		}
 
 		// Get validation errors
-		if ($this->errors = $_POST->errors('admin/group'))
+		if ($this->errors = $_POST->errors('admin/groups'))
 		{
 			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
