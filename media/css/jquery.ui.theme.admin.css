@@ -26,7 +26,7 @@
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus{
 	border: 1px solid #777;
-	background-position: 0 -2px;
+	background-position: 0 -6px;
 	border-color: #777;
 }
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active{
@@ -87,9 +87,14 @@
 
 /* Dialog */
 .ui-dialog {
-	-moz-box-shadow: 0 0 6px #888;
-	-webkit-box-shadow: 0 0 6px #888;
-	box-shadow:  0 0 6px #888;
+	-moz-box-shadow: 0 0 6px #AAA;
+	-webkit-box-shadow: 0 0 6px #AAA;
+	box-shadow:  0 0 6px #AAA;
+}
+.ui-datepicker {
+	-moz-box-shadow: 0 0 6px #AAA;
+	-webkit-box-shadow: 0 0 6px #AAA;
+	box-shadow:  0 0 6px #AAA;
 }
 .ui-dialog .ui-dialog-titlebar {
 	padding: 0.2em 1em 0.3em;	
@@ -288,13 +293,14 @@
 
 /* Widget header (eg dialog) */
 .ui-dialog-titlebar {
-	/*background: url(../img/ui-theme/bg_glass.png) repeat-x 0 -12px transparent;*/
+	background: url(../img/ui-theme/bg_glass.png) repeat-x 0 -15px transparent;
 }
 
 /* Grid
 ----------------------------------*/
 .ui-grid th {
-	padding: 0;
+	padding-top: 0;
+	padding-bottom: 0;
 }
 .ui-grid th a {	
 	display: block;	
@@ -334,7 +340,8 @@
 	height: 16px;
  }
 .ui-paging a:hover {
-	background: #FAFAFA;
+	background-position: 0 -12px;
+	border-color: #555;
 }		
 
 /* Slider 
@@ -342,4 +349,18 @@
 .ui-slider-horizontal .ui-slider-handle {
     background-position: 0 -12px !important;
 	cursor: pointer;
+}
+
+/* Datepicker */
+.datepicker-wrapper label {
+}
+input.datepicker {
+	float: left;
+	width: 15em !important;
+}
+.ui-datepicker-trigger {
+	cursor: pointer;
+	float: left;
+	margin-left: .4em;
+	margin-top: .2em;
 }
