@@ -65,9 +65,15 @@
 						data-id="<?php echo $asset->id?>"
 						data-mimetype="<?php echo $asset->mimetype->subtype.'/'.$asset->mimetype->type?>"
 						data-filename="<?php echo $asset->filename?>">
-				
-						<img src="<?php echo URL::site($asset->image_url(40, 40, TRUE))?>" class="asset-thumb helper-left" />
-				
+						
+						<?php if ($asset->is_text_document()){?>
+							<img src="/modules/admin/media/img/assets/page-white-text.png" class="asset-thumb helper-left" />
+						<?php } else if ($asset->is_archive()){?>
+						 	<img src="/modules/admin/media/img/assets/page-white-zip.png" class="asset-thumb helper-left" />
+						<?php } else {?>
+							<img src="<?php echo URL::site($asset->image_url(40, 40, TRUE))?>" class="asset-thumb helper-left" />
+						<?php }?>
+										
 						<?php echo $asset->filename?>
 					</a>
 				</td>
