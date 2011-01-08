@@ -2,6 +2,17 @@
 
 class Controller_Admin_Assets extends Controller_Admin_Base {
 	
+	// Index filter vars
+	protected $_assets;	
+	
+	protected $_pagination;
+	
+	protected $_total;
+	
+	protected $_order_by;
+	
+	protected $_direction;
+	
 	public function after()
 	{
 		array_push($this->template->styles, 'modules/admin/media/css/admin.assetmanager.css');		
@@ -9,64 +20,59 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		parent::after();
 	}
 	
-	public function action_index()
+	public function action_index($view = 'admin/page/assets/index')
 	{
 		$this->template->title = 'Assets';
 
-		$this->template->content = View::factory('admin/page/assets/index')
-			->bind('assets', $assets)
-			->bind('total', $total)
-			->bind('direction', $direction)
-			->bind('order_by', $order_by)
-			->bind('pagination', $pagination);
+		$this->template->content = View::factory($view)
+			->bind('assets', $this->_assets)
+			->bind('total', $this->_total)
+			->bind('direction', $this->_direction)
+			->bind('order_by', $this->_order_by)
+			->bind('pagination', $this->_pagination);
 
-		$direction = (Arr::get($_REQUEST, 'direction', 'asc') == 'asc' ? 'desc' : 'asc');
-		$order_by = Arr::get($_REQUEST, 'sort', 'date');
-		$filter = Arr::get($_REQUEST, 'filter', NULL);
-		
+		$this->_direction = (Arr::get($_REQUEST, 'direction', 'asc') == 'asc' ? 'desc' : 'asc');
+		$this->_order_by = Arr::get($_REQUEST, 'sort', 'date');
+				
 		// Get the total amount of items in the table
-		$total = ORM::factory('asset')
+		$this->_total = ORM::factory('asset')
 			->join('mimetypes')
 			->on('assets.mimetype_id', '=', 'mimetypes.id');
 		
-		if ($filter)
+		$this->_filter_results($this->_total);
+		$this->_total = $this->_total->count_all();
+
+		// Generate the pagination values
+		$this->_pagination = Pagination::factory(array(
+			'total_items' => $this->_total,
+			'items_per_page' => 18,
+			'view'  => 'admin/pagination/asset_links'
+		));
+
+		$this->_assets = ORM::factory('asset')
+			->join('mimetypes')
+			->on('assets.mimetype_id', '=', 'mimetypes.id')
+			->order_by($this->_order_by, $this->_direction)			
+			->limit($this->_pagination->items_per_page)
+			->offset($this->_pagination->offset);
+		
+		$this->_filter_results($this->_assets);		
+		$this->_assets = $this->_assets->find_all();
+	}
+	
+	private function _filter_results(& $results)
+	{
+		$filter = Arr::get($_REQUEST, 'filter', NULL);
+		
+		if ($filter !== NULL)
 		{
 			list($name, $value) = explode(':', $filter);
 			$values = explode('|', $value);
 			foreach($values as $value)
 			{
-				$total->or_where($name, '=', $value);
+				$results->or_where($name, '=', $value);
 			}
-		}
-		
-		$total = $total->count_all();
-
-		// Generate the pagination values
-		$pagination = Pagination::factory(array(
-			'total_items' => $total,
-			'items_per_page' => 18,
-			'view'  => 'admin/pagination/asset_links'
-		));
-
-		// Get the assets
-		$assets = ORM::factory('asset')
-			->join('mimetypes')
-			->on('assets.mimetype_id', '=', 'mimetypes.id')
-			->order_by($order_by, $direction)			
-			->limit($pagination->items_per_page)
-			->offset($pagination->offset);
-		
-		if ($filter)
-		{
-			list($name, $value) = explode(':', $filter);			
-			$values = explode('|', $value);
-			foreach($values as $value)
-			{
-				$assets->or_where($name, '=', $value);
-			}
-		}
-		
-		$assets = $assets->find_all();
+		}		
 	}
 
 	public function action_upload($view_path = 'admin/page/assets/upload', $redirect_to = NULL)
@@ -109,7 +115,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 				$asset = ORM::factory('asset')->admin_upload($file, $field_name);
 				
 				// Store the validation errors
-				if ($error = $file->errors('asset'))
+				if ($error = $file->errors('admin/assets'))
 				{
 					$errors[$field_name][] = $error;	
 				}
@@ -178,7 +184,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			!$this->is_ajax AND $this->request->redirect($this->request->uri);
 		}
 		
-		if ($this->errors = $_POST->errors('assets'))
+		if ($this->errors = $_POST->errors('admin/assets'))
 		{
 			Messages::set(MESSAGE::ERROR, __('Please correct the errors.'));
 		}
@@ -336,6 +342,10 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		if (!$asset->loaded() OR $asset->mimetype->subtype !== 'image') exit;
 		
 		$asset->rotate(90);
+		
+		foreach($asset->sizes->find_all() as $asset_size){
+			$asset_size->rotate(90);
+		}
 
 		$this->request->redirect('admin/assets/edit/'.$asset->id);
 	}
