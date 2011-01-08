@@ -1,12 +1,25 @@
 <fieldset class="clear">
 	<legend>Preview</legend>
-	<input type="hidden" id="insert_path" value="<?php echo URL::site($asset->image_url(300, 300))?>" />
+	
 	<div style="float:left;margin-right:10px;min-height: 130px;min-width:100px;">
-		<img src="<?php echo URL::site($asset->image_url(200, 300))?>" style="border:1px solid #ccc;padding:3px;"/>
+		<a href="<?php echo $asset->image_url(600, 600, NULL, TRUE)?>" data-type="<?php echo $asset->is_pdf() ? 'image' : $asset->mimetype->subtype?>" class="thumb popup-ui-lightbox" title="<?php echo $asset->description?>">
+			
+			<?php if ($asset->is_text_document()){?>
+				<img src="/modules/admin/media/img/assets/page-white-text.png" style="border:1px solid #ccc;padding:3px;" />
+			<?php } else if ($asset->is_archive()){?>
+			 	<img src="/modules/admin/media/img/assets/page-white-zip.png" style="border:1px solid #ccc;padding:3px;" />
+			<?php } else {?>
+				<img src="<?php echo URL::site($asset->image_url(200, 300))?>" style="border:1px solid #ccc;padding:3px;" />
+			<?php }?>
+
+		</a>
 	</div>
-	<div>
+	<div class="asset-preview">
 		<p>
 			<strong>Filename:</strong> <?php echo $asset->filename?>
+		</p>
+		<p>
+			<strong>Description:</strong> <?php echo $asset->description?>
 		</p>
 		<p>
 			<strong>Mimetype:</strong> <?php echo $asset->mimetype->subtype.'/'.$asset->mimetype->type?> 
