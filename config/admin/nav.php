@@ -8,7 +8,7 @@ return array(
 		'admin/groups'		=> __('Groups'),
 		'admin/roles' 		=> __('Roles'),
 		'admin/assets' 		=> __('Assets'),
-		'admin/logs' 		=> __('Logs'),
+		//'admin/logs' 		=> __('Logs'),
 		'admin/config' 		=> __('Config'),
 		'admin/cache' 		=> __('Cache'),
 		'admin/activity' 	=> __('Activity'),
