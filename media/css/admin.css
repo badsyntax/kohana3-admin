@@ -136,13 +136,16 @@ table {
 table,th, td { 
 	border: 1px solid #dfdfdf;
 }
-table thead tr, table tfoot tr { 
+table thead th, table tfoot tr { 
 	color: #333; 
 	-moz-text-shadow: 1px 1px 0 #FFFFFF; 
 	-webkit-text-shadow: 1px 1px 0 #FFFFFF; 
 	text-shadow: 1px 1px 0 #FFFFFF; 
 	background: #ffffff; 
 	background: url(http://kohana3-examples/modules/admin/media/img/ui-theme/bg_glass.png);
+}
+table thead th:hover {
+	background-position: 0 -8px;
 }
 table tbody tr:hover {
 	background: #F6F6F6;
@@ -374,6 +377,13 @@ textarea.wysiwyg {
 }
 .assets-list.view-list a.subtype-application.type-pdf {
 	background: url(../img/assets/document-pdf.png) no-repeat 0 center;
+}
+.assets-list.view-list a.subtype-text.type-plain {
+	background: url(../img/assets/document-text.png) no-repeat 0 center;
+}
+.assets-list.view-list a.subtype-application.type-x-tar,
+.assets-list.view-list a.subtype-application.type-zip {
+	background: url(../img/assets/folder-zipper.png) no-repeat 0 center;
 }
 .assets-list.view-list img.asset-thumb {
 	width: 60px;
