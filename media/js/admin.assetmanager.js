@@ -43,7 +43,7 @@
 		}
 	};
 	
-	var PDF = {
+	var Asset = {
 	
 		insert: function(path, content){
 			
@@ -164,6 +164,7 @@
 		
 		before: function(){
 			
+			// Stop the loader spinner
 			Admin.util.ajax.loader(cons.END, loader);
 			
 			// Show the messages
@@ -201,6 +202,7 @@
 			
 			var self = this;
 			
+			// Click handler
 			function preview(e) {				
 				e.preventDefault();
 				var anchor = $(this), id = anchor.data('id');
@@ -214,19 +216,24 @@
 				});				
 			}
 			
-			$('#browse').delegate('a', 'click', preview);						
+			$('#browse tbody').delegate('a', 'click', preview);
+			
+			$('table').tableScroll({
+				height: 350, 
+				width: 'auto'
+			});					
 		},
 		
 		action_view: function(param){
-			
-			// Can use a model at this point
-		
+
 			if (!param.id || !param.filename || !param.mimetype) return;
 					
 			var win, self = this, 
 				mimetype = param.mimetype.split('/');						
 			
-			function loadResizeTab(){
+			// Click handler
+			function loadResizeTab(e){
+				e.preventDefault();
 				Admin.util.ajax.loader(cons.BEGIN, loader);			
 				$.get('/admin/assets/get_url/' + param.id, function(data){
 					var url = $.trim(data);
@@ -237,70 +244,58 @@
 					}				
 				});				
 			}
+			
+			// Click handler
+			function insertAsset(e){
+				e.preventDefault();
 				
-			$('#preview-' + param.id)
-				
-				// Popup lightbox
-				.find('.popup-ui-lightbox')
-				.lightbox({win: window.parent})
-				.end()
-				
-				// Insert resized image
-				.find('.resize-insert')
-				.click(function(e){
-					e.preventDefault();
-					loadResizeTab();				
-				})
-				.end()
-				
-				// Insert asset
-				.find('.insert-asset')
-				.click(function(e){
-				
-					e.preventDefault();
-				
-					if (mimetype[0] == 'image') {
+				if (mimetype[0] == 'image') {
+					
+					var width = Number($.trim($('#preview-' + param.id).find('.asset-width').text())),
+						height = Number($.trim($('#preview-' + param.id).find('.asset-height').text()));
 						
-						var width = Number($.trim($('#preview-' + param.id).find('.asset-width').text())),
-							height = Number($.trim($('#preview-' + param.id).find('.asset-height').text()));
-							
-						function insert(){
-							Admin.util.ajax.loader(cons.BEGIN, loader);
-							$.get('/admin/assets/get_url/' + param.id, function(data){
-								var url = $.trim(data);
-								Image.insert(url);
-							});
-						}
-						
-						if (width > 1000 || height > 1000) {
-								
-							var ed = tinyMCEPopup.editor;
-						
-							ed.windowManager.confirm('The image is larger than 1000 x 1000px, are you sure you want to insert it at this size?', function(s){
-								if (s) { insert(); }
-							});
-							
-						} else insert();
+					function insert(){
+						Admin.util.ajax.loader(cons.BEGIN, loader);
+						$.get('/admin/assets/get_url/' + param.id, function(data){
+							var url = $.trim(data);
+							Image.insert(url);
+						});
 					}
-					else
-					{
-						if (mimetype[0] == 'application' && mimetype[1] == 'pdf') {
-									
-							$.get('/admin/assets/get_url/' + param.id, function(url){
-								
-								$.get('/admin/assets/get_download_html/' + param.id, function(content){
-									
-									PDF.insert($.trim(url), $.trim(content));
-								});
-							});
-						}
-					}
-				});
+					
+					if (width > 1000 || height > 1000) {
+						tinyMCEPopup.editor.windowManager.confirm('The image is larger than 1000 x 1000px, are you sure you want to insert it at this size?', function(s){
+							if (s) { insert(); }
+						});						
+					} else insert();
+					
+				} else {
+					$.get('/admin/assets/get_url/' + param.id, function(url){							
+						$.get('/admin/assets/get_download_html/' + param.id, function(content){								
+							Asset.insert($.trim(url), $.trim(content));
+						});
+					});
+				}
+			}
+				
+			$('#preview-' + param.id)				
+			// Popup lightbox
+			.find('.popup-ui-lightbox')
+			.lightbox({win: window.parent})
+			.end()				
+			// Insert resized image
+			.find('.resize-insert')
+			.click(loadResizeTab)
+			.end()				
+			// Insert asset
+			.find('.insert-asset')
+			.click(insertAsset);
 		},
 		
 		action_resize: function(param){
 			
 			function init(){
+				
+				Admin.util.ajax.loader(cons.END, loader);
 
 				var image = $(this), 
 					id = image.data('id'),
@@ -352,6 +347,7 @@
 				});
 			}
 
+			Admin.util.ajax.loader(cons.BEGIN, loader);
 			$('<img />', {
 				id: 'resize-image-' + param.id,
 				'data-id': param.id
