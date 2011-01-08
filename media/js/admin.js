@@ -184,8 +184,6 @@
 				$(this).find('span').toggle();
 			});
 		})();
-		
-		Admin.util.validate();
 	}
 
 	// Base model
