@@ -17,20 +17,32 @@
 
 <fieldset style="padding:.6em .8em;margin-top:.5em">
 	<div id="page-links">
-		<div style="float:right"><?php echo $page_links?></div>
+		<div style="float:right"><?php echo $pagination->render()?></div>
 		Showing <?php echo $assets->count()?> of <?php echo $total?> assets
 	</div>
 </fieldset>
 
 <form id="assets-list">
 	<fieldset>	
-		<div class="assets-list view-list clear">
+		<div class="assets-list view-list ui-grid clear">
 		<table>
 			<thead>
 				<tr>
-					<th><input type="checkbox" class="checkbox helper-left" style="margin-right:6px"/> File</th>
-					<th>Type</th>
-					<th>Size</th>
+					<th>
+						<a href="<?php echo URL::site('admin/assets?sort=filename&direction='.$direction.'&page='.$pagination->current_page)?>">
+							Filename <span title="sort ascending" class="ui-icon <?php echo ($order_by == 'filename' AND $direction == 'asc') ? 'ui-icon-triangle-1-n' : 'ui-icon-triangle-1-s'?>"></span>
+						</a>
+					</th>
+					<th>
+						<a href="<?php echo URL::site('admin/assets?sort=type&direction='.$direction.'&page='.$pagination->current_page)?>">
+							Type <span title="sort ascending" class="ui-icon <?php echo ($order_by == 'type' AND $direction == 'asc') ? 'ui-icon-triangle-1-n' : 'ui-icon-triangle-1-s'?>"></span>
+						</a>
+					</th>
+					<th>
+						<a href="<?php echo URL::site('admin/assets?sort=filesize&direction='.$direction.'&page='.$pagination->current_page)?>">
+							Size <span title="sort ascending" class="ui-icon <?php echo ($order_by == 'filesize' AND $direction == 'asc') ? 'ui-icon-triangle-1-n' : 'ui-icon-triangle-1-s'?>"></span>
+						</a>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -45,7 +57,7 @@
 							'class' => 'asset'
 						))?>
 					</td>
-					<td><a href="#" class="asset-type subtype-<?php echo $asset->mimetype->subtype?> type-<?php echo $asset->mimetype->type?>"><?php echo $asset->mimetype->type?></a></td>
+					<td><a href="<?php echo URL::site('admin/assets?sort='.$order_by.'&direction='.$direction.'&page='.$pagination->current_page.'&filter=type|'.$asset->mimetype->type)?>" class="asset-type subtype-<?php echo $asset->mimetype->subtype?> type-<?php echo $asset->mimetype->type?>"><?php echo $asset->mimetype->type?></a></td>
 					<td><?php echo Text::bytes($asset->filesize)?></td>
 				</tr>
 				<?php }?>
@@ -57,7 +69,7 @@
 
 <fieldset class="last">
 	<div id="page-links">
-		<div style="float:right"><?php echo $page_links?></div>
+		<div style="float:right"><?php echo $pagination->render()?></div>
 		Showing <?php echo $assets->count()?> of <?php echo $total?> assets
 	</div>
 </fieldset>
