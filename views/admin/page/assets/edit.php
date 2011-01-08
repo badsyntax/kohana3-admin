@@ -1,4 +1,3 @@
-<div class="action-bar clear">
 	<div class="action-menu helper-right">
 		<button>Actions</button>
 		<ul>
@@ -7,14 +6,20 @@
 		</ul>
 	</div>
 	<?php echo $breadcrumbs?>
-</div>
+
 
 <?php echo Form::open(NULL, array('class' => 'assets-edit ajax-validate'))?>
 
 	<fieldset>
 		<legend>Preview</legend>
 		<a href="<?php echo $asset->image_url(600, 600)?>" data-type="<?php echo $asset->is_pdf() ? 'image' : $asset->mimetype->subtype?>" class="thumb ui-lightbox" title="<?php echo $asset->filename?>">
-			<img src="<?php echo URL::site($asset->image_url(300, 300))?>" />
+			<?php if ($asset->is_text_document()){?>
+				<img src="/modules/admin/media/img/assets/page-white-text.png" />
+			<?php } else if ($asset->is_archive()){?>
+			 	<img src="/modules/admin/media/img/assets/page-white-zip.png" />
+			<?php } else {?>
+				<img src="<?php echo URL::site($asset->image_url(300, 300))?>" />
+			<?php }?>
 		</a>
 	</fieldset>
 
