@@ -13,7 +13,7 @@
 
 	<fieldset>
 		<legend>Preview</legend>
-		<a href="<?php echo $asset->image_url(600, 600)?>" data-type="<?php echo $asset->is_pdf() ? 'image' : $asset->mimetype->subtype?>" class="thumb ui-lightbox" title="<?php echo $asset->description?>">
+		<a href="<?php echo $asset->image_url(600, 600)?>" data-type="<?php echo $asset->is_pdf() ? 'image' : $asset->mimetype->subtype?>" class="thumb ui-lightbox" title="<?php echo $asset->filename?>">
 			<img src="<?php echo URL::site($asset->image_url(300, 300))?>" />
 		</a>
 	</fieldset>
@@ -40,8 +40,13 @@
 		<legend>Image sizes</legend>
 	
 		<ul>
-			<?php foreach($sizes = $asset->sizes->find_all() as $size){?>
-			<li><a href="<?php echo URL::site('media/assets/resized/'.$size->filename)?>"><?php echo $size->filename?></a>
+			<?php foreach($sizes = $asset->sizes->where('resized', '=', 1)->find_all() as $size){?>
+			<li>
+				<a href="<?php echo URL::site('media/assets/resized/'.$size->filename)?>" data-type="image" class="ui-lightbox" title="<?php echo $size->filename?>">
+					<?php echo $size->filename?>
+				</a>
+				 (<?php echo $size->width?> x <?php echo $size->height?>px)
+			</li>
 			<?php }?>
 		</ul>
 	</fieldset>
