@@ -37,17 +37,29 @@
 	
 	<fieldset>
 		<legend>Publishing</legend>
-		<div class="field">
-			<?php echo 
-				Form::label('visible_from', __('Visible from'), NULL, $errors).
-				Form::input('visible_from', $_POST['visible_from'], array('class' => 'datepicker'), $errors)
-			?>
+		<div class="field datepicker-wrapper clear">
+			<div class="clear">
+				<?php echo 
+					Form::label('visible_from', __('Visible from'), NULL, $errors);
+				?>
+			</div>
+			<div>
+				<?php echo
+					Form::input('visible_from', $_POST['visible_from'], array('class' => 'datepicker'), $errors);
+				?>
+			</div>
 		</div>
-		<div class="field">
-			<?php echo 
-				Form::label('visible_to', __('Visible to'), NULL, $errors).
-				Form::input('visible_to', $_POST['visible_to'], array('class' => 'datepicker'), $errors)
-			?>
+		<div class="field datepicker-wrapper clear">
+			<div class="clear">
+				<?php echo 
+					Form::label('visible_to', __('Visible to'), NULL, $errors)
+				?>
+			</div>
+			<div>
+				<?php echo 
+					Form::input('visible_to', $_POST['visible_to'], array('class' => 'datepicker'), $errors);
+				?>
+			</div>
 		</div>
 	</fieldset>
 
