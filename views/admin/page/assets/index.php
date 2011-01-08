@@ -50,14 +50,26 @@
 				<tr>
 					<td>
 						<a href="<?php echo URL::site('admin/assets/edit/'.$asset->id)?>" class="helper-left" style="background:transparent;padding:0">
-						<img src="<?php echo URL::site($asset->image_url(60, 60, TRUE))?>" class="asset-thumb helper-left" />
+							<?php if ($asset->is_text_document()){?>
+								<img src="/modules/admin/media/img/assets/page-white-text.png" class="asset-thumb helper-left" />
+							<?php } else if ($asset->is_archive()){?>
+							 	<img src="/modules/admin/media/img/assets/page-white-zip.png" class="asset-thumb helper-left" />
+							<?php } else {?>
+								<img src="<?php echo URL::site($asset->image_url(60, 60, TRUE))?>" class="asset-thumb helper-left" />
+							<?php }?>
 						</a>
 						<input type="checkbox" class="checkbox helper-left" name="asset-<?php echo $asset->id?>" value="<?php echo $asset->id?>" id="asset-<?php echo $asset->id?>" style="margin-right:5px;margin-left:5px"/>
 						<?php echo HTML::anchor('admin/assets/edit/'.$asset->id, $asset->filename, array(
 							'class' => 'asset'
 						))?>
 					</td>
-					<td><a href="<?php echo URL::site('admin/assets?sort='.$order_by.'&direction='.$direction.'&page='.$pagination->current_page.'&filter=type|'.$asset->mimetype->type)?>" class="asset-type subtype-<?php echo $asset->mimetype->subtype?> type-<?php echo $asset->mimetype->type?>"><?php echo $asset->mimetype->type?></a></td>
+					<td>
+						<a 
+						href="<?php echo URL::site('admin/assets?sort='.$order_by.'&direction='.$direction.'&page='.$pagination->current_page.'&filter=type|'.$asset->mimetype->type)?>" 
+						class="asset-type subtype-<?php echo $asset->mimetype->subtype?> type-<?php echo $asset->mimetype->type?>">
+							<?php echo $asset->mimetype->extension?>
+						</a>
+					</td>
 					<td><?php echo Text::bytes($asset->filesize)?></td>
 				</tr>
 				<?php }?>
