@@ -5,7 +5,7 @@ class Model_Asset extends Model_Base_Asset {
 	public function admin_upload(& $file = array(), $field_name = 'asset')
 	{
 		$file_data = $file;
-		$filename = $file[$field_name]['name'];
+		$filename = strtolower($file[$field_name]['name']);
 		
 		// Get the validation rules
 		$rules = $this->_rules['upload'];
@@ -14,7 +14,7 @@ class Model_Asset extends Model_Base_Asset {
 		$rules['Upload::type'] = array(explode(',', Kohana::config('asset.allowed_upload_type')));
 
 		// Add file extension to file array (which we'll be validating against the available mimetypes)
-		$file['extension'] = trim(strrchr($filename, '.'), '.');
+		$file['extension'] = strtolower(trim(strrchr($filename, '.'), '.'));
 
 		// Add validation rules
 		$file = Validate::factory($file)
@@ -25,7 +25,7 @@ class Model_Asset extends Model_Base_Asset {
 		{
 			$file->callback('extension', array($this, $callback));
 		}
-		
+
 		// Validate the data
 		if (!$file->check())
 		{	
@@ -33,13 +33,12 @@ class Model_Asset extends Model_Base_Asset {
 		}
 
 		// Try move the asset to the specified upload path
-		try {	
-
+		try {
 			$filename = Upload::save($file_data[$field_name], $filename, DOCROOT.Kohana::config('admin/asset.upload_path'));
 		}
 		catch(Exception $e)
 		{
-			return $this;
+			throw new Exception($e);
 		}
 		
 		// Save the file data
