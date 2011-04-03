@@ -7,8 +7,7 @@ class Controller_Admin_Home extends Controller_Admin_Base {
 		$this->template->title = __('Admin');
 		$this->template->content = View::factory('admin/page/home/index')
 			->bind('db_config', $db_config)
-			->bind('modules', $modules)
-			->bind('db_size', $db_size);
+			->bind('modules', $modules);
 
 		// Get the database configuration
 		$db_config = Kohana::config('database');
@@ -16,17 +15,6 @@ class Controller_Admin_Home extends Controller_Admin_Base {
 
 		// Get an array of enabled modules
 		$modules = Kohana::modules();
-
-		// Get the total database size in MB
-		$db_size = DB::query(
-			Database::SELECT, 
-			'SELECT 
-			CONCAT(ROUND(SUM(((DATA_LENGTH + INDEX_LENGTH - DATA_FREE) / 1024 / 1024)),2)," MB") 
-			AS size 
-			FROM INFORMATION_SCHEMA.TABLES 
-			WHERE TABLE_SCHEMA LIKE "'.$db_config['connection']['database'].'"'
-			)->execute()->as_array();
-		$db_size = $db_size['0']['size'];
 	}
 
 } // End Controller_Admin_Home
