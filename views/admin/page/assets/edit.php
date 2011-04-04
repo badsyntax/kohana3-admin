@@ -31,30 +31,30 @@
 	</fieldset>
 	
 	<?php if ($asset->mimetype->subtype == 'image'){?>
-	<fieldset>
-		<legend>Image actions</legend>
-	
-		<ul>
-			<li><?php echo HTML::anchor('admin/assets/rotate/'.$asset->id, 'Rotate 90deg')?></li>
-			<li><?php echo HTML::anchor('admin/assets/sharpen/'.$asset->id, 'Sharpen')?></li>
-			<li><?php echo HTML::anchor('admin/assets/flip_horizontal/'.$asset->id, 'Flip horizontal')?></li>
-			<li><?php echo HTML::anchor('admin/assets/flip_vertical/'.$asset->id, 'Flip vertical')?></li>						
-		</ul>
-	</fieldset>
-	<fieldset>
-		<legend>Image sizes</legend>
-	
-		<ul>
-			<?php foreach($sizes = $asset->sizes->where('resized', '=', 1)->find_all() as $size){?>
-			<li>
-				<a href="<?php echo URL::site('media/assets/resized/'.$size->filename)?>" data-type="image" class="ui-lightbox" title="<?php echo $size->filename?>">
-					<?php echo $size->filename?>
-				</a>
-				 (<?php echo $size->width?> x <?php echo $size->height?>px)
-			</li>
-			<?php }?>
-		</ul>
-	</fieldset>
+		<fieldset>
+			<legend>Image actions</legend>
+			<ul>
+				<li><?php echo HTML::anchor('admin/assets/rotate/'.$asset->id, 'Rotate 90deg')?></li>
+				<li><?php echo HTML::anchor('admin/assets/sharpen/'.$asset->id, 'Sharpen')?></li>
+				<li><?php echo HTML::anchor('admin/assets/flip_horizontal/'.$asset->id, 'Flip horizontal')?></li>
+				<li><?php echo HTML::anchor('admin/assets/flip_vertical/'.$asset->id, 'Flip vertical')?></li>						
+			</ul>
+		</fieldset>
+		<?php if (count($resized)){?>
+			<fieldset>
+				<legend>Resized images</legend>
+				<ul>
+					<?php foreach($resized as $size){?>
+					<li>
+						<a href="<?php echo URL::site('media/assets/resized/'.$size->filename)?>" data-type="image" class="ui-lightbox" title="<?php echo $size->filename?>">
+							<?php echo $size->filename?>
+						</a>
+						 (<?php echo $size->width?> x <?php echo $size->height?>px)
+					</li>
+					<?php }?>
+				</ul>
+			</fieldset>
+		<?php }?>
 	<?php }?>
 	<fieldset class="last">
 		<legend>Edit asset</legend>
