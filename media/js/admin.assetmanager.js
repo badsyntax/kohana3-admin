@@ -163,6 +163,8 @@
 	Admin.controller.assets_popup = {
 		
 		before: function(){
+
+			var self = this;
 			
 			// Stop the loader spinner
 			Admin.util.ajax.loader(cons.END, loader);
@@ -170,32 +172,56 @@
 			// Show the messages
 			$('#messages').children().length 
 				&& $('#messages').show();			
-		
+	
 			Admin.elements.tabs
-				.bind('tabsshow', function(event, ui) {			  
+				// Add tabs event handlers	
+				.bind('tabsshow', function(event, ui) {  
+
+					// Tab name
+					var tab = $.trim($(ui.tab).text()).toLowerCase();
+
 					// If selecting the 'browse' tab then show the pagination links, else hide them
-					var method = ( $(ui.tab).text().toLowerCase() == 'browse' )
-						? 'show'
-						: 'hide';					
-					$('#page-links')[method]();
+					$('#page-links')[ tab === 'browse' ? 'show' : 'hide' ]();
+
+					if ($('#upload-asset').data('button')){
+						// Ensure the upload button is enabled
+						$('#upload-asset').button('enable');
+					}
+
+					switch(tab){
+						case 'upload': self.action_upload(); break;
+					}	
 				})
 				.tabs({
-					tabTemplate: "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>"				
+					tabTemplate: '<li><a href="#{href}">#{label}</a> <span class="ui-icon ui-icon-close">Remove Tab</span></li>'
 				});
 				
 			// close icon: removing the tab on click
 			Admin.elements.tabs
 				.find("span.ui-icon-close")
-				.live( "click", function(){
+				.live("click", function(){
 					
 					var index = $('li', Admin.elements.tabs).index( $(this).parent() );
-						
+					
 					Admin.elements.tabs.tabs('remove', index);
 				});
+
+			$('#page-links a').click(function(event){
+				Admin.util.ajax.loader(cons.BEGIN, loader);
+			});
 		},
 
 		after: function(){
 			Admin.util.dialog.alert('Attention', $('#messages').html());	
+		},
+
+		action_upload: function(){
+			$('#upload-form')
+				.unbind('submit')
+				.bind('submit', function(event){
+					Admin.util.ajax.loader(cons.BEGIN, loader);
+					$('#upload-asset').button('disable');
+				});
 		},
 		
 		action_index: function(){
@@ -205,6 +231,7 @@
 			// Click handler
 			function preview(e) {				
 				e.preventDefault();
+
 				var anchor = $(this), id = anchor.data('id');
 				
 				Tabs.create(this.href, 'preview-' + id, 'Preview', function(){		
@@ -216,7 +243,7 @@
 				});				
 			}
 			
-			$('#browse tbody').delegate('a', 'click', preview);
+			$('#browse').find('tbody').delegate('a', 'click', preview);
 			
 			$('table').tableScroll({
 				height: 350, 
