@@ -81,14 +81,18 @@
 
 			// Reset the ajax loader
 			self.util.ajax.loader(cons.RESET);
-			
-			Admin.util.ui('body');
-			
-			$('nav .ui-tabs-nav li').bind('mouseenter mouseleave', function(){
-				$(this).toggleClass('ui-state-hover');
-			});
 		}
 		
+		function after(){
+
+			Admin.util.ui('body');
+			
+			$('nav').find('.ui-tabs-nav li').bind('mouseenter mouseleave', function(){
+				$(this).toggleClass('ui-state-hover');
+			});
+
+		}
+
 		// Execute a controller action		
 		function bootstrap(route, param){
 			
@@ -153,6 +157,8 @@
 	
 		// Begin the routing
 		bootstrap(config.route, config.param);
+
+		after();
 		
 		// Stop the benchmark
 		benchmark(cons.END);
