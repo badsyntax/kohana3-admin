@@ -67,8 +67,8 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		if ($filter !== NULL)
 		{
 			list($name, $value) = explode(':', $filter);
-			$values = explode('|', $value);
-			foreach($values as $value)
+
+			foreach(explode('|', $value) as $value)
 			{
 				$results->or_where($name, '=', $value);
 			}

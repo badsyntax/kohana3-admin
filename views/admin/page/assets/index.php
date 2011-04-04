@@ -59,7 +59,7 @@
 							<?php }?>
 						</a>
 						<input type="checkbox" class="checkbox helper-left" name="asset-<?php echo $asset->id?>" value="<?php echo $asset->id?>" id="asset-<?php echo $asset->id?>" style="margin-right:5px;margin-left:5px"/>
-						<?php echo HTML::anchor('admin/assets/edit/'.$asset->id, $asset->filename, array(
+						<?php echo HTML::anchor('admin/assets/edit/'.$asset->id, $asset->friendly_filename, array(
 							'class' => 'asset'
 						))?>
 					</td>

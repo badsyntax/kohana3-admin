@@ -6,7 +6,7 @@ class Model_Asset extends Model_Base_Asset {
 	{
 		$file_data = $file;
 		$filename = strtolower($file[$field_name]['name']);
-		
+
 		// Get the validation rules
 		$rules = $this->_rules['upload'];
 		
@@ -21,9 +21,12 @@ class Model_Asset extends Model_Base_Asset {
 			->rules($field_name, $rules);
 						
 		// Add validation callbacks			
-		foreach($this->_callbacks['extension'] as $callback)
+		foreach($this->_callbacks as $type => $callbacks)
 		{
-			$file->callback('extension', array($this, $callback));
+			foreach($callbacks as $callback)
+			{
+				$file->callback('extension', array($this, $callback));
+			}
 		}
 
 		// Validate the data
@@ -33,8 +36,9 @@ class Model_Asset extends Model_Base_Asset {
 		}
 
 		// Try move the asset to the specified upload path
-		try {
-			$filename = Upload::save($file_data[$field_name], $filename, DOCROOT.Kohana::config('admin/asset.upload_path'));
+		try
+		{
+			$filepath = Upload::save($file_data[$field_name], $filename, DOCROOT.Kohana::config('admin/asset.upload_path'));
 		}
 		catch(Exception $e)
 		{
@@ -44,20 +48,21 @@ class Model_Asset extends Model_Base_Asset {
 		// Save the file data
 		$data = array(
 			'user_id' => Auth::instance()->get_user()->id,
-			'mimetype_id' => $file['mimetype_id'],
-			'filename' => basename($filename),
+			'mimetype_id' => $file['mimetype_id'], // Set in validation callback
+			'filename' => $filename,
+			'friendly_filename' => $filename,
 			'filesize' => (int) $file_data[$field_name]['size']
 		);		
 		$this->values($data);
 		$this->save();
-		
+
 		// Create a new filename with id prefixed
-		$new_filename = str_replace($this->filename, $this->id.'_'.$this->filename, $filename);
+		$new_filename = str_replace($this->filename, $this->id.'_'.$this->filename, $filepath);
 		$this->filename = basename($new_filename);
 		$this->save();
 
 		// Move the file to the new filename path
-		rename($filename, $new_filename);
+		rename($filepath, $new_filename);
 
 		return $this;
 	}
