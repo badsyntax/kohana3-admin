@@ -1,8 +1,8 @@
-<?php echo Form::open('admin/assets/popup#upload', array('enctype' => 'multipart/form-data'))?>
+<?php echo Form::open('admin/assets/popup#upload', array('enctype' => 'multipart/form-data', 'id' => 'upload-form'))?>
 
 	<fieldset class="last">
 		<p>Allowed types: <?php echo $allowed_upload_type?></p>
-		<p>Max uploads: <?php echo $max_file_uploads?></p>
+		<!-- <p>Max uploads: <?php echo $max_file_uploads?></p> -->
 	
 		<?php if ($errors[$field_name]){?>
 			<strong>Errors:</strong><br />

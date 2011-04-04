@@ -74,7 +74,7 @@
 							<img src="<?php echo URL::site($asset->image_url(40, 40, TRUE))?>" class="asset-thumb helper-left" />
 						<?php }?>
 										
-						<?php echo $asset->filename?>
+						<?php echo $asset->friendly_filename?>
 					</a>
 				</td>
 				<td>

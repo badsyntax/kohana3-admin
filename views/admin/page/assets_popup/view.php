@@ -1,9 +1,8 @@
 <fieldset class="clear">
 	<legend>Preview</legend>
 	
-	<div style="float:left;margin-right:10px;min-height: 130px;min-width:100px;">
+	<div style="float:left;margin-right:10px;min-height: 130px;min-width:200px;">
 		<a href="<?php echo $asset->image_url(600, 600, NULL, TRUE)?>" data-type="<?php echo $asset->is_pdf() ? 'image' : $asset->mimetype->subtype?>" class="thumb popup-ui-lightbox" title="<?php echo $asset->description?>">
-			
 			<?php if ($asset->is_text_document()){?>
 				<img src="/modules/admin/media/img/assets/page-white-text.png" style="border:1px solid #ccc;padding:3px;" />
 			<?php } else if ($asset->is_archive()){?>
