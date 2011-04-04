@@ -24,8 +24,6 @@ class Controller_Admin_Assets_Popup extends Controller_Admin_Assets {
 		$this->template->set_global('browse_html', $browse_html);
 		$this->template->set_global('upload_html', $upload_html);
 		
-		array_push($this->template->scripts, 'modules/admin/media/js/jquery.uploadify.min.js');
-		array_push($this->template->scripts, 'modules/admin/media/js/jquery.multifile.pack.js');
 		array_push($this->template->scripts, 'modules/admin/media/js/jquery.tablescroll.js');
 		array_push($this->template->scripts, Kohana::config('admin/media.paths.tinymce_popup'));
 	}
