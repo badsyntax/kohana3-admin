@@ -5,7 +5,6 @@
 
 	<div><strong>Type:</strong> <?php echo $db_config['type']?></div>
 	<div><strong>Name:</strong> <?php echo $db_config['connection']['database']?></div>
-	<div><strong>Size:</strong> <?php echo $db_size?></div>
 </fieldset>
 
 <fieldset class="dashboard-modules last">
