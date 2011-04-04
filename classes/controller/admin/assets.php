@@ -175,6 +175,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 
 		$this->template->title = __('Admin - Edit asset');
 		$this->template->content = View::factory('admin/page/assets/edit')
+			->set('resized', $asset->sizes->where('resized', '=', 1)->find_all())
 			->bind('asset', $asset)
 			->bind('errors', $errors);
 			
@@ -194,10 +195,11 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 
 	public function action_download($id = 0)
 	{
-		$asset = ORM::factory('asset', (int) $id);		
+		$asset = ORM::factory('asset', (int) $id);
+
 		if (!$asset->loaded()) exit;
 		
-		$this->request->send_file($asset->path(TRUE));
+		$this->request->send_file($asset->path(TRUE), $asset->friendly_filename);
 	}
 	
 	public function action_delete($id = 0)
