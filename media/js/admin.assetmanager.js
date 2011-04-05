@@ -217,11 +217,11 @@
 
 		action_upload: function(){
 			$('#upload-form')
-				.unbind('submit')
-				.bind('submit', function(event){
-					Admin.util.ajax.loader(cons.BEGIN, loader);
-					$('#upload-asset').button('disable');
-				});
+			.unbind('submit')
+			.bind('submit', function(event){
+				Admin.util.ajax.loader(cons.BEGIN, loader);
+				$('#upload-asset').button('disable');
+			});
 		},
 		
 		action_index: function(){
@@ -233,7 +233,7 @@
 				e.preventDefault();
 
 				var anchor = $(this), id = anchor.data('id');
-				
+			
 				Tabs.create(this.href, 'preview-' + id, 'Preview', function(){		
 					self.action_view({
 						id: id,
@@ -303,19 +303,28 @@
 					});
 				}
 			}
-				
+					
+			(!$('#preview-' + param.id + ' .thumb img')[0].complete) &&
+				Admin.util.ajax.loader(cons.BEGIN, loader);
+						
 			$('#preview-' + param.id)				
-			// Popup lightbox
-			.find('.popup-ui-lightbox')
-			.lightbox({win: window.parent})
-			.end()				
-			// Insert resized image
-			.find('.resize-insert')
-			.click(loadResizeTab)
-			.end()				
-			// Insert asset
-			.find('.insert-asset')
-			.click(insertAsset);
+				.find('.thumb img')
+				// Stop ajax spinner after image has been cached
+				.load(function(){
+					Admin.util.ajax.loader(cons.END, loader);
+				})
+				.end()
+				// Popup lightbox
+				.find('.popup-ui-lightbox')
+				.lightbox({win: window.parent})
+				.end()
+				// Insert resized image
+				.find('.resize-insert')
+				.click(loadResizeTab)
+				.end()
+				// Insert asset
+				.find('.insert-asset')
+				.click(insertAsset);
 		},
 		
 		action_resize: function(param){
