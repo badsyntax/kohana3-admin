@@ -20,8 +20,8 @@ class Controller_Admin_Pages extends Controller_Admin_Base {
 		$pages = ORM::factory('page')->tree_select(4, 0, array(__('None')), 0, 'title');
 
 		array_push($this->template->styles, Kohana::config('admin/media.paths.tinymce_skin'));
-		
-		if ($page = ORM::factory('page')->admin_add($_POST))
+
+		if ($page = @ORM::factory('page')->admin_add($_POST))
 		{
 			Message::set(Message::SUCCESS, __('Page saved.'));
 			!$this->is_ajax AND $this->request->redirect('admin/pages');

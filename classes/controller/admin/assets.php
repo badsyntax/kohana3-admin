@@ -75,7 +75,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		}		
 	}
 
-	public function action_upload($view_path = 'admin/page/assets/upload', $redirect_to = NULL)
+	public function action_upload($view_path = 'admin/page/assets/upload', $redirect_to = 'admin/assets')
 	{
 		$this->template->title = __('Admin - Upload assets');
 		$this->template->content = View::factory($view_path)
@@ -83,7 +83,10 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			->bind('allowed_upload_type', $allowed_upload_type)
 			->bind('max_file_uploads', $max_file_uploads)
 			->bind('field_name', $field_name);
-	
+		
+		array_push($this->template->scripts, 'modules/admin/media/js/jquery.uploadify.min.js');
+		array_push($this->template->scripts, 'modules/admin/media/js/jquery.multifile.pack.js');
+		
 		$allowed_upload_type = str_replace(',', ', ', Kohana::config('asset.allowed_upload_type'));
 		$max_file_uploads = Kohana::config('admin/asset.max_file_uploads');
 		
@@ -91,9 +94,6 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 		$assets = array();
 		$errors = array();
 
-		array_push($this->template->scripts, 'modules/admin/media/js/jquery.uploadify.min.js');
-		array_push($this->template->scripts, 'modules/admin/media/js/jquery.multifile.pack.js');
-		
 		// Have files been uploaded?
 		if ($_FILES AND isset($_FILES[$field_name]) AND is_array($_FILES[$field_name]))
 		{
@@ -141,7 +141,7 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			}
 		}
 		// Upload success!
-		if ($_POST AND !$errors AND $assets)
+		else if ($_FILES AND $assets)
 		{
 			$c = count($assets);
 
@@ -150,12 +150,8 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 				: ':assets_count asset successfully uploaded.';
 
 			Message::set(Message::SUCCESS, __($message, array(':assets_count' => $c)));
-			
-			$redirect_url = ($redirect_to === NULL)
-				? 'admin/assets'
-				: $redirect_to;
 	
-			$this->request->redirect($redirect_url);
+			$this->request->redirect($redirect_to);
 		}
 		
 		//$_POST = $_POST->as_array();
