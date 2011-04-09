@@ -21,7 +21,7 @@ class Model_Asset extends Model_Base_Asset {
 			->rules($field_name, $rules);
 						
 		// Add validation callbacks			
-		foreach($this->_callbacks as $type => $callbacks)
+		foreach($this->_callbacks['upload'] as $type => $callbacks)
 		{
 			foreach($callbacks as $callback)
 			{
@@ -44,13 +44,17 @@ class Model_Asset extends Model_Base_Asset {
 		{
 			throw new Exception($e);
 		}
-		
+
+		$description = preg_replace('/\.\w+$/', '', $filename);		// remove extension
+		$description = preg_replace('/[_-]/', ' ', $description);	// replace special chars
+
 		// Save the file data
 		$data = array(
 			'user_id' => Auth::instance()->get_user()->id,
 			'mimetype_id' => $file['mimetype_id'], // Set in validation callback
 			'filename' => $filename,
 			'friendly_filename' => $filename,
+			'description' => $description,
 			'filesize' => (int) $file_data[$field_name]['size']
 		);		
 		$this->values($data);
@@ -70,12 +74,23 @@ class Model_Asset extends Model_Base_Asset {
 	public function admin_update(& $data)
 	{
 		$data = Validate::factory($data)
-			->rules('filename', $this->_rules['update']['filename']);
+			->rules('filename', $this->_rules['update']['filename'])
+			->rules('description', $this->_rules['update']['description']);
+		
+		// Add validation callbacks			
+		foreach($this->_callbacks['update'] as $type => $callbacks)
+		{
+			foreach($callbacks as $callback)
+			{
+				$data->callback('filename', array($this, $callback));
+			}
+		}
 		
 		if (!$data->check())
 			return FALSE;
-		
-		return TRUE;
+
+		$this->values($data);
+		return $this->save();
 	}
 	
 	public function admin_delete($id = NULL, & $data)
