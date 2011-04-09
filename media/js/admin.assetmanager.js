@@ -171,7 +171,7 @@
 			
 			// Show the messages
 			$('#messages').children().length 
-				&& $('#messages').show();			
+				&& $('#messages').show();
 	
 			Admin.elements.tabs
 				// Add tabs event handlers	
@@ -200,13 +200,15 @@
 			Admin.elements.tabs
 				.find("span.ui-icon-close")
 				.live("click", function(){
-					
 					var index = $('li', Admin.elements.tabs).index( $(this).parent() );
-					
 					Admin.elements.tabs.tabs('remove', index);
 				});
 
-			$('#page-links a').click(function(event){
+			// Show loading spinner on anchors click (fake an ajax request)
+			$('#page-links').find('a').click(function(event){
+				Admin.util.ajax.loader(cons.BEGIN, loader);
+			});
+			$('#browse').find('th a').click(function(event){
 				Admin.util.ajax.loader(cons.BEGIN, loader);
 			});
 		},
@@ -230,9 +232,11 @@
 			
 			// Click handler
 			function preview(e) {				
+
 				e.preventDefault();
 
-				var anchor = $(this), id = anchor.data('id');
+				var anchor = $(this), 
+					id = anchor.data('id');
 			
 				Tabs.create(this.href, 'preview-' + id, 'Preview', function(){		
 					self.action_view({
@@ -240,7 +244,7 @@
 						mimetype: anchor.data('mimetype'),
 						filename: anchor.data('filename')
 					});					
-				});				
+				});	
 			}
 			
 			$('#browse').find('tbody').delegate('a', 'click', preview);
@@ -292,11 +296,11 @@
 					if (width > 1000 || height > 1000) {
 						tinyMCEPopup.editor.windowManager.confirm('The image is larger than 1000 x 1000px, are you sure you want to insert it at this size?', function(s){
 							if (s) { insert(); }
-						});						
+						});
 					} else insert();
 					
 				} else {
-					$.get('/admin/assets/get_url/' + param.id, function(url){							
+					$.get('/admin/assets/get_url/' + param.id, function(url){
 						$.get('/admin/assets/get_download_html/' + param.id, function(content){								
 							Asset.insert($.trim(url), $.trim(content));
 						});
@@ -308,20 +312,32 @@
 				Admin.util.ajax.loader(cons.BEGIN, loader);
 						
 			$('#preview-' + param.id)				
-				.find('.thumb img')
+
 				// Stop ajax spinner after image has been cached
+				.find('.thumb img')
 				.load(function(){
 					Admin.util.ajax.loader(cons.END, loader);
 				})
 				.end()
+
 				// Popup lightbox
 				.find('.popup-ui-lightbox')
-				.lightbox({win: window.parent})
+				.lightbox({
+					win: window.parent,
+					loader_start: function(){
+						Admin.util.ajax.loader(cons.BEGIN, loader);
+					},
+					loader_end: function(){
+						Admin.util.ajax.loader(cons.END, loader);
+					}
+				})
 				.end()
+
 				// Insert resized image
 				.find('.resize-insert')
 				.click(loadResizeTab)
 				.end()
+
 				// Insert asset
 				.find('.insert-asset')
 				.click(insertAsset);
@@ -383,6 +399,7 @@
 				});
 			}
 
+			// Ensure the image is loaded before building the resize container
 			Admin.util.ajax.loader(cons.BEGIN, loader);
 			$('<img />', {
 				id: 'resize-image-' + param.id,
