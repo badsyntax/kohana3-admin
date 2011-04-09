@@ -33,7 +33,13 @@
 		// Save Button
 		elem.find('.ui-button.save')
 			.button({
-				icons: { primary: "ui-icon-disk" }
+				icons: { primary: 'ui-icon-disk' }
+			});
+
+		// Search button
+		elem.find('.ui-button.search')
+			.button({
+				icons: { primary: 'ui-icon-search' }
 			});
 			
 		// Lightbox
@@ -413,11 +419,13 @@
 				});
 		},
 		
-		popup: function(src, alt, win){
+		popup: function(src, alt, win, loader_start, loader_end){
 			
 			win = win || window;
 			
-			Admin.util.ajax.loader(cons.BEGIN);
+			(loader_start) 
+				? Admin.util.trigger(this, loader_start) 
+				: Admin.util.ajax.loader(cons.BEGIN);
 			
 			$('<img />')
 			.error(function(){
@@ -425,8 +433,10 @@
 				alert('There was an error loading the image.');
 			})
 			.load(function(){
-								
-				Admin.util.ajax.loader(cons.END);
+
+				(loader_end)
+					? Admin.util.trigger(this, loader_end)
+					: Admin.util.ajax.loader(cons.END);
 				
 				var dialog = win.$('<div />', { title: alt });
 				
@@ -562,7 +572,9 @@
 	$.fn.lightbox = function(config){
 
 		config = $.extend({
-			win: window
+			win: window,
+			loader_start: null,
+			loader_end: null
 		}, config);	
 	
 		return this.each(function(){
@@ -573,7 +585,7 @@
 
 				if (this.nodeName === 'A' && $(this).data('type') == 'image'){
 					
-					Admin.util.dialog.popup(this.href, this.title, config.win);
+					Admin.util.dialog.popup(this.href, this.title, config.win, config.loader_start, config.loader_end);
 					
 					return false;
 				}
