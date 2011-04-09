@@ -134,8 +134,8 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 				$c = count($errors[$field_name]);
 			
 				$message = ($c > 1) 
-					? ':errors_count assets were not uploaded.'
-					: ':errors_count asset was not uploaded.';
+					? __(':errors_count assets were not uploaded.')
+					: __(':errors_count asset was not uploaded.');
 			
 				Message::set(Message::ERROR, __($message, array(':errors_count' => $c)));
 			}
@@ -146,8 +146,8 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			$c = count($assets);
 
 			$message = ($c > 1)
-				? ':assets_count assets successfully uploaded.'
-				: ':assets_count asset successfully uploaded.';
+				? __(':assets_count assets successfully uploaded.')
+				: __(':assets_count asset successfully uploaded.');
 
 			Message::set(Message::SUCCESS, __($message, array(':assets_count' => $c)));
 	
@@ -174,16 +174,16 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			->set('resized', $asset->sizes->where('resized', '=', 1)->find_all())
 			->bind('asset', $asset)
 			->bind('errors', $errors);
-			
-		if (ORM::factory('asset')->admin_update($_POST))
+
+		if ($asset->admin_update($_POST))
 		{
 			Message::set(Message::SUCCESS, __('Asset successfully updated.'));			
 			!$this->is_ajax AND $this->request->redirect($this->request->uri);
 		}
 		
-		if ($this->errors = $_POST->errors('admin/assets'))
+		if ($errors = $_POST->errors('admin/assets'))
 		{
-			Messages::set(MESSAGE::ERROR, __('Please correct the errors.'));
+			Message::set(MESSAGE::ERROR, __('Please correct the errors.'));
 		}
 
 		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);	
