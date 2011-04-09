@@ -7,8 +7,9 @@
 	</div>
 	<?php echo $breadcrumbs?>
 
-
 <?php echo Form::open(NULL, array('class' => 'assets-edit ajax-validate'))?>
+
+	<?php echo Form::hidden('id', $asset->id)?>
 
 	<?php if ($asset->is_image()){?>
 		<fieldset>
@@ -42,7 +43,10 @@
 				<ul>
 					<?php foreach($resized as $size){?>
 					<li>
-						<a href="<?php echo URL::site('media/assets/resized/'.$size->filename)?>" data-type="image" class="ui-lightbox" title="<?php echo $size->filename?>">
+						<a 	href="<?php echo URL::site('media/assets/resized/'.$size->filename)?>" 
+							data-type="image" 
+							class="ui-lightbox" 
+							title="<?php echo $size->filename?>">
 							<?php echo $size->filename?>
 						</a>
 						 (<?php echo $size->width?> x <?php echo $size->height?>px)
@@ -54,17 +58,11 @@
 	<?php }?>
 	<fieldset class="last">
 		<legend>Edit asset</legend>
-		
+
 		<div class="field">
 			<?php echo
 				Form::label('filename', 'Filename', NULL, $errors).
 				Form::input('filename', $_POST['filename'], NULL, $errors)
-			?>
-		</div>
-		<div class="field">
-			<?php echo
-				Form::label('title', 'Title', NULL, $errors).
-				Form::input('title', $_POST['title'], NULL, $errors)
 			?>
 		</div>
 		<div class="field">
