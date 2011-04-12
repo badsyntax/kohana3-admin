@@ -247,28 +247,42 @@
 			Admin.util.ajax.loader(cons.END);
 
 			$('.form-error, .label-error').hide();
-		
-			if (data.status) {
 
-				var url = o.redirect_url || data.redirect_url;
-				if (url) { window.location = url; }
+			if (data.status) {
+				
+				var url = o.redirect_url;
+
+				Admin.util.message('success', (data.message || 'Successfully saved.') + (url ? ' Redirecting..' : ''));
+
+				if (url) { 
+					form.reset();
+					window.setTimeout(function(){
+						window.location = url;
+					}, 2000);
+				}
 			
 			} else if (!data.status && data.errors){
 			
-				Admin.util.message('error', 'Please correct the errors.');
+				Admin.util.message('error', data.message || 'Please correct the errors.');
 
 				var c = 0;
 				$.each(data.errors, function(key, val){
 				
-					var input	= $('[name="' + key + '"]'),
-						id		= input.attr('id'),
-						label	= $('label[for="' + id + '"]');
+					var 	input = $('[name="' + key + '"]'),
+						id = input.attr('id'),
+						label = $('label[for="' + id + '"]')
+					;
 				
 					!label.find('.label-error').length 
 						&& label.append('<span class="label-error"></span>');
 				
-					label.find('.label-error').hide().html(val).fadeIn('slow');						
+					label.find('.label-error')
+						.hide()
+						.html(val)
+						.fadeIn('slow');						
+
 					(c === 0) && input.focus();
+
 					c++;
 				});
 			
@@ -295,6 +309,7 @@
 			
 					e.preventDefault();
 					Admin.util.ajax.loader(cons.BEGIN);
+
 					var form = this;
 					
 					// Update the textarea contents
@@ -307,7 +322,6 @@
 						data: $(this).serialize(),
 						dataType: 'json',
 						success: function(data){
-					
 							postSuccess.call(this, data, form);
 						}
 					});
@@ -318,11 +332,11 @@
 	Admin.util.smoothScroll = function(o){
 
 		o = $.extend({
-			selector: 'a[href*=#].smooth-scroll',		// anchor selector (selector string)
-			target: false,								// target element node, if not using above selector (optional) (selector string)
-			speed: 1000,								// scroll speed (integer)
-			offset: 3,									// target element offset (integer)
-			direction: 'both'							// possible scroll direction (both; up or down)
+			selector: 'a[href*=#].smooth-scroll',	// anchor selector (selector string)
+			target: false,				// target element node, if not using above selector (optional) (selector string)
+			speed: 1000,				// scroll speed (integer)
+			offset: 3,				// target element offset (integer)
+			direction: 'both'			// possible scroll direction (both; up or down)
 		}, o);
 	
 		function isInternalAnchor(){			
