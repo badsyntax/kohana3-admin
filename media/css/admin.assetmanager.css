@@ -87,7 +87,8 @@
 	padding: .4em 1em;
 }
 .assetmanager.popup .assets-list {
-
+	float: right;
+	width: 68%;
 }
 .assetmanager.popup .assets-list .scroll {
 	overflow: auto;
@@ -97,7 +98,8 @@
 .assetmanager.popup .assets-list table .filesize {
 	width: 7em;
 }
-.assetmanager.popup .assets-list table .type {
+.assetmanager.popup .assets-list table .type,
+.assetmanager.popup .assets-list table .size {
 	width: 7em;
 }
 .assetmanager.popup .assets-list.view-list img.asset-thumb {
@@ -116,6 +118,29 @@
 
 .assetmanager.popup .asset-preview {
 	margin-bottom: .3em;
+}
+.assetmanager.popup .sidepane {
+	float: left;
+	width: 30%;
+}
+.assetmanager.popup .sidepane .section {
+	padding: .5em;
+	border:1px solid #ddd;
+}
+.assetmanager.popup .sidepane .section h3 {
+	background: url("/modules/admin/media/img/ui-theme/bg_glass.png") repeat-x 0 0;
+}
+.assetmanager.popup .folder-list {
+	margin: 0;
+	padding: 0;
+}
+.assetmanager.popup .folder-list li {
+	list-style: none;
+}
+.assetmanager.popup .folder-list a {
+	background: url(../img/assets_popup/folder.png) no-repeat left top;
+	display: block;
+	padding: .2em .2em .2em 20px;
 }
 
 /* IMAGE SIZE TAB */
