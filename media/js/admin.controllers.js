@@ -14,7 +14,10 @@
 		
 		action_index: function(){
 
-			Admin.model.page.getTree('#page-tree');
+			Admin.model.page.getTree('#page-tree', function(total){
+				$('#total-pages').html( total );
+				(total === 1) && $('#total-pages-label').html('page');
+			});
 		},
 		
 		action_add: function(){
@@ -59,7 +62,10 @@
 	
 		action_index: function(){
 			
-			Admin.model.user.getTree('#page-tree');
+			Admin.model.user.getTree('#users-tree', function(total){
+				$('#total-users').html( total );
+				(total === 1) && $('#total-users-label').html('user');
+			});
 		},
 		
 		action_add: function(){
@@ -77,7 +83,10 @@
 	
 		action_index: function(){
 			
-			Admin.model.group.getTree('#groups-tree');
+			Admin.model.group.getTree('#groups-tree', function(total){
+				$('#total-groups').html( total );
+				(total === 1) && $('#total-groups-label').html('group');
+			});
 		},
 		
 		action_add: function(){
@@ -89,9 +98,7 @@
 		
 		action_edit: function(){
 			
-			Admin.util.validate({
-				redirect_url: window.location.toString()
-			});
+			Admin.util.validate();
 		}
 	};
 	
@@ -106,9 +113,7 @@
 		
 		action_edit: function(){
 			
-			Admin.util.validate({
-				redirect_url: window.location.toString()
-			});
+			Admin.util.validate();
 		}
 	};
 	
