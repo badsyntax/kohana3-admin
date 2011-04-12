@@ -14,14 +14,23 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 
 		if (ORM::factory('group')->admin_create($_POST))
 		{
-			Message::set(Message::SUCCESS, __('Group successfully saved.'));
-		
-			!$this->is_ajax AND $this->request->redirect('admin/groups');
+			$this->validation_message =  __('Group successfully saved.');
+
+			if (!$this->is_ajax)
+			{
+				Message::set(Message::SUCCESS, $this->validation_message);
+				$this->request->redirect('admin/groups');
+			}
 		}
 
 		if ($this->errors = $_POST->errors('admin/groups'))
 		{
-			 Message::set(Message::ERROR, __('Please correct the errors.'));
+			$this->validation_message =  __('Please correct the errors.');
+
+			if (!$this->is_ajax)
+			{
+				Message::set(Message::ERROR, $this->validation_message);
+			}
 		}
 
 		$_POST = $_POST->as_array();
@@ -29,16 +38,21 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 	
 	public function action_edit($id = 0)
 	{
-		// Try get the group
 		$group = ORM::factory('group', (int) $id);
 
 		// If group doesn't exist then redirect to admin home
-		! $group->loaded() AND $this->request->redirect('admin');
+		if (!$group->loaded())
+		{
+			$this->request->redirect('admin');
+		}
 
 		$this->template->title = __('Group').' '.$group->name;
 
 		// If POST is empty then set the default form data
-		!$_POST AND $default_data = $group->as_array();
+		if (!$_POST)
+		{
+			$default_data = $group->as_array();
+		}
 
 		$this->template->content = View::factory('admin/page/groups/edit')
 			->bind('group', $group)
@@ -50,15 +64,24 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 		// Try update the group, if successful then reload the page
 		if ($group->admin_update($_POST))
 		{
-			Message::set(Message::SUCCESS, __('Group successfully updated.'));
-			 
-			!$this->is_ajax && $this->request->redirect($this->request->uri);
+			$this->validation_message = __('Group successfully updated.');
+
+			if (!$this->is_ajax)
+			{
+				Message::set(Message::SUCCESS, $this->validation_message);
+			 	$this->request->redirect($this->request->uri);
+			}
 		}
 
 		// Get validation errors
 		if ($this->errors = $_POST->errors('admin/groups'))
 		{
-			Message::set(Message::ERROR, __('Please correct the errors.'));
+			$this->validation_message = __('Please correct the errors.');
+
+			if (!$this->is_ajax)
+			{
+				Message::set(Message::ERROR, $this->validation_message);
+			}
 		}
 
 		// If POST is empty, then add the default data to POST
@@ -73,8 +96,11 @@ class Controller_Admin_Groups extends Controller_Admin_Base {
 		{
 			$open_groups = explode(',', $open_groups);
 		}
-		
-		$this->template->content = ORM::factory('group')->tree_list_html('admin/page/users/tree', 0, $open_groups);
+
+		$tree_html = ORM::factory('group')->tree_list_html('admin/page/users/tree', 0, $open_groups);
+
+		$this->template->content = View::factory('admin/page/users/tree')
+			->set('tree_html', $tree_html);
 	}
 
 } // End Controller_Admin_Groups
