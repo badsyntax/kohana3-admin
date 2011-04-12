@@ -5,7 +5,7 @@
 
 body { text-align: center; }
 h1 { font-size: 1.5em; margin-bottom: .6em; display: none;}
-h2, h2, h4 { margin-bottom: 1em; }
+h2, h2, h3, h4 { margin-bottom: 1em; }
 ul, ol { margin: 0 2em 1em 2em; }
 p, form { margin: 0 0 1em 0; }
 
@@ -107,7 +107,6 @@ textarea.error-field {
 ============================*/
 
 header, #content, footer { 
-	width: 880px; 
 	margin: auto; 
 	text-align: left; 
 }
@@ -136,13 +135,22 @@ table {
 table,th, td { 
 	border: 1px solid #dfdfdf;
 }
-table thead th, table tfoot tr { 
+table thead tr, table tfoot tr { 
 	color: #333; 
 	-moz-text-shadow: 1px 1px 0 #FFFFFF; 
 	-webkit-text-shadow: 1px 1px 0 #FFFFFF; 
 	text-shadow: 1px 1px 0 #FFFFFF; 
 	background: #ffffff; 
-	background: url(http://kohana3-examples/modules/admin/media/img/ui-theme/bg_glass.png);
+	background: url(/modules/admin/media/img/ui-theme/bg_glass.png) repeat-x 0 12px;
+}
+table.tablescroll_body {
+	border: 0;
+}
+table.tablescroll_head {
+	border: 0;
+}
+table thead th {
+	border-bottom: 0;
 }
 table thead th:hover {
 	background-position: 0 -8px;
