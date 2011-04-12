@@ -1,13 +1,11 @@
-/*
- *
+/**
  * @filename : admin.assetmanager.js
  * @developer : badsyntax.co
  * This is the popup asset manager controller file.
  * The popup asset manager is displayed in an iFrame (window.parent.Admin should exist)
- *
  */
 (function(window, $, tinyMCEPopup){
-	
+
 	if (!window.Admin || !tinyMCEPopup) return;
 	
 	var 
@@ -18,7 +16,7 @@
 	
 	var Tabs = {
 		
-		create: function(url, id, title, callback){
+		create: function(url, id, title, callback) {
 			
 			title = title || 'Default tab';
 
@@ -44,43 +42,12 @@
 	};
 	
 	var Asset = {
-	
-		insert: function(path, content){
-			
-			var win = tinyMCEPopup.getWindowArg('window');			
-
-			// The assetmanager was initiated by a dialog window 
-			if (win){
-				
-				var fieldId = tinyMCEPopup.getWindowArg('input');
-				win.document.getElementById(fieldId).value = path;
-
-				// close popup window
-				tinyMCEPopup.close();
-			}			
-			// The assetmanager was initiated by a toolbar button
-			else {
-
-				var ed = tinyMCEPopup.editor, 
-					el = ed.selection.getNode();
-
-				tinyMCEPopup.restoreSelection();
-
-				// Fixes crash in Safari
-				(tinymce.isWebKit) && ed.getWin().focus();
-				
-				ed.execCommand('mceInsertContent', false, content);
-				ed.undoManager.add();
-
-				// close popup window
-				tinyMCEPopup.close();		
-			}
-		}
-	};
 		
-	var Image = {
+		allowedExt: {
+			image: [ 'png', 'jpg', 'jpeg', 'gif' ]
+		},
 		
-		getDimensions: function(width, height, percent){			
+		getImageDimensions: function(width, height, percent){			
 			
 			var w = (width / 100) * percent,
 				h = (height / 100) * ( (w / width) * 100 );		
@@ -90,44 +57,61 @@
 				height: Math.round(h)
 			};
 		},
-		
-		insert: function(path){
-						
-			var win = tinyMCEPopup.getWindowArg("window");
+	
+		insert: function(path, content, type) {
 			
-			function insert(){
+			var self = this,
+				win = tinyMCEPopup.getWindowArg("window"),
+				ext = path.split('.').pop().toLowerCase();
 
-				Admin.util.ajax.loader(cons.END, loader);
-				
-				// The assetmanager was initiated by a dialog window 
-				if (win){
-		    	
-					var fieldId = tinyMCEPopup.getWindowArg('input');
-					win.document.getElementById(fieldId).value = path;
+			function insertIntoDialog() {
 
-					// are we an image browser?
-					if (typeof(win.ImageDialog) != "undefined") {
+				var fieldId = tinyMCEPopup.getWindowArg('input');
+				win.document.getElementById(fieldId).value = path;
 
-						// we are, so update image dimensions...
-						(win.ImageDialog.getImageData) && win.ImageDialog.getImageData();
+				// are we an image browser?
+				if (typeof(win.ImageDialog) != "undefined") {
 
-						// ... and preview if necessary
-						(win.ImageDialog.showPreviewImage) && win.ImageDialog.showPreviewImage(path);
+					if ($.inArray(ext, self.allowedExt['image']) === -1) {
+						Admin.util.dialog.alert('Attention', 'Please select an image to insert.');
+						return;
 					}
 
-					// close popup window
-					tinyMCEPopup.close();				
-				}			
-				// The assetmanager was initiated by a toolbar button
-				else {
-		
+					// we are, so update image dimensions...
+					(win.ImageDialog.getImageData) && win.ImageDialog.getImageData();
+
+					// ... and preview if necessary
+					(win.ImageDialog.showPreviewImage) && win.ImageDialog.showPreviewImage(path);
+				}
+
+				// close popup window
+				tinyMCEPopup.close();				
+			}
+
+			function insertIntoWysiwyg() {
+
+				if (type != 'image'){
 					var ed = tinyMCEPopup.editor, 
+						el = ed.selection.getNode();
+
+					tinyMCEPopup.restoreSelection();
+
+					// Fixes crash in Safari
+					(tinymce.isWebKit) && ed.getWin().focus();
+			
+					ed.execCommand('mceInsertContent', false, content);
+					ed.undoManager.add();
+
+					// close popup window
+					tinyMCEPopup.close();
+				} else {		
+					var ed = tinyMCEPopup.editor,
 						el = ed.selection.getNode(),
 						args = {
 							src : path,
 							alt : ''
 						};
-					
+
 					tinyMCEPopup.restoreSelection();
 
 					// Fixes crash in Safari
@@ -143,23 +127,34 @@
 						ed.dom.setAttrib('__mce_tmp', 'id', '');
 						ed.undoManager.add();
 					}
-				
+
 					// close popup window
 					tinyMCEPopup.close();
-				}
+					}
 			}
-			
-			Admin.util.ajax.loader(cons.BEGIN, loader);			
-			$('<img />')
-			.load(insert)
-			.error(function(){	
-				Admin.util.ajax.loader(cons.END, loader);		
-				alert('There was an error loading the image. Please try again.');
-			})
-			.attr('src', path);
-		}	
-	};	
-	
+
+			function insert() {
+				(win)
+				? insertIntoDialog()
+				: insertIntoDialog();
+			}
+
+			if (type === 'image') {
+
+				Admin.util.ajax.loader(cons.BEGIN, loader);
+
+				$('<img />')
+				.load(insert)
+				.error(function(){
+					Admin.util.ajax.loader(cons.END, loader);
+					alert('There was an error loading the image. Please try again.');
+				})
+				.attr('src', path);
+
+			} else insert();
+		}
+	};
+		
 	Admin.controller.assets_popup = {
 		
 		before: function(){
@@ -230,8 +225,8 @@
 			
 			var self = this;
 			
-			// Click handler
-			function preview(e) {				
+			// Asset click handler
+			function preview(e) {
 
 				e.preventDefault();
 
@@ -247,7 +242,7 @@
 				});	
 			}
 			
-			$('#browse').find('tbody').delegate('a', 'click', preview);
+			$('#browse').find('tbody').delegate('a.asset', 'click', preview);
 			
 			$('table').tableScroll({
 				height: 350, 
@@ -289,7 +284,7 @@
 						Admin.util.ajax.loader(cons.BEGIN, loader);
 						$.get('/admin/assets/get_url/' + param.id, function(data){
 							var url = $.trim(data);
-							Image.insert(url);
+							Asset.insert(url, null, mimetype[0]);
 						});
 					}
 					
@@ -301,8 +296,8 @@
 					
 				} else {
 					$.get('/admin/assets/get_url/' + param.id, function(url){
-						$.get('/admin/assets/get_download_html/' + param.id, function(content){								
-							Asset.insert($.trim(url), $.trim(content));
+						$.get('/admin/assets/get_download_html/' + param.id, function(content){
+							Asset.insert($.trim(url), $.trim(content), mimetype[0]);
 						});
 					});
 				}
@@ -354,16 +349,16 @@
 					tab = $('#resize-' + id),
 					width = this.width, 
 					height = this.height,
-					d = Image.getDimensions(width, height, 50),
+					d = Asset.getImageDimensions(width, height, 50),
 					elem = {
-						wrapper:		tab.find('.resize-image-wrapper'),
-						loader: 		tab.find('.resize-image-loading'),
-						slider: 		tab.find('.resize-slider'),
-						resizeWidth: 	tab.find('.resize-image-dimension-width'),
-						resizeHeight: 	tab.find('.resize-image-dimension-height'),
-						widthMax: 		tab.find('.resize-image-width-max'),
-						contents: 		tab.find('.resize-image-contents'),
-						insertResized: 	$('#resize-' + id).find('.button-resize-insert')
+						wrapper:	tab.find('.resize-image-wrapper'),
+						loader:		tab.find('.resize-image-loading'),
+						slider:		tab.find('.resize-slider'),
+						resizeWidth:	tab.find('.resize-image-dimension-width'),
+						resizeHeight:	tab.find('.resize-image-dimension-height'),
+						widthMax:	tab.find('.resize-image-width-max'),
+						contents:	tab.find('.resize-image-contents'),
+						insertResized:	$('#resize-' + id).find('.button-resize-insert')
 					};
 
 				this.width = d.width;
@@ -381,8 +376,8 @@
 
 				elem.slider.slider({
 					value: 50,
-				 	slide: function(event, ui) {	
-						d = Image.getDimensions(width, height, ui.value);														
+					slide: function(event, ui) {	
+						d = Asset.getImageDimensions(width, height, ui.value);														
 						elem.resizeWidth.html(d.width);
 						elem.resizeHeight.html(d.height);
 						image.attr('width', d.width)
@@ -394,7 +389,7 @@
 					Admin.util.ajax.loader(cons.BEGIN, loader);
 					elem.insertResized.after(' Generating image...');
 					$.get('/admin/assets/get_image_url/' + id + '/' + d.width + '/' + d.height, function(data){				
-						Image.insert($.trim(data));
+						Asset.insert($.trim(data), null, 'image');
 					})
 				});
 			}
