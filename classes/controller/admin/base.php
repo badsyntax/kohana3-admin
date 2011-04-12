@@ -19,7 +19,10 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	
 	// Validation errors
 	protected $errors = NULL;
-	
+
+	// Validation message
+	protected $validation_message = NULL;
+
 	public function before()
 	{
 		$this->is_ajax = (bool) Request::$is_ajax;
@@ -155,15 +158,16 @@ abstract class Controller_Admin_Base extends Controller_Base {
 	public function json_response($data=array(), $data_type='errors')
 	{
 		if ($this->is_ajax)
-		{			
+		{
 			$data = ($data)
 				? array(
 					'status' => FALSE,
-					$data_type => $data
+					$data_type => $data,
+					'message' => $this->validation_message
 				)
 				: array(
 					'status' => TRUE,
-					'redirect_url' => URL::site('admin/'.$this->request->controller)
+					'message' => $this->validation_message
 				);
 				
 			$this->template->content = json_encode($data);
