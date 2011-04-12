@@ -29,11 +29,15 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			->bind('total', $this->_total)
 			->bind('direction', $this->_direction)
 			->bind('order_by', $this->_order_by)
+			->bind('filter', $this->_filter)
 			->bind('pagination', $this->_pagination);
 
 		$this->_direction = (Arr::get($_REQUEST, 'direction', 'asc') == 'asc' ? 'desc' : 'asc');
 		$this->_order_by = Arr::get($_REQUEST, 'sort', 'date');
-				
+		$this->_type = Arr::get($_REQUEST, 'type', 'all');
+		$this->_subtype = Arr::get($_REQUEST, 'subtype', 'all');
+		$this->_filter = Arr::get($_REQUEST, 'filter', NULL);
+
 		// Get the total amount of items in the table
 		$this->_total = ORM::factory('asset')
 			->join('mimetypes')
@@ -55,18 +59,16 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			->order_by($this->_order_by, $this->_direction)			
 			->limit($this->_pagination->items_per_page)
 			->offset($this->_pagination->offset);
-		
+
 		$this->_filter_results($this->_assets);		
 		$this->_assets = $this->_assets->find_all();
 	}
 	
 	private function _filter_results(& $results)
 	{
-		$filter = Arr::get($_REQUEST, 'filter', NULL);
-		
-		if ($filter !== NULL)
+		if ($this->_filter)
 		{
-			list($name, $value) = explode(':', $filter);
+			list($name, $value) = explode(':', $this->_filter);
 
 			foreach(explode('|', $value) as $value)
 			{
