@@ -50,7 +50,6 @@ fieldset, #messages {
 }
 fieldset {
 	margin-bottom: 1em;
-	clear: both;
 }
 fieldset.last { 
 	margin: 0;
@@ -248,7 +247,6 @@ td, th {
 #breadcrumbs {
 	margin: .2em 0 1em 0;
 	padding: 0;
-	float: left;
 }
 #breadcrumbs li {
 	list-style: none;

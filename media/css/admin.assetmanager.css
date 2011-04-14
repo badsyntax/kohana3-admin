@@ -125,7 +125,8 @@
 }
 .assetmanager.popup .sidepane .section {
 	padding: .5em;
-	border:1px solid #ddd;
+	border: 1px solid #ddd;
+	margin-bottom: 1em;
 }
 .assetmanager.popup .sidepane .section h3 {
 	background: url("/modules/admin/media/img/ui-theme/bg_glass.png") repeat-x 0 0;
@@ -134,13 +135,24 @@
 	margin: 0;
 	padding: 0;
 }
+.assetmanager.popup .folder-list ul {
+	margin-bottom: 0;
+	margin-right: 0;
+}
 .assetmanager.popup .folder-list li {
 	list-style: none;
 }
 .assetmanager.popup .folder-list a {
 	background: url(../img/assets_popup/folder.png) no-repeat left top;
 	display: block;
-	padding: .2em .2em .2em 20px;
+	padding: .3em .3em .3em 20px;
+}
+.assetmanager.popup .folder-list a:hover {
+	background-color: #f2f2f2;
+	font-weight: bold;
+}
+.assetmanager.popup #folders {
+	width: 184px;
 }
 
 /* IMAGE SIZE TAB */
