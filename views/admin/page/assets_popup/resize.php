@@ -23,7 +23,7 @@
 		</div>
 		<div>
 			<button type="button" class="button-resize-insert ui-button save">
-				<?php echo __('Insert Resized')?>
+				<?php echo __('Insert Image')?>
 			</button>
 		</div>
 	</div>

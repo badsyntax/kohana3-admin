@@ -26,7 +26,7 @@
 		
 		<?php echo Form::button('save', 'Upload', array(
 			'type' => 'submit', 
-			'class' => 'ui-button save ui-helper-hiddens', 
+			'class' => 'ui-button save', 
 			'id' => 'upload-asset'
 		))?>		
 
