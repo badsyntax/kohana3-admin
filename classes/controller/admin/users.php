@@ -12,35 +12,45 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		$this->template->content = View::factory('admin/page/users/add')
 			->bind('roles', $roles)
 			->bind('groups', $groups)
-			->bind('errors', $errors);
+			->bind('errors', $this->errors);
 
-		if (ORM::factory('user')->admin_add($_POST))
+		$data = $_POST;
+
+		if (ORM::factory('user')->admin_add($data))
 		{
-			Message::set(Message::SUCCESS, __('User successfully saved.'));
-			$this->request->redirect('admin/users');
+		       $this->validation_message =  __('User successfully saved.');
+
+			if (!$this->is_ajax)
+			{
+				Message::set(Message::SUCCESS, $this->validation_message);
+				$this->request->redirect('admin/users');
+			}
+		}
+		
+		if ($this->errors = $data->errors('auth'))
+		{
+			$this->validation_message =  __('Please correct the errors.');
+
+			if (!$this->is_ajax)
+			{
+				Message::set(Message::ERROR, $this->validation_message);
+			}
 		}
 		
 		$roles = ORM::factory('role')->find_all();
 		$groups = ORM::factory('group')->find_all();
-	
-		if ($this->errors = $_POST->errors('auth'))
-		{
-			 Message::set(Message::ERROR, __('Please correct the errors.'));
-		}
-
-		$_POST = $_POST->as_array();
 	}
 
 	public function action_edit($id = 0)
 	{
 		$user = ORM::factory('user', (int) $id);
 
-		! $user->loaded() AND $this->request->redirect('admin/users');
+		if (!$user->loaded())
+		{
+			$this->request->redirect('admin/users');
+		}
 		
 		$this->template->title = __('Edit user').' '.$user->username;
-
-		// If POST is empty then set the default form data
-		!$_POST AND $default_data = $user->as_array();
 
 		// Bind user data to template
 		$this->template->content = View::factory('admin/page/users/edit')
@@ -49,7 +59,13 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 			->bind('user', $user)
 			->bind('user_roles', $user_roles)
 			->bind('user_groups', $user_groups)
-			->bind('errors', $errors);
+			->bind('errors', $this->errors);
+		
+		// If POST is empty then set the default form data
+		if (!$_POST)
+		{
+			$default_data = $user->as_array();
+		}
 
 		// Find all roles
 		$roles = ORM::factory('role')->find_all();
@@ -82,11 +98,14 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 		
 		if ($this->errors = $_POST->errors('profile'))
 		{
- 			Message::set(Message::ERROR, __('Please correct the errors.'));
+			Message::set(Message::ERROR, __('Please correct the errors.'));
 		}
 
 		// If POST is empty, then add the default data to POST
-		isset($default_data) AND $_POST = array_merge($_POST->as_array(), $default_data);
+		if (isset($default_data))
+		{
+			$_POST = array_merge($_POST->as_array(), $default_data);
+		}
 	}
 
 	public function action_delete($id = 0)
@@ -124,7 +143,10 @@ class Controller_Admin_Users extends Controller_Admin_Base {
 			$open_groups = explode(',', $open_groups);
 		}
 
-		$this->template->content = ORM::factory('group')->tree_list_html('admin/page/users/tree', 0, $open_groups);
+		$tree_html = ORM::factory('group')->tree_list_html('admin/page/users/tree', 0, $open_groups);
+
+		$this->template->content = View::factory('admin/page/users/tree')
+			->set('tree_html', $tree_html);
 	}
 
 } // End Controller_Admin_users
