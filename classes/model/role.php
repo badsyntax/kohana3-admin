@@ -5,11 +5,11 @@ class Model_Role extends Model_Base_Role {
 	public function admin_create(& $data)
 	{
 		$data = Validate::factory($data)
-				->rules('name', $this->_rules['name'])
-				->rules('description', $this->_rules['description']);
+			->rules('name', $this->_rules['name'])
+			->rules('description', $this->_rules['description']);
 				
 		foreach($this->_callbacks['name'] as $callback)
-        {
+		{
 			$data->callback('name', array($this, $callback));
 		}
 
@@ -24,14 +24,9 @@ class Model_Role extends Model_Base_Role {
 	public function admin_update(& $data)
 	{
 		$data = Validate::factory($data)
-				->rules('name', $this->_rules['name'])
-				->rules('description', $this->_rules['description']);
+			->rules('name', $this->_rules['name'])
+			->rules('description', $this->_rules['description']);
 				
-		foreach($this->_callbacks['name'] as $callback)
-	    {
-			$data->callback('name', array($this, $callback));
-		}
-
 		if (!$data->check()) return FALSE;
 
 		$this->values($data);
