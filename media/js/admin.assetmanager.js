@@ -18,24 +18,23 @@
 		
 		create: function(url, id, title, callback) {
 			
-			title = title || 'Default tab';
+			title = title || 'Tab';
 
-			// Create and select a new tab
-			Admin.elements.tabs
-				.tabs('add', '#' + id, title)
-				.tabs("select" , id);
+			if (!$('#'+id).length){
+				// Create a new tab
+				Admin.elements.tabs.tabs('add', '#' + id, title);
+			}
+
+			Admin.elements.tabs.tabs("select" , id);
 
 			Admin.util.ajax.loader(cons.BEGIN, loader);
 					
-			// Load the tab contents
+			// Load the tab content
 			$('#' + id)
 			.html('<p>Loading content...</p>')
 			.load(url, function(){
-				// Build the UI
 				$(this).ui();
-				// Hide the loader spinner
 				Admin.util.ajax.loader(cons.END, loader);
-				// Trigger the callback function
 				Admin.util.trigger(this, callback);				
 			});
 		}
@@ -47,18 +46,7 @@
 			image: [ 'png', 'jpg', 'jpeg', 'gif' ]
 		},
 		
-		getImageDimensions: function(width, height, percent){			
-			
-			var w = (width / 100) * percent,
-				h = (height / 100) * ( (w / width) * 100 );		
-					
-			return {
-				width: Math.round(w),
-				height: Math.round(h)
-			};
-		},
-	
-		insert: function(path, content, type) {
+		insert: function(path, content, type, description) {
 			
 			var self = this,
 				win = tinyMCEPopup.getWindowArg("window"),
@@ -67,6 +55,7 @@
 			function insertIntoDialog() {
 
 				var fieldId = tinyMCEPopup.getWindowArg('input');
+
 				win.document.getElementById(fieldId).value = path;
 
 				// are we an image browser?
@@ -76,6 +65,9 @@
 						Admin.util.dialog.alert('Attention', 'Please select an image to insert.');
 						return;
 					}
+					
+					// Update the description field
+					win.document.getElementById('alt').value = description;
 
 					// we are, so update image dimensions...
 					(win.ImageDialog.getImageData) && win.ImageDialog.getImageData();
@@ -130,13 +122,13 @@
 
 					// close popup window
 					tinyMCEPopup.close();
-					}
+				}
 			}
 
 			function insert() {
 				(win)
 				? insertIntoDialog()
-				: insertIntoDialog();
+				: insertIntoWysiwyg();
 			}
 
 			if (type === 'image') {
@@ -302,17 +294,20 @@
 					});
 				}
 			}
+
+			function hideSpinner(){
+				Admin.util.ajax.loader(cons.END, loader);
+			}
 					
 			(!$('#preview-' + param.id + ' .thumb img')[0].complete) &&
 				Admin.util.ajax.loader(cons.BEGIN, loader);
 						
-			$('#preview-' + param.id)				
+			$('#preview-' + param.id)
 
-				// Stop ajax spinner after image has been cached
+				// Hide ajax spinner
 				.find('.thumb img')
-				.load(function(){
-					Admin.util.ajax.loader(cons.END, loader);
-				})
+				.load(hideSpinner)
+				.error(hideSpinner)
 				.end()
 
 				// Popup lightbox
@@ -329,7 +324,7 @@
 				.end()
 
 				// Insert resized image
-				.find('.resize-insert')
+				.find('.resize-asset')
 				.click(loadResizeTab)
 				.end()
 
@@ -339,7 +334,18 @@
 		},
 		
 		action_resize: function(param){
+		
+			function getImageDimensions(width, height, percent){			
 			
+				var w = (width / 100) * percent,
+					h = (height / 100) * ( (w / width) * 100 );		
+					
+				return {
+					width: Math.round(w),
+					height: Math.round(h)
+				};
+			}
+	
 			function init(){
 				
 				Admin.util.ajax.loader(cons.END, loader);
@@ -349,7 +355,7 @@
 					tab = $('#resize-' + id),
 					width = this.width, 
 					height = this.height,
-					d = Asset.getImageDimensions(width, height, 50),
+					d = getImageDimensions(width, height, 50),
 					elem = {
 						wrapper:	tab.find('.resize-image-wrapper'),
 						loader:		tab.find('.resize-image-loading'),
@@ -377,7 +383,7 @@
 				elem.slider.slider({
 					value: 50,
 					slide: function(event, ui) {	
-						d = Asset.getImageDimensions(width, height, ui.value);														
+						d = getImageDimensions(width, height, ui.value);														
 						elem.resizeWidth.html(d.width);
 						elem.resizeHeight.html(d.height);
 						image.attr('width', d.width)
