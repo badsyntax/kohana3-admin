@@ -14,6 +14,7 @@ class Model_Page extends Model_Base_Page {
 			->rules('visible_to', $this->_rules['visible_to'])
 			->callback('parent_id', array($this, 'admin_check_parent_id'));
 	
+
 		if (!$data->check()) return FALSE;
 
 		$this->values($data);
@@ -45,7 +46,7 @@ class Model_Page extends Model_Base_Page {
 	
 	public function admin_check_parent_id(Validate $array, $field)
 	{
-		if ( ! (bool) $this->parent_id )
+		if ( ! (bool) $array['parent_id'] )
 		{
 			$array->error($field, 'root_reparent', array($array[$field]));
 		}
