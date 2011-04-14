@@ -41,6 +41,18 @@
 			.button({
 				icons: { primary: 'ui-icon-search' }
 			});
+
+		// Resize button
+		elem.find('.ui-button.resize')
+			.button({
+				icons: { primary: 'ui-icon-arrow-4-diag' }
+			});
+
+		// Download button
+		elem.find('.ui-button.download')
+			.button({
+				icons: { primary: 'ui-icon-arrowreturn-1-s' }
+			});
 			
 		// Lightbox
 		elem.find('.ui-lightbox').lightbox();
@@ -218,18 +230,17 @@
 		loader : function(action, elem){
 		
 			var method;
+
 			switch(action){
 				case cons.END:
 				case cons.RESET:
-					method = 'fadeOut';
+					method = 'hide';
 					break;
 				default:
-					method = 'fadeIn';
+					method = 'show';
 			}
 			
-			elem = elem || $('#ajax-loading img');
-	
-			elem[method]('fast');
+			(elem || $('#ajax-loading img'))[method]();
 		}
 	};
 
