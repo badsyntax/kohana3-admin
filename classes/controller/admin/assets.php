@@ -265,7 +265,10 @@ class Controller_Admin_Assets extends Controller_Admin_Base {
 			->where('id', '=', $id)
 			->find();
 
-		if (!$asset->loaded()) exit;
+		if (!$asset->loaded() OR !file_exists($asset->image_path(NULL, NULL, NULL, TRUE)))
+		{
+			exit;
+		}
 
 		// Check the image size exists
 		$size = ORM::factory('asset_size')
