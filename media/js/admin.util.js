@@ -447,22 +447,21 @@
 		popup: function(src, alt, win, loader_start, loader_end){
 			
 			win = win || window;
+
+			loader_start = loader_start || (function(){ Admin.util.ajax.loader(cons.BEGIN); });
+			loader_end = loader_end || (function(){ Admin.util.ajax.loader(cons.END); });
 			
-			(loader_start) 
-				? Admin.util.trigger(this, loader_start) 
-				: Admin.util.ajax.loader(cons.BEGIN);
+			loader_start();
 			
 			$('<img />')
 			.error(function(){
-				Admin.util.ajax.loader(cons.END);
+				loader_end();
 				alert('There was an error loading the image.');
 			})
 			.load(function(){
 
-				(loader_end)
-					? Admin.util.trigger(this, loader_end)
-					: Admin.util.ajax.loader(cons.END);
-				
+				loader_end();
+
 				var dialog = win.$('<div />', { title: alt });
 				
 				$(this).click(function(){
